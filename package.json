@@ -1,0 +1,33 @@
+{
+  "name": "com.nowsprinting.test-helper",
+  "description": "Test helper library for Unity Test Framework.",
+  "version": "0.1.0",
+  "author": "Koji Hasegawa <hasegawa@hubsys.co.jp> (https://github.com/nowsprinting)",
+  "category": "Unity Test Framework",
+  "changelogUrl": "https://github.com/nowsprinting/test-helper/releases",
+  "dependencies": {
+    "com.unity.test-framework": "1.3.4"
+  },
+  "displayName": "Test Helper",
+  "documentationUrl": "https://github.com/nowsprinting/test-helper/blob/master/README.md",
+  "files": [
+    "Documentation~",
+    "Editor*",
+    "Runtime*",
+    "Tests*",
+    "LICENSE.md*",
+    "package.json*",
+    "README.md*"
+  ],
+  "keywords": [
+    "TestFramework",
+    "unit testing",
+    "integration testing",
+    "test"
+  ],
+  "license": "MIT",
+  "licensesUrl": "https://github.com/nowsprinting/test-helper/blob/master/LICENSE.md",
+  "repository": "https://github.com/nowsprinting/test-helper",
+  "unity": "2019.4",
+  "unityRelease": "0f1"
+}
