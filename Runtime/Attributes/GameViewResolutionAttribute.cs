@@ -2,12 +2,12 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using UnityEngine;
 #if UNITY_EDITOR
+using TestHelper.Wrappers.UnityEditor;
 using UnityEditor;
 #endif
 
@@ -19,9 +19,6 @@ namespace TestHelper.Attributes
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
     public class GameViewResolutionAttribute : NUnitAttribute, IApplyToContext
     {
-        private static Type s_gameView;
-        private static MethodInfo s_setCustomResolution;
-
         private readonly uint _width;
         private readonly uint _height;
         private readonly string _name;
@@ -59,27 +56,42 @@ namespace TestHelper.Attributes
         private void SetResolution()
         {
 #if UNITY_EDITOR
-            if (s_setCustomResolution == null)
+            var gameViewSizes = GameViewSizesWrapper.CreateInstance();
+            if (gameViewSizes == null)
             {
-                var assembly = Assembly.Load("UnityEditor.dll");
-                s_gameView = assembly.GetType("UnityEditor.GameView");
-                if (s_gameView == null)
-                {
-                    Debug.LogError("GameView type not found.");
-                    return;
-                }
-
-                s_setCustomResolution =
-                    s_gameView.GetMethod("SetCustomResolution", BindingFlags.Instance | BindingFlags.NonPublic);
-                if (s_setCustomResolution == null)
-                {
-                    Debug.LogError("SetCustomResolution method not found.");
-                    return;
-                }
+                Debug.LogError("GameViewSizes instance creation failed.");
+                return;
             }
 
-            var gameView = EditorWindow.GetWindow(s_gameView, false, null, true);
-            s_setCustomResolution.Invoke(gameView, new object[] { new Vector2(_width, _height), _name });
+            var gameViewSizeGroup = gameViewSizes.CurrentGroup();
+            if (gameViewSizeGroup == null)
+            {
+                Debug.LogError("GameViewSizeGroup instance creation failed.");
+                return;
+            }
+
+            var gameViewSize = GameViewSizeWrapper.CreateInstance((int)_width, (int)_height, _name);
+            if (gameViewSize == null)
+            {
+                Debug.LogError("GameViewSize instance creation failed.");
+                return;
+            }
+
+            var index = gameViewSizeGroup.IndexOf(gameViewSize);
+            if (index == -1)
+            {
+                gameViewSizeGroup.AddCustomSize(gameViewSize);
+                index = gameViewSizeGroup.IndexOf(gameViewSize);
+            }
+
+            var gameView = GameViewWrapper.GetWindow();
+            if (gameView == null)
+            {
+                Debug.LogError("GameView instance creation failed.");
+                return;
+            }
+
+            gameView.SelectedSizeIndex(index);
 #endif
         }
     }
