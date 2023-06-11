@@ -38,6 +38,9 @@ public class MyTestClass
 }
 ```
 
+> **Note**  
+> In batchmode, open `GameView` window.
+
 #### GameViewResolution
 
 `GameViewResolutionAttribute` is an NUnit test attribute class to set custom resolution to `GameView` before run test.
@@ -53,14 +56,22 @@ using TestHelper.Attributes;
 [TestFixture]
 public class MyTestClass
 {
-    [Test]
+    [UnityTest]
     [GameViewResolution(640, 480, "VGA")]
-    public void MyTestMethod()
+    public IEnumerator MyTestMethod()
     {
+        yield return null; // wait for one frame to apply resolution.
+
         // e.g., test using GraphicRaycaster.
     }
 }
 ```
+
+> **Warning**  
+> Wait for one frame to apply resolution.
+
+> **Note**  
+> In batchmode, open `GameView` window.
 
 #### IgnoreBatchMode
 
