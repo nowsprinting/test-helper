@@ -12,17 +12,24 @@ namespace TestHelper.Attributes
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class GameViewResolutionAttributeTest
     {
-        private const uint Width = 1920;
-        private const uint Height = 1080;
-
         [Test]
-        [GameViewResolution(Width, Height, "Full HD")]
-        public async Task Attach_SetScreenSize()
+        [GameViewResolution(1920, 1080, "Full HD")]
+        public async Task Attach_SetScreenSizeToFullHD()
         {
             await Task.Yield(); // Wait to apply change GameView resolution
 
-            Assert.That(Screen.width, Is.EqualTo(Width));
-            Assert.That(Screen.height, Is.EqualTo(Height));
+            Assert.That(Screen.width, Is.EqualTo(1920));
+            Assert.That(Screen.height, Is.EqualTo(1080));
+        }
+
+        [Test]
+        [GameViewResolution(640, 480, "VGA")]
+        public async Task Attach_SetScreenSizeToVGA()
+        {
+            await Task.Yield(); // Wait to apply change GameView resolution
+
+            Assert.That(Screen.width, Is.EqualTo(640));
+            Assert.That(Screen.height, Is.EqualTo(480));
         }
     }
 }
