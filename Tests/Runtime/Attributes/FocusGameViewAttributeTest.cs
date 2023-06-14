@@ -11,12 +11,12 @@ using UnityEditor;
 namespace TestHelper.Attributes
 {
     [TestFixture]
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-    [IgnoreBatchMode("Open GameView in batch mode but can not be focused.")]
     public class FocusGameViewAttributeTest
     {
         [Test]
         [FocusGameView]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        [IgnoreBatchMode("Open GameView in batchmode but can not be focused.")]
         public void Attach_GameViewHasFocus()
         {
             const string GameView = "UnityEditor.GameView";
@@ -25,6 +25,14 @@ namespace TestHelper.Attributes
             var focusedWindow = EditorWindow.focusedWindow;
             Assert.That(focusedWindow.GetType().FullName, Is.EqualTo(GameView).Or.EqualTo(SimulatorWindow));
 #endif
+        }
+
+        [Test]
+        [FocusGameView]
+        [IgnoreWindowMode("For batchmode test.")]
+        public void Attach_KeepBatchmode()
+        {
+            Assert.That(Application.isBatchMode, Is.True);
         }
     }
 }
