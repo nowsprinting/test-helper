@@ -9,7 +9,6 @@ namespace TestHelper.Wrappers.UnityEditor
     [TestFixture]
     public class GameViewWrapperTest
     {
-#if !UNITY_2022_2_OR_NEWER
         private readonly GameViewWrapper _sut = GameViewWrapper.GetWindow();
 
         [Test]
@@ -28,7 +27,6 @@ namespace TestHelper.Wrappers.UnityEditor
 
             _sut.SelectedSizeIndex(beforeSelectedIndex);
         }
-#endif
     }
 }
 #endif

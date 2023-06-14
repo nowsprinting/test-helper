@@ -15,7 +15,7 @@ namespace TestHelper.Wrappers.UnityEditor
         private static readonly Type s_gameView = s_editorAssembly.GetType("UnityEditor.GameView");
 
         private static readonly PropertyInfo s_selectedSizeIndex = s_gameView
-            .GetProperty("selectedSizeIndex", BindingFlags.Instance | BindingFlags.NonPublic);
+            .GetProperty("selectedSizeIndex", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         private readonly EditorWindow _instance;
 
