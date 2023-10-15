@@ -36,6 +36,15 @@ namespace TestHelper.Attributes
             _name = name;
         }
 
+        /// <summary>
+        /// Set <c>GameView</c> resolution before SetUp test.
+        /// </summary>
+        /// <param name="resolution">GameView resolutions enum</param>
+        public GameViewResolutionAttribute(GameViewResolution resolution)
+        {
+            (_width, _height, _name) = resolution.GetParameter();
+        }
+
         public void ApplyToContext(ITestExecutionContext context)
         {
 #if UNITY_2022_2_OR_NEWER

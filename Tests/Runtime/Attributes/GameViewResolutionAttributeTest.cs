@@ -23,7 +23,7 @@ namespace TestHelper.Attributes
         }
 
         [Test]
-        [GameViewResolution(640, 480, "VGA")]
+        [GameViewResolution(GameViewResolution.VGA)]
         public async Task Attach_SetScreenSizeToVGA()
         {
             await Task.Yield(); // Wait to apply change GameView resolution
