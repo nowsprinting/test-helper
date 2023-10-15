@@ -1,8 +1,11 @@
 ﻿// Copyright (c) 2023 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Windows;
+using Object = UnityEngine.Object;
 
 namespace TestHelper.Constraints
 {
@@ -36,7 +39,8 @@ namespace TestHelper.Constraints
             catch (AssertionException e)
             {
                 Assert.That(e.Message,
-                    Is.EqualTo("  Expected: destroyed GameObject\n  But was:  <Foo (UnityEngine.GameObject)>\n"));
+                    Is.EqualTo(
+                        $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <Foo (UnityEngine.GameObject)>{Environment.NewLine}"));
             }
         }
 
@@ -52,7 +56,9 @@ namespace TestHelper.Constraints
             }
             catch (AssertionException e)
             {
-                Assert.That(e.Message, Is.EqualTo("  Expected: destroyed GameObject\n  But was:  null\n"));
+                Assert.That(e.Message,
+                    Is.EqualTo(
+                        $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  null{Environment.NewLine}"));
             }
         }
 
@@ -68,7 +74,9 @@ namespace TestHelper.Constraints
             }
             catch (AssertionException e)
             {
-                Assert.That(e.Message, Is.EqualTo("  Expected: destroyed GameObject\n  But was:  <string.Empty>\n"));
+                Assert.That(e.Message,
+                    Is.EqualTo(
+                        $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <string.Empty>{Environment.NewLine}"));
             }
         }
 
@@ -84,7 +92,9 @@ namespace TestHelper.Constraints
             }
             catch (AssertionException e)
             {
-                Assert.That(e.Message, Is.EqualTo("  Expected: not destroyed GameObject\n  But was:  <null>\n"));
+                Assert.That(e.Message,
+                    Is.EqualTo(
+                        $"  Expected: not destroyed GameObject{Environment.NewLine}  But was:  <null>{Environment.NewLine}"));
             }
         }
 
