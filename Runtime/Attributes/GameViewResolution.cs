@@ -32,16 +32,23 @@ namespace TestHelper.Attributes
         /// <returns>width, height, and name</returns>
         public static (uint, uint, string) GetParameter(this GameViewResolution resolution)
         {
-            return resolution switch
+            switch (resolution)
             {
-                GameViewResolution.VGA => (640, 480, "VGA"),
-                GameViewResolution.XGA => (1024, 768, "XGA"),
-                GameViewResolution.WXGA => (1366, 768, "WXGA"),
-                GameViewResolution.FullHD => (1920, 1080, "Full HD"),
-                GameViewResolution.QHD => (2560, 1440, "QHD"),
-                GameViewResolution.FourK_UHD => (3840, 2160, "4K UHD"),
-                _ => (0, 0, "undefined")
-            };
+                case GameViewResolution.VGA:
+                    return (640, 480, "VGA");
+                case GameViewResolution.XGA:
+                    return (1024, 768, "XGA");
+                case GameViewResolution.WXGA:
+                    return (1366, 768, "WXGA");
+                case GameViewResolution.FullHD:
+                    return (1920, 1080, "Full HD");
+                case GameViewResolution.QHD:
+                    return (2560, 1440, "QHD");
+                case GameViewResolution.FourK_UHD:
+                    return (3840, 2160, "4K UHD");
+                default:
+                    return (0, 0, "undefined");
+            }
         }
     }
 }
