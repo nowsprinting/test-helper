@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Temporarily build scene files not added to "Scenes in Build" when running a test.
+    /// Temporarily build scene files not added to "Scenes in Build" when running a play mode tests.
     /// It has the following effects:
     ///  - Can specify only scene name to `SceneManager.LoadScene()` method
     ///  - Can load in `SceneManager.LoadScene()` method when running a test on a standalone player.
@@ -25,10 +25,10 @@ namespace TestHelper.Attributes
         internal string ScenePath { get; private set; }
 
         /// <summary>
-        /// Specify scene file path to temporarily build when running a test.
+        /// Specify scene file or directory path to temporarily build when running a test.
         /// </summary>
         /// <param name="scenePath">Scene path not in "Scenes in Build".
-        /// The scene file path starts with `Assets/` or `Packages/`, and ends with `.unity`.
+        /// The scene file path starts with `Assets/` or `Packages/`.
         /// Use `name` instead of `displayName` in package paths.
         /// </param>
         public ScenesUsingInTestAttribute(string scenePath)
