@@ -4,7 +4,6 @@
 using System;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Windows;
 using Object = UnityEngine.Object;
 
 namespace TestHelper.Constraints
@@ -38,9 +37,8 @@ namespace TestHelper.Constraints
             }
             catch (AssertionException e)
             {
-                Assert.That(e.Message,
-                    Is.EqualTo(
-                        $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <Foo (UnityEngine.GameObject)>{Environment.NewLine}"));
+                Assert.That(e.Message, Is.EqualTo(
+                    $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <Foo (UnityEngine.GameObject)>{Environment.NewLine}"));
             }
         }
 
@@ -56,9 +54,8 @@ namespace TestHelper.Constraints
             }
             catch (AssertionException e)
             {
-                Assert.That(e.Message,
-                    Is.EqualTo(
-                        $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  null{Environment.NewLine}"));
+                Assert.That(e.Message, Is.EqualTo(
+                    $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  null{Environment.NewLine}"));
             }
         }
 
@@ -74,9 +71,8 @@ namespace TestHelper.Constraints
             }
             catch (AssertionException e)
             {
-                Assert.That(e.Message,
-                    Is.EqualTo(
-                        $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <string.Empty>{Environment.NewLine}"));
+                Assert.That(e.Message, Is.EqualTo(
+                    $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <string.Empty>{Environment.NewLine}"));
             }
         }
 
@@ -92,9 +88,8 @@ namespace TestHelper.Constraints
             }
             catch (AssertionException e)
             {
-                Assert.That(e.Message,
-                    Is.EqualTo(
-                        $"  Expected: not destroyed GameObject{Environment.NewLine}  But was:  <null>{Environment.NewLine}"));
+                Assert.That(e.Message, Is.EqualTo(
+                    $"  Expected: not destroyed GameObject{Environment.NewLine}  But was:  <null>{Environment.NewLine}"));
             }
         }
 
