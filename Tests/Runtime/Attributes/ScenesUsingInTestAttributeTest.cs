@@ -58,7 +58,7 @@ namespace TestHelper.Attributes
         }
 
         [UnityTest]
-        [ScenesUsingInTest("Packages/com.nowsprinting.test-helper/Tests/Scenes/Sub")]
+        [ScenesUsingInTest("Packages/com.nowsprinting.test-helper/Tests/Scenes/Sub/")]  // Note: Need trailing slash on Linux?
         public IEnumerator SpecifyDirectory_CanLoadScenesNotIncludedBuild()
         {
             yield return SceneManager.LoadSceneAsync("NotInScenesInBuild4");
