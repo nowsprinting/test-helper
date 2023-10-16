@@ -12,6 +12,7 @@ Required Unity 2019 LTS or later.
 
 ## Features
 
+
 ### Attributes
 
 #### FocusGameView
@@ -129,6 +130,45 @@ public class MyTestClass
     }
 }
 ```
+
+#### ScenesUsingInTest
+
+`ScenesUsingInTestAttribute` is an NUnit test attribute class to temporarily add scene files to "Scenes in Build" when running a play mode tests.
+
+It has the following benefits:
+
+- Can specify scene by name to `SceneManager.LoadScene()` method
+- Can load scenes when running a test on a standalone player
+
+This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+
+Usage:
+
+```csharp
+using System;
+using NUnit.Framework;
+using TestHelper.Attributes;
+
+[TestFixture]
+public class MyTestClass
+{
+    [UnityTest]
+    [ScenesUsingInTest("Assets/MyTests/Scenes")]
+    public IEnumerator MyTestMethod()
+    {
+        yield return SceneManager.LoadSceneAsync("NotInScenesInBuild");
+
+        var cube = GameObject.Find("CubeInNotInScenesInBuild");
+        Assert.That(cube, Is.Not.Null);
+    }
+}
+```
+
+> **Note**  
+> Scene path can specify a file or directory path.
+> The path starts with `Assets/` or `Packages/`.
+> And use `name` instead of `displayName` of the package, when scenes in the package.
+> (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/`)
 
 
 ### Constraints
