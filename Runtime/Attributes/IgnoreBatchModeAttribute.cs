@@ -36,7 +36,7 @@ namespace TestHelper.Attributes
             }
 
             test.RunState = RunState.Ignored;
-            test.Properties.Set("_SKIPREASON", (object)this._reason);
+            test.Properties.Set("_SKIPREASON", this._reason);
         }
     }
 }

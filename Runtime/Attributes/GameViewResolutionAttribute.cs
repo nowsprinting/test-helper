@@ -45,6 +45,7 @@ namespace TestHelper.Attributes
             (_width, _height, _name) = resolution.GetParameter();
         }
 
+        /// <inheritdoc />
         public void ApplyToContext(ITestExecutionContext context)
         {
 #if UNITY_2022_2_OR_NEWER
@@ -54,6 +55,7 @@ namespace TestHelper.Attributes
 #endif
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void SetResolutionUsingPlayModeWindow()
         {
 #if UNITY_EDITOR && UNITY_2022_2_OR_NEWER
@@ -62,6 +64,7 @@ namespace TestHelper.Attributes
 #endif
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void SetResolution()
         {
 #if UNITY_EDITOR
