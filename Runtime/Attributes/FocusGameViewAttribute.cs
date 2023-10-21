@@ -23,6 +23,7 @@ namespace TestHelper.Attributes
     {
         private static Type s_gameView;
 
+        /// <inheritdoc />
         public void ApplyToContext(ITestExecutionContext context)
         {
 #if UNITY_EDITOR
