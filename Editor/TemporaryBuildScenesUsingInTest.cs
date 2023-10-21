@@ -79,6 +79,8 @@ namespace TestHelper.Editor
         /// </summary>
         public class RunInEditor : ICallbacks
         {
+            private EditorBuildSettingsScene[] _originScenesInBuild;
+
             [InitializeOnLoadMethod]
             private static void SetupRunningInEditor()
             {
@@ -89,7 +91,9 @@ namespace TestHelper.Editor
             /// <inheritdoc />
             public void RunStarted(ITestAdaptor testsToRun)
             {
-                var scenesInBuild = EditorBuildSettings.scenes.ToList();
+                _originScenesInBuild = EditorBuildSettings.scenes;
+
+                var scenesInBuild = _originScenesInBuild.ToList();
                 foreach (var scenePath in GetScenesUsingInTest())
                 {
                     if (scenesInBuild.All(scene => scene.path != scenePath))
@@ -102,7 +106,10 @@ namespace TestHelper.Editor
             }
 
             /// <inheritdoc />
-            public void RunFinished(ITestResultAdaptor result) { }
+            public void RunFinished(ITestResultAdaptor result)
+            {
+                EditorBuildSettings.scenes = _originScenesInBuild;
+            }
 
             /// <inheritdoc />
             public void TestStarted(ITestAdaptor test) { }
