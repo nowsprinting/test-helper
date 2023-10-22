@@ -3,4 +3,5 @@
 
 using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("TestHelper.Editor")]
 [assembly: InternalsVisibleTo("TestHelper.Tests")]
