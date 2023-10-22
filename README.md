@@ -131,16 +131,16 @@ public class MyTestClass
 }
 ```
 
-#### ScenesUsingInTest
+#### LoadScene
 
-`ScenesUsingInTestAttribute` is an NUnit test attribute class to temporarily add scene files to "Scenes in Build" when running a play mode tests.
+`LoadSceneAttribute` is an NUnit test attribute class to load scene before running test.
 
 It has the following benefits:
 
-- Can specify scene by name to `SceneManager.LoadScene()` method
-- Can load scenes when running a test on a standalone player
+- Can be used when running play mode tests in-editor and on-player
+- Can be specified scenes that are not in "Scenes in Build"
 
-This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+This attribute can attached to test method only.
 
 Usage:
 
@@ -152,23 +152,21 @@ using TestHelper.Attributes;
 [TestFixture]
 public class MyTestClass
 {
-    [UnityTest]
-    [ScenesUsingInTest("Assets/MyTests/Scenes")]
-    public IEnumerator MyTestMethod()
+    [Test]
+    [LoadScene("Assets/MyTests/Scenes/Scene.unity")]
+    public void MyTestMethod()
     {
-        yield return SceneManager.LoadSceneAsync("NotInScenesInBuild");
-
-        var cube = GameObject.Find("CubeInNotInScenesInBuild");
+        var cube = GameObject.Find("Cube");
         Assert.That(cube, Is.Not.Null);
     }
 }
 ```
 
 > **Note**  
-> Scene path can specify a file or directory path.
-> The path starts with `Assets/` or `Packages/`.
-> And use `name` instead of `displayName` of the package, when scenes in the package.
-> (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/`)
+> - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>
+> - Scene file path is starts with `Assets/` or `Packages/`.
+> And package name using `name` instead of `displayName`, when scenes in the package.
+> (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 ### Constraints

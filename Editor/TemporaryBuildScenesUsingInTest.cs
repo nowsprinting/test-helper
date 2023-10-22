@@ -8,56 +8,54 @@ using TestHelper.Attributes;
 using TestHelper.Editor;
 using UnityEditor;
 using UnityEditor.TestTools;
-using UnityEditor.TestTools.TestRunner.Api;
-using UnityEngine;
 
-[assembly: TestPlayerBuildModifier(typeof(TemporaryBuildScenesUsingInTest.RunOnStandalonePlayer))]
+[assembly: TestPlayerBuildModifier(typeof(TemporaryBuildScenesUsingInTest))]
 
 namespace TestHelper.Editor
 {
     /// <summary>
-    /// Temporarily build scenes specified by <c>ScenesUsingInTestAttribute</c> when running play mode tests.
+    /// Temporarily build scenes specified by <c>LoadSceneAttribute</c> when running play mode tests on standalone player.
     /// </summary>
-    public static class TemporaryBuildScenesUsingInTest
+    public class TemporaryBuildScenesUsingInTest : ITestPlayerBuildModifier
     {
-        private static IEnumerable<ScenesUsingInTestAttribute> FindScenesUsingInTestAttributesOnAssemblies()
+        private static IEnumerable<LoadSceneAttribute> FindLoadSceneAttributesOnAssemblies()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var attribute in assemblies
-                         .Select(assembly => assembly.GetCustomAttributes(typeof(ScenesUsingInTestAttribute), false))
+                         .Select(assembly => assembly.GetCustomAttributes(typeof(LoadSceneAttribute), false))
                          .SelectMany(attributes => attributes))
             {
-                yield return attribute as ScenesUsingInTestAttribute;
+                yield return attribute as LoadSceneAttribute;
             }
         }
 
-        private static IEnumerable<ScenesUsingInTestAttribute> FindScenesUsingInTestAttributesOnTypes()
+        private static IEnumerable<LoadSceneAttribute> FindLoadSceneAttributesOnTypes()
         {
-            var symbols = TypeCache.GetTypesWithAttribute<ScenesUsingInTestAttribute>();
+            var symbols = TypeCache.GetTypesWithAttribute<LoadSceneAttribute>();
             foreach (var attribute in symbols
-                         .Select(symbol => symbol.GetCustomAttributes(typeof(ScenesUsingInTestAttribute), false))
+                         .Select(symbol => symbol.GetCustomAttributes(typeof(LoadSceneAttribute), false))
                          .SelectMany(attributes => attributes))
             {
-                yield return attribute as ScenesUsingInTestAttribute;
+                yield return attribute as LoadSceneAttribute;
             }
         }
 
-        private static IEnumerable<ScenesUsingInTestAttribute> FindScenesUsingInTestAttributesOnMethods()
+        private static IEnumerable<LoadSceneAttribute> FindLoadSceneAttributesOnMethods()
         {
-            var symbols = TypeCache.GetMethodsWithAttribute<ScenesUsingInTestAttribute>();
+            var symbols = TypeCache.GetMethodsWithAttribute<LoadSceneAttribute>();
             foreach (var attribute in symbols
-                         .Select(symbol => symbol.GetCustomAttributes(typeof(ScenesUsingInTestAttribute), false))
+                         .Select(symbol => symbol.GetCustomAttributes(typeof(LoadSceneAttribute), false))
                          .SelectMany(attributes => attributes))
             {
-                yield return attribute as ScenesUsingInTestAttribute;
+                yield return attribute as LoadSceneAttribute;
             }
         }
 
         internal static IEnumerable<string> GetScenesUsingInTest()
         {
-            var attributes = FindScenesUsingInTestAttributesOnAssemblies()
-                .Concat(FindScenesUsingInTestAttributesOnTypes())
-                .Concat(FindScenesUsingInTestAttributesOnMethods());
+            var attributes = FindLoadSceneAttributesOnAssemblies()
+                .Concat(FindLoadSceneAttributesOnTypes())
+                .Concat(FindLoadSceneAttributesOnMethods());
             foreach (var attribute in attributes)
             {
                 if (attribute.ScenePath.ToLower().EndsWith(".unity"))
@@ -75,73 +73,25 @@ namespace TestHelper.Editor
         }
 
         /// <summary>
-        /// Add temporary scenes to build when running play mode tests in editor.
-        /// </summary>
-        public class RunInEditor : ICallbacks
-        {
-            private EditorBuildSettingsScene[] _originScenesInBuild;
-
-            [InitializeOnLoadMethod]
-            private static void SetupRunningInEditor()
-            {
-                var api = ScriptableObject.CreateInstance<TestRunnerApi>();
-                api.RegisterCallbacks(new RunInEditor());
-            }
-
-            /// <inheritdoc />
-            public void RunStarted(ITestAdaptor testsToRun)
-            {
-                _originScenesInBuild = EditorBuildSettings.scenes;
-
-                var scenesInBuild = _originScenesInBuild.ToList();
-                foreach (var scenePath in GetScenesUsingInTest())
-                {
-                    if (scenesInBuild.All(scene => scene.path != scenePath))
-                    {
-                        scenesInBuild.Add(new EditorBuildSettingsScene(scenePath, true));
-                    }
-                }
-
-                EditorBuildSettings.scenes = scenesInBuild.ToArray();
-            }
-
-            /// <inheritdoc />
-            public void RunFinished(ITestResultAdaptor result)
-            {
-                EditorBuildSettings.scenes = _originScenesInBuild;
-            }
-
-            /// <inheritdoc />
-            public void TestStarted(ITestAdaptor test) { }
-
-            /// <inheritdoc />
-            public void TestFinished(ITestResultAdaptor result) { }
-        }
-
-        /// <summary>
         /// Add temporary scenes to build when running play mode tests on standalone player.
         /// </summary>
         /// <remarks>
         /// Required Unity Test Framework package v1.1.13 or higher is to use this script.
         /// For details, see the <see href="https://forum.unity.com/threads/testplayerbuildmodifier-not-working.844447/">report in forum</see>.
         /// </remarks>
-        public class RunOnStandalonePlayer : ITestPlayerBuildModifier
+        public BuildPlayerOptions ModifyOptions(BuildPlayerOptions playerOptions)
         {
-            /// <inheritdoc />
-            public BuildPlayerOptions ModifyOptions(BuildPlayerOptions playerOptions)
+            var scenesInBuild = new List<string>(playerOptions.scenes);
+            foreach (var scenePath in GetScenesUsingInTest())
             {
-                var scenesInBuild = new List<string>(playerOptions.scenes);
-                foreach (var scenePath in GetScenesUsingInTest())
+                if (!scenesInBuild.Contains(scenePath))
                 {
-                    if (!scenesInBuild.Contains(scenePath))
-                    {
-                        scenesInBuild.Add(scenePath);
-                    }
+                    scenesInBuild.Add(scenePath);
                 }
-
-                playerOptions.scenes = scenesInBuild.ToArray();
-                return playerOptions;
             }
+
+            playerOptions.scenes = scenesInBuild.ToArray();
+            return playerOptions;
         }
     }
 }
