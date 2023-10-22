@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
@@ -21,11 +20,8 @@ namespace TestHelper.Attributes
             Assert.That(scene.name, Is.EqualTo(
                 "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_CreateNewSceneWithoutCameraAndLight"));
 
-            var camera = GameObject.Find("Main Camera");
-            Assert.That(camera, Is.Null);
-
-            var light = GameObject.Find("Directional Light");
-            Assert.That(light, Is.Null);
+            var rootGameObjects = scene.GetRootGameObjects(); // Note: GameObject.Find finds objects in inactive scenes
+            Assert.That(rootGameObjects, Is.Empty);
         }
 
         [Test]
@@ -36,8 +32,9 @@ namespace TestHelper.Attributes
             Assert.That(scene.name, Is.EqualTo(
                 "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_WithCamera_CreateNewSceneWithCamera"));
 
-            var camera = GameObject.Find("Main Camera");
-            Assert.That(camera, Is.Not.Null);
+            var rootGameObjects = scene.GetRootGameObjects(); // Note: GameObject.Find finds objects in inactive scenes
+            Assert.That(rootGameObjects, Has.Length.EqualTo(1));
+            Assert.That(rootGameObjects[0].name, Is.EqualTo("Main Camera"));
         }
 
         [Test]
@@ -48,8 +45,9 @@ namespace TestHelper.Attributes
             Assert.That(scene.name, Is.EqualTo(
                 "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_WithLight_CreateNewSceneWithLight"));
 
-            var light = GameObject.Find("Directional Light");
-            Assert.That(light, Is.Not.Null);
+            var rootGameObjects = scene.GetRootGameObjects(); // Note: GameObject.Find finds objects in inactive scenes
+            Assert.That(rootGameObjects, Has.Length.EqualTo(1));
+            Assert.That(rootGameObjects[0].name, Is.EqualTo("Directional Light"));
         }
 
         [Test]

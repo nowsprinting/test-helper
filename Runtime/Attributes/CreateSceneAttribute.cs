@@ -44,26 +44,17 @@ namespace TestHelper.Attributes
         {
             _newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
 
-            if (Application.isEditor)
+            if (Application.isEditor && !Application.isPlaying)
             {
 #if UNITY_EDITOR
-                if (Application.isPlaying)
-                {
-                    // Play Mode tests running in Editor
-                    var scene = SceneManager.CreateScene(_newSceneName);
-                    SceneManager.SetActiveScene(scene);
-                }
-                else
-                {
-                    // Edit Mode tests
-                    var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
-                    scene.name = _newSceneName;
-                }
+                // Edit Mode tests
+                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+                scene.name = _newSceneName;
 #endif
             }
             else
             {
-                // Play Mode tests running on Player
+                // Play Mode tests
                 var scene = SceneManager.CreateScene(_newSceneName);
                 SceneManager.SetActiveScene(scene);
             }
