@@ -12,7 +12,6 @@ Required Unity 2019 LTS or later.
 
 ## Features
 
-
 ### Attributes
 
 #### FocusGameView
@@ -130,6 +129,36 @@ public class MyTestClass
     }
 }
 ```
+
+#### CreateScene
+
+`CreateSceneAttribute` is an NUnit test attribute class to create new scene before running test.
+
+This attribute can attached to test method only.
+
+Usage:
+
+```csharp
+using System;
+using NUnit.Framework;
+using TestHelper.Attributes;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [CreateScene]
+    public void MyTestMethod(camera: true, light: true)
+    {
+        var camera = GameObject.Find("Main Camera");
+        Assert.That(camera, Is.Not.Null);
+    }
+}
+```
+
+> **Note**
+> - Create scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>
+> - Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
 
 #### LoadScene
 
