@@ -33,7 +33,7 @@ namespace TestHelper.Attributes
         /// </summary>
         /// <param name="camera">true: create main camera object in new scene</param>
         /// <param name="light">true:  create directional light object in new scene</param>
-        public CreateSceneAttribute(bool camera = true, bool light = true)
+        public CreateSceneAttribute(bool camera = false, bool light = false)
         {
             _camera = camera;
             _light = light;

@@ -12,7 +12,7 @@ namespace TestHelper.Editor
     public class CreateSceneAttributeTest
     {
         [Test]
-        [CreateScene]
+        [CreateScene(camera: true, light: true)]
         public void Attach_CreateNewSceneWithCameraAndLight()
         {
             var scene = SceneManager.GetActiveScene();

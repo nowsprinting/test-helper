@@ -15,47 +15,41 @@ namespace TestHelper.Attributes
     {
         [Test]
         [CreateScene]
-        public void Attach_CreateNewSceneWithCameraAndLight()
+        public void Attach_CreateNewSceneWithoutCameraAndLight()
         {
             var scene = SceneManager.GetActiveScene();
             Assert.That(scene.name, Is.EqualTo(
-                "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_CreateNewSceneWithCameraAndLight"));
-
-            var camera = GameObject.Find("Main Camera");
-            Assert.That(camera, Is.Not.Null);
-
-            var light = GameObject.Find("Directional Light");
-            Assert.That(light, Is.Not.Null);
-        }
-
-        [Test]
-        [CreateScene(camera: false)]
-        public void Attach_NoCamera_CreateNewSceneWithLight()
-        {
-            var scene = SceneManager.GetActiveScene();
-            Assert.That(scene.name, Is.EqualTo(
-                "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_NoCamera_CreateNewSceneWithLight"));
+                "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_CreateNewSceneWithoutCameraAndLight"));
 
             var camera = GameObject.Find("Main Camera");
             Assert.That(camera, Is.Null);
 
             var light = GameObject.Find("Directional Light");
-            Assert.That(light, Is.Not.Null);
+            Assert.That(light, Is.Null);
         }
 
         [Test]
-        [CreateScene(light: false)]
-        public void Attach_NoLight_CreateNewSceneWithCamera()
+        [CreateScene(camera: true)]
+        public void Attach_WithCamera_CreateNewSceneWithCamera()
         {
             var scene = SceneManager.GetActiveScene();
             Assert.That(scene.name, Is.EqualTo(
-                "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_NoLight_CreateNewSceneWithCamera"));
+                "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_WithCamera_CreateNewSceneWithCamera"));
 
             var camera = GameObject.Find("Main Camera");
             Assert.That(camera, Is.Not.Null);
+        }
+
+        [Test]
+        [CreateScene(light: true)]
+        public void Attach_WithLight_CreateNewSceneWithLight()
+        {
+            var scene = SceneManager.GetActiveScene();
+            Assert.That(scene.name, Is.EqualTo(
+                "Scene of TestHelper.Attributes.CreateSceneAttributeTest.Attach_WithLight_CreateNewSceneWithLight"));
 
             var light = GameObject.Find("Directional Light");
-            Assert.That(light, Is.Null);
+            Assert.That(light, Is.Not.Null);
         }
 
         [Test]

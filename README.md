@@ -148,7 +148,7 @@ public class MyTestClass
 {
     [Test]
     [CreateScene]
-    public void MyTestMethod()
+    public void MyTestMethod(camera: true, light: true)
     {
         var camera = GameObject.Find("Main Camera");
         Assert.That(camera, Is.Not.Null);
@@ -158,7 +158,7 @@ public class MyTestClass
 
 > **Note**
 > - Create scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>
-> - Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is create)
+> - Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
 
 #### LoadScene
 
