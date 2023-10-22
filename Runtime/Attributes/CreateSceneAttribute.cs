@@ -43,21 +43,31 @@ namespace TestHelper.Attributes
         public IEnumerator BeforeTest(ITest test)
         {
             _newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
-#if UNITY_EDITOR
-            if (EditorApplication.isPlaying)
+
+            if (Application.isEditor)
             {
-                var scene = SceneManager.CreateScene(_newSceneName);
-                SceneManager.SetActiveScene(scene);
+#if UNITY_EDITOR
+                if (Application.isPlaying)
+                {
+                    // Play Mode tests running in Editor
+                    var scene = SceneManager.CreateScene(_newSceneName);
+                    SceneManager.SetActiveScene(scene);
+                }
+                else
+                {
+                    // Edit Mode tests
+                    var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+                    scene.name = _newSceneName;
+                }
+#endif
             }
             else
             {
-                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
-                scene.name = _newSceneName;
-            }
-#else
+                // Play Mode tests running on Player
                 var scene = SceneManager.CreateScene(_newSceneName);
                 SceneManager.SetActiveScene(scene);
-#endif
+            }
+
             if (_camera)
             {
                 var camera = new GameObject("Main Camera").AddComponent<Camera>();

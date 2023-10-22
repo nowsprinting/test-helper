@@ -26,7 +26,7 @@ namespace TestHelper.Attributes
     ///
     /// Notes:
     ///  - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>
-    ///  - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>
+    ///  - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="Editor.TemporaryBuildScenesUsingInTest"/>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class LoadSceneAttribute : NUnitAttribute, IOuterUnityTestAction
@@ -50,22 +50,30 @@ namespace TestHelper.Attributes
         public IEnumerator BeforeTest(ITest test)
         {
             AsyncOperation loadSceneAsync = null;
-#if UNITY_EDITOR
-            if (EditorApplication.isPlaying)
+
+            if (Application.isEditor)
             {
-                // Use EditorSceneManager at run on Unity-editor
-                loadSceneAsync = EditorSceneManager.LoadSceneAsyncInPlayMode(
-                    ScenePath,
-                    new LoadSceneParameters(LoadSceneMode.Single));
+#if UNITY_EDITOR
+                if (Application.isPlaying)
+                {
+                    // Play Mode tests running in Editor
+                    loadSceneAsync = EditorSceneManager.LoadSceneAsyncInPlayMode(
+                        ScenePath,
+                        new LoadSceneParameters(LoadSceneMode.Single));
+                }
+                else
+                {
+                    // Edit Mode tests
+                    EditorSceneManager.OpenScene(ScenePath);
+                }
+#endif
             }
             else
             {
-                EditorSceneManager.OpenScene(ScenePath);
+                // Play Mode tests running on Player
+                loadSceneAsync = SceneManager.LoadSceneAsync(ScenePath);
             }
-#else
-            // Use ITestPlayerBuildModifier to change the "Scenes in Build" list before run on player
-            loadSceneAsync = SceneManager.LoadSceneAsync(ScenePath);
-#endif
+
             yield return loadSceneAsync;
         }
 
