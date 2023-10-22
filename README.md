@@ -276,6 +276,7 @@ openupm add com.nowsprinting.test-helper
 MIT License
 
 
+
 ## How to contribute
 
 Open an issue or create a pull request.
@@ -284,14 +285,20 @@ Be grateful if you could label the PR as `enhancement`, `bug`, `chore`, and `doc
 See [PR Labeler settings](.github/pr-labeler.yml) for automatically labeling from the branch name.
 
 
+
 ## How to development
 
 Add this repository as a submodule to the Packages/ directory in your project.
 
-Run the command below:
-
 ```bash
 git submodule add https://github.com/nowsprinting/test-helper.git Packages/com.nowsprinting.test-helper
+```
+
+Generate a temporary project and run tests on each Unity version from the command line.
+
+```bash
+make create_project
+UNITY_VERSION=2019.4.40f1 make -k test
 ```
 
 
