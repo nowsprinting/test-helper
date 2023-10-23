@@ -19,6 +19,7 @@ Required Unity 2019 LTS or later.
 `FocusGameViewAttribute` is an NUnit test attribute class to focus `GameView` or `SimulatorWindow` before run test.
 
 This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
 
@@ -46,12 +47,15 @@ public class MyTestClass
 `GameViewResolutionAttribute` is an NUnit test attribute class to set custom resolution to `GameView` before run test.
 
 This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+Can be used with async Test and UnityTest.
 
 Usage:
 
 ```csharp
+using System.Collections;
 using NUnit.Framework;
 using TestHelper.Attributes;
+using UnityEngine.TestTools;
 
 [TestFixture]
 public class MyTestClass
@@ -78,6 +82,7 @@ public class MyTestClass
 `IgnoreBatchModeAttribute` is an NUnit test attribute class to skip test execution when run tests with `-batchmode` from the commandline.
 
 This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
 
@@ -109,6 +114,7 @@ public class MyTestClass
 `IgnoreWindowModeAttribute` is an NUnit test attribute class to skip test execution when run tests on Unity editor window.
 
 This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
 
@@ -135,29 +141,33 @@ public class MyTestClass
 `CreateSceneAttribute` is an NUnit test attribute class to create new scene before running test.
 
 This attribute can attached to test method only.
+Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
 
 ```csharp
-using System;
 using NUnit.Framework;
 using TestHelper.Attributes;
+using UnityEngine;
 
 [TestFixture]
 public class MyTestClass
 {
     [Test]
-    [CreateScene]
-    public void MyTestMethod(camera: true, light: true)
+    [CreateScene(camera: true, light: true)]
+    public void MyTestMethod()
     {
         var camera = GameObject.Find("Main Camera");
         Assert.That(camera, Is.Not.Null);
+
+        var light = GameObject.Find("Directional Light");
+        Assert.That(light, Is.Not.Null);
     }
 }
 ```
 
 > **Note**
-> - Create scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>
+> - Create scene run after `OneTimeSetUp` and before `SetUp`
 > - Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
 
 #### LoadScene
@@ -166,17 +176,18 @@ public class MyTestClass
 
 It has the following benefits:
 
-- Can be used when running play mode tests in-editor and on-player
-- Can be specified scenes that are not in "Scenes in Build"
+- Can be used when running Edit Mode tests, Play Mode tests in Editor, and on Player
+- Can be specified scenes that are **NOT** in "Scenes in Build"
 
 This attribute can attached to test method only.
+Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
 
 ```csharp
-using System;
 using NUnit.Framework;
 using TestHelper.Attributes;
+using UnityEngine;
 
 [TestFixture]
 public class MyTestClass
@@ -192,10 +203,8 @@ public class MyTestClass
 ```
 
 > **Note**  
-> - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>
-> - Scene file path is starts with `Assets/` or `Packages/`.
-> And package name using `name` instead of `displayName`, when scenes in the package.
-> (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+> - Load scene run after `OneTimeSetUp` and before `SetUp`
+> - Scene file path is starts with `Assets/` or `Packages/`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 ### Constraints
