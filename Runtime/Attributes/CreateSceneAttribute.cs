@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 #if UNITY_EDITOR
-using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
@@ -44,19 +43,19 @@ namespace TestHelper.Attributes
         {
             _newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
 
-            if (Application.isEditor && !Application.isPlaying)
+            if (Application.isPlaying)
+            {
+                // Play Mode tests
+                var scene = SceneManager.CreateScene(_newSceneName);
+                SceneManager.SetActiveScene(scene);
+            }
+            else
             {
 #if UNITY_EDITOR
                 // Edit Mode tests
                 var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
                 scene.name = _newSceneName;
 #endif
-            }
-            else
-            {
-                // Play Mode tests
-                var scene = SceneManager.CreateScene(_newSceneName);
-                SceneManager.SetActiveScene(scene);
             }
 
             if (_camera)
@@ -81,13 +80,7 @@ namespace TestHelper.Attributes
         /// <inheritdoc />
         public IEnumerator AfterTest(ITest test)
         {
-#if UNITY_EDITOR
-            if (!EditorApplication.isPlaying)
-            {
-                yield break; // Not for EditMode tests
-            }
-#endif
-            if (SceneManager.GetActiveScene().name == _newSceneName)
+            if (Application.isPlaying && SceneManager.GetActiveScene().name == _newSceneName)
             {
                 yield return SceneManager.UnloadSceneAsync(_newSceneName);
             }
