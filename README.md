@@ -47,32 +47,25 @@ public class MyTestClass
 `GameViewResolutionAttribute` is an NUnit test attribute class to set custom resolution to `GameView` before run test.
 
 This attribute can attached to test method, test class (`TestFixture`) and test assembly.
-Can be used with async Test and UnityTest.
+Can be used with sync Test, async Test and UnityTest.
 
 Usage:
 
 ```csharp
-using System.Collections;
 using NUnit.Framework;
 using TestHelper.Attributes;
-using UnityEngine.TestTools;
 
 [TestFixture]
 public class MyTestClass
 {
-    [UnityTest]
+    [Test]
     [GameViewResolution(640, 480, "VGA")]
-    public IEnumerator MyTestMethod()
+    public void MyTestMethod()
     {
-        yield return null; // wait for one frame to apply resolution.
-
-        // e.g., test using GraphicRaycaster.
+        // e.g., test using GraphicRaycaster, Graphics Tests Framework, etc...
     }
 }
 ```
-
-> **Warning**  
-> Wait for one frame to apply resolution.
 
 > **Note**  
 > In batchmode, open `GameView` window.
