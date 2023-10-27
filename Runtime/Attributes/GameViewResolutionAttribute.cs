@@ -2,11 +2,10 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using NUnit.Framework.Internal;
 using UnityEngine;
-using UnityEngine.TestTools;
 #if UNITY_EDITOR
 using TestHelper.Wrappers.UnityEditor;
 using UnityEditor;
@@ -18,7 +17,7 @@ namespace TestHelper.Attributes
     /// Set <c>GameView</c> resolution before SetUp test.
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
-    public class GameViewResolutionAttribute : NUnitAttribute, IOuterUnityTestAction
+    public class GameViewResolutionAttribute : NUnitAttribute, IApplyToContext
     {
         private readonly uint _width;
         private readonly uint _height;
@@ -44,6 +43,16 @@ namespace TestHelper.Attributes
         public GameViewResolutionAttribute(GameViewResolution resolution)
         {
             (_width, _height, _name) = resolution.GetParameter();
+        }
+
+        /// <inheritdoc />
+        public void ApplyToContext(ITestExecutionContext context)
+        {
+#if UNITY_2022_2_OR_NEWER
+            SetResolutionUsingPlayModeWindow();
+#else
+            SetResolution();
+#endif
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -96,23 +105,6 @@ namespace TestHelper.Attributes
 
             gameView.SelectedSizeIndex(index);
 #endif
-        }
-
-        /// <inheritdoc />
-        public IEnumerator BeforeTest(ITest test)
-        {
-#if UNITY_2022_2_OR_NEWER
-            SetResolutionUsingPlayModeWindow();
-#else
-            SetResolution();
-#endif
-            yield return null;
-        }
-
-        /// <inheritdoc />
-        public IEnumerator AfterTest(ITest test)
-        {
-            yield return null;
         }
     }
 }
