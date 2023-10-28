@@ -12,8 +12,11 @@ using UnityEngine.UI;
 namespace TestHelper.Attributes
 {
     [TestFixture]
+    [GameViewResolution(GameViewResolution.VGA)]
     public class TakeScreenshotAttributeTest
     {
+        private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
+
         private readonly string _defaultOutputDirectory =
             Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots");
 
@@ -30,8 +33,7 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(0)]
-        [GameViewResolution(GameViewResolution.VGA)]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         [TakeScreenshot]
         public void Attach_TakeScreenshotAndSaveToDefaultPath()
         {
@@ -48,8 +50,7 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(0)]
-        [GameViewResolution(GameViewResolution.VGA)]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         [TakeScreenshot]
         public async Task AttachToAsyncTest_TakeScreenshotAndSaveToDefaultPath()
         {
@@ -67,8 +68,7 @@ namespace TestHelper.Attributes
         }
 
         [UnityTest, Order(0)]
-        [GameViewResolution(GameViewResolution.VGA)]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         [TakeScreenshot]
         public IEnumerator AttachToUnityTest_TakeScreenshotAndSaveToDefaultPath()
         {
@@ -86,8 +86,7 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(0)]
-        [GameViewResolution(GameViewResolution.VGA)]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         [TakeScreenshot(filename: nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath) + ".png")]
         public void AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath()
         {
