@@ -206,6 +206,42 @@ public class MyTestClass
 > - Load scene run after `OneTimeSetUp` and before `SetUp`
 > - Scene file path is starts with `Assets/` or `Packages/`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
+#### TakeScreenshot
+
+`TakeScreenshotAttribute` is an NUnit test attribute class to take a screenshot and save it to a file after running test.
+
+Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`CurrentTest.Name`.png".
+You can specify the save directory and/or filename by arguments.
+
+This attribute can attached to test method only.
+Can be used with sync Test, async Test, and UnityTest.
+
+Usage:
+    
+```csharp
+using NUnit.Framework;
+using TestHelper.Attributes;
+using UnityEngine;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [TakeScreenshot]
+    public void MyTestMethod()
+    {
+        // take screenshot after running the test.
+    }
+}
+```
+
+> **Warning**
+> - Do not attach to Edit Mode tests.
+> - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
+
+> **Note**  
+> If you want to take screenshots at any time, use the [ScreenshotHelper](#ScreenshotHelper) class.
+
 
 ### Comparers
 
@@ -262,6 +298,43 @@ public class MyTestClass
 
 > **Note**  
 > When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
+
+
+### Utilities
+
+#### ScreenshotHelper
+
+`ScreenshotHelper` is a utility class to take a screenshot and save it to a file.
+
+Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`CurrentTest.Name`.png".
+You can specify the save directory and/or filename by arguments.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [UnityTest]
+    public IEnumerator MyTestMethod()
+    {
+        yield return ScreenshotHelper.TakeScreenshot();
+    }
+}
+```
+
+> **Warning**  
+> - Do not call from Edit Mode tests.
+> - Must be called from main thread.
+> - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
+> - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
+
+
+## Editor Extensions
+
+### Open Persistent Data Directory
+
+Select **Window** > **Open Persistent Data Directory**, which opens the directory pointed to by [persistent data path](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html) in the Finder/ File Explorer.
 
 
 
