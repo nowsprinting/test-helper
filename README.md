@@ -242,6 +242,31 @@ public class MyTestClass
 > **Note**  
 > If you want to take screenshots at any time, use the [ScreenshotHelper](#ScreenshotHelper) class.
 
+#### TimeScale
+
+`TimeScaleAttribute` is an NUnit test attribute class to change the [Time.timeScale](https://docs.unity3d.com/ScriptReference/Time-timeScale.html) during the test running.
+
+This attribute can attached to test method only.
+Can be used with sync Test, async Test, and UnityTest.
+
+Usage:
+
+```csharp
+using NUnit.Framework;
+using TestHelper.Attributes;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [TimeScale(2.0f)]
+    public void MyTestMethod()
+    {
+        // Running at 2x speed.
+    }
+}
+```
+
 
 ### Comparers
 
