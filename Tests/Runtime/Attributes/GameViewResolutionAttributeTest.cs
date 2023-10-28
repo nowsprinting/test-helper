@@ -13,7 +13,7 @@ namespace TestHelper.Attributes
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class GameViewResolutionAttributeTest
     {
-        [Test]
+        [Test, Order(0)]
         [GameViewResolution(1920, 1080, "Full HD")]
         public async Task AttachToAsyncTest_SetScreenSizeToFullHD()
         {
@@ -23,7 +23,7 @@ namespace TestHelper.Attributes
             Assert.That(Screen.height, Is.EqualTo(1080));
         }
 
-        [UnityTest]
+        [UnityTest, Order(1)]
         [GameViewResolution(GameViewResolution.VGA)]
         public IEnumerator AttachToUnityTest_SetScreenSizeToVGA()
         {

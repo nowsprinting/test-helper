@@ -34,13 +34,14 @@ public class MyTestClass
     [FocusGameView]
     public void MyTestMethod()
     {
-        // e.g., test using InputEventTrace of Input System package.
+        // e.g., Test using InputEventTrace of Input System package.
     }
 }
 ```
 
 > **Note**  
 > In batchmode, open `GameView` window.
+
 
 #### GameViewResolution
 
@@ -64,9 +65,9 @@ public class MyTestClass
     [GameViewResolution(640, 480, "VGA")]
     public IEnumerator MyTestMethod()
     {
-        yield return null; // wait for one frame to apply resolution.
+        yield return null; // Wait for one frame to apply resolution.
 
-        // e.g., test using GraphicRaycaster.
+        // e.g., Test using GraphicRaycaster.
     }
 }
 ```
@@ -76,6 +77,7 @@ public class MyTestClass
 
 > **Note**  
 > In batchmode, open `GameView` window.
+
 
 #### IgnoreBatchMode
 
@@ -101,13 +103,14 @@ public class MyTestClass
     [IgnoreBatchMode("Using WaitForEndOfFrame.")]
     public IEnumerator MyTestMethod()
     {
-        // e.g., test needs to take a screenshot.
+        // e.g., Test needs to take a screenshot.
 
         yield return new WaitForEndOfFrame();
         ImageAssert.AreEqual(expectedTexture, Camera.main, settings);
     }
 }
 ```
+
 
 #### IgnoreWindowMode
 
@@ -135,6 +138,7 @@ public class MyTestClass
     }
 }
 ```
+
 
 #### CreateScene
 
@@ -169,6 +173,7 @@ public class MyTestClass
 > **Note**
 > - Create scene run after `OneTimeSetUp` and before `SetUp`
 > - Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
+
 
 #### LoadScene
 
@@ -206,6 +211,7 @@ public class MyTestClass
 > - Load scene run after `OneTimeSetUp` and before `SetUp`
 > - Scene file path is starts with `Assets/` or `Packages/`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
+
 #### TakeScreenshot
 
 `TakeScreenshotAttribute` is an NUnit test attribute class to take a screenshot and save it to a file after running test.
@@ -221,7 +227,6 @@ Usage:
 ```csharp
 using NUnit.Framework;
 using TestHelper.Attributes;
-using UnityEngine;
 
 [TestFixture]
 public class MyTestClass
@@ -230,7 +235,7 @@ public class MyTestClass
     [TakeScreenshot]
     public void MyTestMethod()
     {
-        // take screenshot after running the test.
+        // Take screenshot after running the test.
     }
 }
 ```
@@ -241,6 +246,7 @@ public class MyTestClass
 
 > **Note**  
 > If you want to take screenshots at any time, use the [ScreenshotHelper](#ScreenshotHelper) class.
+
 
 #### TimeScale
 
@@ -337,6 +343,11 @@ You can specify the save directory and/or filename by arguments.
 Usage:
 
 ```csharp
+using System.Collections;
+using NUnit.Framework;
+using TestHelper.Utils;
+using UnityEngine.TestTools;
+
 [TestFixture]
 public class MyTestClass
 {
@@ -355,11 +366,11 @@ public class MyTestClass
 > - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
 
 
-## Editor Extensions
+### Editor Extensions
 
-### Open Persistent Data Directory
+#### Open Persistent Data Directory
 
-Select **Window** > **Open Persistent Data Directory**, which opens the directory pointed to by [persistent data path](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html) in the Finder/ File Explorer.
+Select **Window** > **Open Persistent Data Directory**, which opens the directory pointed to by [Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html) in the Finder/ File Explorer.
 
 
 
