@@ -75,6 +75,7 @@ namespace TestHelper.Utils
             }
 
             Directory.CreateDirectory(directory);
+
             if (filename == null)
             {
                 filename = DefaultFilename();

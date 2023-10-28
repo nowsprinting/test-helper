@@ -330,6 +330,13 @@ public class MyTestClass
 > - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
 
 
+## Editor Extensions
+
+### Open Persistent Data Directory
+
+Select **Window** > **Open Persistent Data Directory**, which opens the directory pointed to by [persistent data path](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html) in the Finder/ File Explorer.
+
+
 
 ## Installation
 
