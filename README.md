@@ -4,7 +4,7 @@
 [![Test](https://github.com/nowsprinting/test-helper/actions/workflows/test.yml/badge.svg)](https://github.com/nowsprinting/test-helper/actions/workflows/test.yml)
 [![openupm](https://img.shields.io/npm/v/com.nowsprinting.test-helper?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.nowsprinting.test-helper/)
 
-Provides attributes and constraints useful for testing.
+Provides custom attributes, comparers, and constraints useful for testing with Unity Test Framework.
 
 Required Unity 2019 LTS or later.
 
@@ -205,6 +205,32 @@ public class MyTestClass
 > **Note**  
 > - Load scene run after `OneTimeSetUp` and before `SetUp`
 > - Scene file path is starts with `Assets/` or `Packages/`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+
+
+### Comparers
+
+#### GameObjectNameComparer
+
+`GameObjectNameComparer` is an NUnit test comparer class to compare GameObjects by name.
+
+Usage:
+
+```csharp
+using NUnit.Framework;
+using TestHelper.Comparers;
+using UnityEngine;
+
+[TestFixture]
+public class GameObjectNameComparerTest
+{
+    [Test]
+    public void UsingGameObjectNameComparer_CompareGameObjectsByName()
+    {
+        var actual = Object.FindObjectsOfType<GameObject>();
+        Assert.That(actual, Does.Contain(new GameObject("test")).Using(new GameObjectNameComparer()));
+    }
+}
+```
 
 
 ### Constraints
