@@ -30,12 +30,12 @@ namespace TestHelper.Utils
 
         /// <summary>
         /// Take a screenshot and save it to file.
-        /// Default save path is $"{Application.persistentDataPath}/TestHelper/Screenshots/{TestName}.png".
+        /// Default save path is $"{Application.persistentDataPath}/TestHelper/Screenshots/{CurrentTest.Name}.png".
         /// </summary>
         /// <remarks>
         /// Limitations:
         ///  - Do not call from Edit Mode tests.
-        ///  - Do not call from not main thread.
+        ///  - Must be called from main thread.
         ///  - <c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.
         ///  - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
         /// <br/>
