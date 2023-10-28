@@ -15,6 +15,7 @@ namespace TestHelper.Utils
     [GameViewResolution(GameViewResolution.VGA)]
     public class ScreenshotHelperTest
     {
+        private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
         private const int FileSizeThreshold = 5441; // VGA size solid color file size
 
         private readonly string _defaultOutputDirectory =
@@ -33,7 +34,7 @@ namespace TestHelper.Utils
         }
 
         [UnityTest]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SaveToDefaultPath()
         {
             yield return ScreenshotHelper.TakeScreenshot();
@@ -45,7 +46,7 @@ namespace TestHelper.Utils
 
         [UnityTest]
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SpecifyDirectoryInEditor_SaveToSpecifyPath()
         {
             const string RelativePath = "Logs/Screenshots";
@@ -59,7 +60,7 @@ namespace TestHelper.Utils
         [UnityTest]
         [UnityPlatform(exclude =
             new[] { RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor })]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SpecifyDirectoryOnPlayer_SaveToDefaultPath()
         {
             const string RelativePath = "Logs/Screenshots";
@@ -71,7 +72,7 @@ namespace TestHelper.Utils
         }
 
         [UnityTest]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SpecifyFilename_SaveToSpecifyPath()
         {
             const string Filename1 = "SpecifyFilename1.png";
@@ -88,7 +89,7 @@ namespace TestHelper.Utils
         }
 
         [UnityTest]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SpecifySuperSize_SaveSuperSizeFile()
         {
             yield return ScreenshotHelper.TakeScreenshot(superSize: 2);
@@ -100,7 +101,7 @@ namespace TestHelper.Utils
         }
 
         [UnityTest]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SpecifyStereoCaptureMode_SaveStereoFile()
         {
             yield return ScreenshotHelper.TakeScreenshot(
@@ -123,7 +124,7 @@ namespace TestHelper.Utils
         }
 
         [UnityTest]
-        [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_Parameterized_SaveAllFiles(
             [Values(0, 1)] int i,
             [Values(2, 3)] int j)
