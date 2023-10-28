@@ -244,7 +244,7 @@ public class MyTestClass
 
 #### TimeScale
 
-`TimeScaleAttribute` is an NUnit test attribute class to change the [Time.TimeScale](https://docs.unity3d.com/ScriptReference/Time-timeScale.html) during the test running.
+`TimeScaleAttribute` is an NUnit test attribute class to change the [Time.timeScale](https://docs.unity3d.com/ScriptReference/Time-timeScale.html) during the test running.
 
 This attribute can attached to test method only.
 Can be used with sync Test, async Test, and UnityTest.
