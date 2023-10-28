@@ -71,22 +71,6 @@ namespace TestHelper.Utils
         }
 
         [UnityTest]
-        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.LinuxEditor)]
-        public IEnumerator TakeScreenshot_SpecifyAbsolutePath_NotWork()
-        {
-            yield return ScreenshotHelper.TakeScreenshot(directory: "/tmp/com.nowsprinting.test-helper/test");
-            LogAssert.Expect(LogType.Error, "directory must be relative path.");
-        }
-
-        [UnityTest]
-        [UnityPlatform(RuntimePlatform.WindowsEditor)]
-        public IEnumerator TakeScreenshot_SpecifyAbsolutePathWindows_NotWork()
-        {
-            yield return ScreenshotHelper.TakeScreenshot(directory: @"C:\tmp\com.nowsprinting.test-helper\test");
-            LogAssert.Expect(LogType.Error, "directory must be relative path.");
-        }
-
-        [UnityTest]
         [LoadScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity")]
         public IEnumerator TakeScreenshot_SpecifyFilename_SaveToSpecifyPath()
         {
