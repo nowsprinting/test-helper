@@ -264,6 +264,31 @@ public class MyTestClass
 > When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
 
 
+### Utilities
+
+#### ScreenshotHelper
+
+`ScreenshotHelper` is a utility class to take a screenshot.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [UnityTest]
+    public IEnumerator MyTestMethod()
+    {
+        yield return ScreenshotHelper.TakeScreenshot();
+    }
+}
+```
+
+> **Note**
+> Default save path is $"{Application.persistentDataPath}/TestHelper/Screenshots/{TestName}.png".
+> You can specify save directory and/or filename by arguments.
+
+
 
 ## Installation
 
