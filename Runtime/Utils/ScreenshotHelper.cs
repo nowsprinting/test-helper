@@ -75,7 +75,10 @@ namespace TestHelper.Utils
             }
 
             Directory.CreateDirectory(directory);
-            filename ??= DefaultFilename();
+            if (filename == null)
+            {
+                filename = DefaultFilename();
+            }
 
             yield return new WaitForEndOfFrame(); // Required to take screenshots
 
