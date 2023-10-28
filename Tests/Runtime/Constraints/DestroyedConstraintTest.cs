@@ -2,18 +2,19 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace TestHelper.Constraints
 {
+    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class DestroyedConstraintTest
     {
         private static GameObject CreateDestroyedObject()
         {
             var gameObject = new GameObject();
-            Object.DestroyImmediate(gameObject);
+            GameObject.DestroyImmediate(gameObject);
             return gameObject;
         }
 
@@ -30,16 +31,11 @@ namespace TestHelper.Constraints
         {
             var actual = new GameObject("Foo");
 
-            try
+            Assert.That(() =>
             {
                 Assert.That(actual, Is.Destroyed);
-                Assert.Fail();
-            }
-            catch (AssertionException e)
-            {
-                Assert.That(e.Message, Is.EqualTo(
-                    $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <Foo (UnityEngine.GameObject)>{Environment.NewLine}"));
-            }
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <Foo (UnityEngine.GameObject)>{Environment.NewLine}"));
         }
 
         [Test]
@@ -47,16 +43,12 @@ namespace TestHelper.Constraints
         {
             GameObject actual = null;
 
-            try
+            Assert.That(() =>
             {
+                // ReSharper disable once ExpressionIsAlwaysNull
                 Assert.That(actual, Is.Destroyed);
-                Assert.Fail();
-            }
-            catch (AssertionException e)
-            {
-                Assert.That(e.Message, Is.EqualTo(
-                    $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  null{Environment.NewLine}"));
-            }
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  null{Environment.NewLine}"));
         }
 
         [Test]
@@ -64,16 +56,11 @@ namespace TestHelper.Constraints
         {
             var actual = string.Empty;
 
-            try
+            Assert.That(() =>
             {
                 Assert.That(actual, Is.Destroyed);
-                Assert.Fail();
-            }
-            catch (AssertionException e)
-            {
-                Assert.That(e.Message, Is.EqualTo(
-                    $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <string.Empty>{Environment.NewLine}"));
-            }
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <string.Empty>{Environment.NewLine}"));
         }
 
         [Test]
@@ -81,16 +68,11 @@ namespace TestHelper.Constraints
         {
             var actual = CreateDestroyedObject();
 
-            try
+            Assert.That(() =>
             {
                 Assert.That(actual, Is.Not.Destroyed()); // Note: Use it in method style when with operators
-                Assert.Fail();
-            }
-            catch (AssertionException e)
-            {
-                Assert.That(e.Message, Is.EqualTo(
-                    $"  Expected: not destroyed GameObject{Environment.NewLine}  But was:  <null>{Environment.NewLine}"));
-            }
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: not destroyed GameObject{Environment.NewLine}  But was:  <null>{Environment.NewLine}"));
         }
 
         [Test]
