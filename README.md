@@ -193,10 +193,10 @@ using UnityEngine;
 public class MyTestClass
 {
     [Test]
-    [LoadScene("Assets/MyTests/Scenes/Scene.unity")]
+    [LoadScene("Assets/MyTests/Scenes/TestScene.unity")]
     public void MyTestMethod()
     {
-        var cube = GameObject.Find("Cube");
+        var cube = GameObject.Find("Cube in TestScene");
         Assert.That(cube, Is.Not.Null);
     }
 }
@@ -226,7 +226,7 @@ public class GameObjectNameComparerTest
     [Test]
     public void UsingGameObjectNameComparer_CompareGameObjectsByName()
     {
-        var actual = Object.FindObjectsOfType<GameObject>();
+        var actual = GameObject.FindObjectsOfType<GameObject>();
         Assert.That(actual, Does.Contain(new GameObject("test")).Using(new GameObjectNameComparer()));
     }
 }
