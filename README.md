@@ -34,7 +34,7 @@ public class MyTestClass
     [FocusGameView]
     public void MyTestMethod()
     {
-        // e.g., test using InputEventTrace of Input System package.
+        // e.g., Test using InputEventTrace of Input System package.
     }
 }
 ```
@@ -65,9 +65,9 @@ public class MyTestClass
     [GameViewResolution(640, 480, "VGA")]
     public IEnumerator MyTestMethod()
     {
-        yield return null; // wait for one frame to apply resolution.
+        yield return null; // Wait for one frame to apply resolution.
 
-        // e.g., test using GraphicRaycaster.
+        // e.g., Test using GraphicRaycaster.
     }
 }
 ```
@@ -103,7 +103,7 @@ public class MyTestClass
     [IgnoreBatchMode("Using WaitForEndOfFrame.")]
     public IEnumerator MyTestMethod()
     {
-        // e.g., test needs to take a screenshot.
+        // e.g., Test needs to take a screenshot.
 
         yield return new WaitForEndOfFrame();
         ImageAssert.AreEqual(expectedTexture, Camera.main, settings);
