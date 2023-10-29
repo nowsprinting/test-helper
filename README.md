@@ -74,6 +74,7 @@ public class MyTestClass
 
 > **Warning**  
 > Wait for one frame to apply resolution.
+> However, if used with [CreateSceneAttribute](#CreateScene) or [LoadSceneAttribute](#LoadScene), wait is not necessary.
 
 > **Note**  
 > In batchmode, open `GameView` window.
@@ -144,6 +145,10 @@ public class MyTestClass
 
 `CreateSceneAttribute` is an NUnit test attribute class to create new scene before running test.
 
+It has the following benefits:
+
+- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
+
 This attribute can attached to test method only.
 Can be used with sync Test, async Test, and UnityTest.
 
@@ -181,7 +186,7 @@ public class MyTestClass
 
 It has the following benefits:
 
-- Can be used when running Edit Mode tests, Play Mode tests in Editor, and on Player
+- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
 - Can be specified scenes that are **NOT** in "Scenes in Build"
 
 This attribute can attached to test method only.
