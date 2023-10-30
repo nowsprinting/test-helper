@@ -5,9 +5,10 @@ using System;
 using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
-using TestHelper.Utils;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
 using UnityEngine.TestTools;
+using ScreenshotHelper = TestHelper.Utils.ScreenshotHelper;
 
 namespace TestHelper.Attributes
 {
@@ -21,6 +22,7 @@ namespace TestHelper.Attributes
         private readonly string _filename;
         private readonly int _superSize;
         private readonly ScreenCapture.StereoScreenCaptureMode _stereoCaptureMode;
+        private readonly bool _gizmos;
 
         /// <summary>
         /// Take a screenshot and save it to file after running the test.
@@ -38,17 +40,19 @@ namespace TestHelper.Attributes
         /// <param name="filename">Filename to store screenshot.</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
+        /// <param name="gizmos">True: show Gizmos on GameView</param>
         public TakeScreenshotAttribute(
             string directory = null,
             string filename = null,
             int superSize = 1,
-            ScreenCapture.StereoScreenCaptureMode stereoCaptureMode = ScreenCapture.StereoScreenCaptureMode.LeftEye
-        )
+            ScreenCapture.StereoScreenCaptureMode stereoCaptureMode = ScreenCapture.StereoScreenCaptureMode.LeftEye,
+            bool gizmos = false)
         {
             _directory = directory;
             _filename = filename;
             _superSize = superSize;
             _stereoCaptureMode = stereoCaptureMode;
+            _gizmos = gizmos;
         }
 
         /// <inheritdoc />
@@ -60,7 +64,19 @@ namespace TestHelper.Attributes
         /// <inheritdoc />
         public IEnumerator AfterTest(ITest test)
         {
+            var beforeGizmos = false;
+            if (_gizmos)
+            {
+                beforeGizmos = GameViewControlHelper.GetGizmos();
+                GameViewControlHelper.SetGizmos(true);
+            }
+
             yield return ScreenshotHelper.TakeScreenshot(_directory, _filename, _superSize, _stereoCaptureMode);
+
+            if (_gizmos)
+            {
+                GameViewControlHelper.SetGizmos(beforeGizmos);
+            }
         }
     }
 }
