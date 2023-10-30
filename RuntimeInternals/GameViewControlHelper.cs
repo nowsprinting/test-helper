@@ -24,6 +24,38 @@ namespace TestHelper.RuntimeInternals
         }
 
         /// <summary>
+        /// Get Gizmos show/ hide status on <c>GameView</c>.
+        /// </summary>
+        /// <returns>True: show Gizmos, False: hide Gizmos.</returns>
+        public static bool GetGizmos()
+        {
+            var gizmos = false;
+#if UNITY_EDITOR
+            var gameViewWrapper = GameViewWrapper.GetWindow(false);
+            if (gameViewWrapper != null)
+            {
+                gizmos = gameViewWrapper.GetGizmos();
+            }
+#endif
+            return gizmos;
+        }
+
+        /// <summary>
+        /// Show/ hide Gizmos on <c>GameView</c>.
+        /// </summary>
+        /// <param name="show">True: show Gizmos, False: hide Gizmos.</param>
+        public static void SetGizmos(bool show)
+        {
+#if UNITY_EDITOR
+            var gameViewWrapper = GameViewWrapper.GetWindow(false);
+            if (gameViewWrapper != null)
+            {
+                gameViewWrapper.SetGizmos(show);
+            }
+#endif
+        }
+
+        /// <summary>
         /// Set <c>GameView</c> resolution.
         /// </summary>
         /// <param name="width">GameView width [px]</param>

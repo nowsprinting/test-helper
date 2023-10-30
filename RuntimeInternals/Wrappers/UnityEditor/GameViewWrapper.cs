@@ -21,6 +21,9 @@ namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
         private static readonly PropertyInfo s_selectedSizeIndex = s_gameView
             .GetProperty("selectedSizeIndex", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
+        private static readonly FieldInfo s_gizmos = s_gameView
+            .GetField("m_Gizmos", BindingFlags.Instance | BindingFlags.NonPublic);
+
         private readonly EditorWindow _instance;
 
         private GameViewWrapper(EditorWindow instance)
@@ -28,7 +31,7 @@ namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
             _instance = instance;
         }
 
-        public static GameViewWrapper GetWindow()
+        public static GameViewWrapper GetWindow(bool focus = true)
         {
             if (s_gameView == null)
             {
@@ -43,7 +46,13 @@ namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
                 return null;
             }
 
-            var gameView = EditorWindow.GetWindow(s_gameView, false, null, true);
+            if (s_gizmos == null)
+            {
+                Debug.LogError("GameView.m_Gizmos field not found.");
+                return null;
+            }
+
+            var gameView = EditorWindow.GetWindow(s_gameView, false, null, focus);
             if (gameView == null)
             {
                 Debug.LogError("EditorWindow.GetWindow(GameView) failed.");
@@ -61,6 +70,16 @@ namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
         public void SelectedSizeIndex(int index)
         {
             s_selectedSizeIndex.SetValue(_instance, index);
+        }
+
+        public bool GetGizmos()
+        {
+            return (bool)s_gizmos.GetValue(_instance);
+        }
+
+        public void SetGizmos(bool show)
+        {
+            s_gizmos.SetValue(_instance, show);
         }
     }
 }
