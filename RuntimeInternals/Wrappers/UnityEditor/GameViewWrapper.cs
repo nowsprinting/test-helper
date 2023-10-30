@@ -7,7 +7,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace TestHelper.Wrappers.UnityEditor
+namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
 {
     public class GameViewWrapper
     {

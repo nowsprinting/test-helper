@@ -4,7 +4,7 @@
 #if UNITY_EDITOR
 using NUnit.Framework;
 
-namespace TestHelper.Wrappers.UnityEditor
+namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
 {
     [TestFixture]
     public class GameViewSizesWrapperTest

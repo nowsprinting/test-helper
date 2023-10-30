@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace TestHelper.Wrappers.UnityEditor
+namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
 {
     [TestFixture]
     [SuppressMessage("Assertion", "NUnit2010:Use EqualConstraint for better assertion messages in case of failure")]

@@ -6,7 +6,7 @@ using System;
 using System.Reflection;
 using UnityEngine;
 
-namespace TestHelper.Wrappers.UnityEditor
+namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
 {
     /// <summary>
     /// Wrapper for <c>UnityEditor.GameViewSize</c>.

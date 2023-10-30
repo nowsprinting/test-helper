@@ -5,9 +5,9 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
+using TestHelper.RuntimeInternals.Wrappers.UnityEditor;
 using UnityEngine;
 #if UNITY_EDITOR
-using TestHelper.Wrappers.UnityEditor;
 using UnityEditor;
 #endif
 
