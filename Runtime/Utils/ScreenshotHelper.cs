@@ -2,8 +2,6 @@
 // This software is released under the MIT License.
 
 using System.Collections;
-using System.IO;
-using System.Threading;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -14,11 +12,6 @@ namespace TestHelper.Utils
     /// </summary>
     public static class ScreenshotHelper
     {
-        private static string DefaultDirectoryPath()
-        {
-            return Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots");
-        }
-
         private static string DefaultFilename()
         {
             return $"{TestContext.CurrentTestExecutionContext.CurrentTest.Name}.png"
@@ -52,45 +45,13 @@ namespace TestHelper.Utils
             ScreenCapture.StereoScreenCaptureMode stereoCaptureMode = ScreenCapture.StereoScreenCaptureMode.LeftEye
         )
         {
-            if (superSize != 1 && stereoCaptureMode != ScreenCapture.StereoScreenCaptureMode.LeftEye)
-            {
-                Debug.LogError("superSize and stereoCaptureMode cannot be specified at the same time.");
-                yield break;
-            }
-
-            if (Thread.CurrentThread.ManagedThreadId != 1)
-            {
-                Debug.LogError("Must be called from the main thread.");
-                yield break;
-                // Note: This is not the case since it is a coroutine.
-            }
-
-            if (Application.isEditor && directory != null)
-            {
-                directory = Path.GetFullPath(directory);
-            }
-            else
-            {
-                directory = DefaultDirectoryPath(); // Not apply specific directory when running on player
-            }
-
-            Directory.CreateDirectory(directory);
-
             if (filename == null)
             {
                 filename = DefaultFilename();
             }
 
-            yield return new WaitForEndOfFrame(); // Required to take screenshots
-
-            var texture = superSize != 1
-                ? ScreenCapture.CaptureScreenshotAsTexture(superSize)
-                : ScreenCapture.CaptureScreenshotAsTexture(stereoCaptureMode);
-
-            var path = Path.Combine(directory, filename);
-            var bytes = texture.EncodeToPNG();
-            File.WriteAllBytes(path, bytes);
-            Debug.Log($"Save screenshot to {path}");
+            yield return RuntimeInternals.ScreenshotHelper.TakeScreenshot(
+                directory, filename, superSize, stereoCaptureMode);
         }
     }
 }
