@@ -105,6 +105,9 @@ public class MyTestClass
 }
 ```
 
+> **Note**  
+> In batchmode, open `GameView` window.
+
 
 #### IgnoreBatchMode
 
