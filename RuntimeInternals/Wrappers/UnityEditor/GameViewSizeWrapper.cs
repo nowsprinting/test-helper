@@ -9,7 +9,8 @@ using UnityEngine;
 namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
 {
     /// <summary>
-    /// Wrapper for <c>UnityEditor.GameViewSize</c>.
+    /// Wrapper class for <c>UnityEditor.GameViewSize</c>.
+    /// This class can be used from the runtime code because it does not depend on test-framework.
     /// </summary>
     public class GameViewSizeWrapper
     {

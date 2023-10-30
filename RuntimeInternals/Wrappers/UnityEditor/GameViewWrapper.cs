@@ -9,6 +9,10 @@ using UnityEngine;
 
 namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
 {
+    /// <summary>
+    /// Wrapper class for <c>UnityEditor.GameView</c>.
+    /// This class can be used from the runtime code because it does not depend on test-framework.
+    /// </summary>
     public class GameViewWrapper
     {
         private static readonly Assembly s_editorAssembly = Assembly.Load("UnityEditor.dll");

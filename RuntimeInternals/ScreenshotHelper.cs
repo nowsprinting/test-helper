@@ -11,6 +11,7 @@ namespace TestHelper.RuntimeInternals
 {
     /// <summary>
     /// Helper class for taking a screenshots.
+    /// This class can be used from the runtime code because it does not depend on test-framework.
     /// </summary>
     public static class ScreenshotHelper
     {

@@ -11,6 +11,7 @@ namespace TestHelper.RuntimeInternals
 {
     /// <summary>
     /// <c>GameView</c> control helper.
+    /// This class can be used from the runtime code because it does not depend on test-framework.
     /// </summary>
     public static class GameViewControlHelper
     {
