@@ -37,9 +37,16 @@ namespace TestHelper.RuntimeInternals
         [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SaveToDefaultPath()
         {
-            yield return ScreenshotHelper.TakeScreenshot(); // internal, default filename is member name
-
             var path = Path.Combine(_defaultOutputDirectory, $"{nameof(TakeScreenshot_SaveToDefaultPath)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
+            yield return ScreenshotHelper.TakeScreenshot(); // default filename is member name when internal
+
             Assert.That(path, Does.Exist);
             Assert.That(File.ReadAllBytes(path), Has.Length.GreaterThan(FileSizeThreshold));
         }
