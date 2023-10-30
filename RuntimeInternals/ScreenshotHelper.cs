@@ -67,7 +67,7 @@ namespace TestHelper.RuntimeInternals
 
             Directory.CreateDirectory(directory);
 
-            if (!filename!.EndsWith(".png"))
+            if (filename != null && !filename.EndsWith(".png"))
             {
                 filename += ".png";
             }
