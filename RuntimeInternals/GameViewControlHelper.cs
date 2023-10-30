@@ -1,8 +1,6 @@
 // Copyright (c) 2023 Koji Hasegawa.
 // This software is released under the MIT License.
 
-using System;
-using System.Reflection;
 using TestHelper.RuntimeInternals.Wrappers.UnityEditor;
 using UnityEditor;
 using UnityEngine;
@@ -15,24 +13,45 @@ namespace TestHelper.RuntimeInternals
     /// </summary>
     public static class GameViewControlHelper
     {
-        private static Type s_gameView;
-
         /// <summary>
         /// Focus <c>GameView</c> or <c>SimulatorWindow</c>.
         /// </summary>
         public static void Focus()
         {
 #if UNITY_EDITOR
-            if (s_gameView == null)
+            GameViewWrapper.GetWindow();
+#endif
+        }
+
+        /// <summary>
+        /// Get Gizmos show/ hide status on <c>GameView</c>.
+        /// </summary>
+        /// <returns>True: show Gizmos, False: hide Gizmos.</returns>
+        public static bool GetGizmos()
+        {
+            var gizmos = false;
+#if UNITY_EDITOR
+            var gameViewWrapper = GameViewWrapper.GetWindow(false);
+            if (gameViewWrapper != null)
             {
-                var assembly = Assembly.Load("UnityEditor.dll");
-                var viewClass = Application.isBatchMode ? "UnityEditor.GameView" : "UnityEditor.PlayModeView";
-                // Note: Freezes when getting SimulatorWindow in batchmode
-
-                s_gameView = assembly.GetType(viewClass);
+                gizmos = gameViewWrapper.GetGizmos();
             }
+#endif
+            return gizmos;
+        }
 
-            EditorWindow.GetWindow(s_gameView, false, null, true);
+        /// <summary>
+        /// Show/ hide Gizmos on <c>GameView</c>.
+        /// </summary>
+        /// <param name="show">True: show Gizmos, False: hide Gizmos.</param>
+        public static void SetGizmos(bool show)
+        {
+#if UNITY_EDITOR
+            var gameViewWrapper = GameViewWrapper.GetWindow(false);
+            if (gameViewWrapper != null)
+            {
+                gameViewWrapper.SetGizmos(show);
+            }
 #endif
         }
 

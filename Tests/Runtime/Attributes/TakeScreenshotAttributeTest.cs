@@ -141,5 +141,25 @@ namespace TestHelper.Attributes
                 $"{nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath)}.png");
             Assert.That(path, Does.Exist);
         }
+
+        private class GizmoDemo : MonoBehaviour
+        {
+            private void OnDrawGizmos()
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(transform.position, 0.2f);
+            }
+        }
+
+        [Test]
+        [LoadScene(TestScene)]
+        [TakeScreenshot(gizmos: true)]
+        public void AttachWithGizmos_TakeScreenshotWithGizmos()
+        {
+            var gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            gameObject.AddComponent<GizmoDemo>();
+
+            // Take screenshot after running the test.
+        }
     }
 }

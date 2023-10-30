@@ -80,6 +80,35 @@ public class MyTestClass
 > In batchmode, open `GameView` window.
 
 
+#### GizmosShowOnGameView
+
+`GizmosShowOnGameViewAttribute` is an NUnit test attribute class to show/hide Gizmos on `GameView` during the test running.
+
+This attribute can attached to test method only.
+Can be used with sync Test, async Test, and UnityTest.
+
+Usage:
+
+```csharp
+using NUnit.Framework;
+using TestHelper.Attributes;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [GizmosShowOnGameView(true)]
+    public void MyTestMethod()
+    {
+        // Show Gizmos on GameView.
+    }
+}
+```
+
+> **Note**  
+> In batchmode, open `GameView` window.
+
+
 #### IgnoreBatchMode
 
 `IgnoreBatchModeAttribute` is an NUnit test attribute class to skip test execution when run tests with `-batchmode` from the commandline.
