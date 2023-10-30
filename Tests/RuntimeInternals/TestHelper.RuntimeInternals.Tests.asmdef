@@ -1,9 +1,10 @@
 {
-    "name": "TestHelper",
+    "name": "TestHelper.RuntimeInternals.Tests",
     "rootNamespace": "TestHelper",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
+        "TestHelper",
         "TestHelper.RuntimeInternals"
     ],
     "includePlatforms": [],
@@ -15,14 +16,8 @@
     ],
     "autoReferenced": false,
     "defineConstraints": [
-        "UNITY_TESTS_FRAMEWORK"
+        "UNITY_INCLUDE_TESTS"
     ],
-    "versionDefines": [
-        {
-            "name": "com.unity.test-framework",
-            "expression": "",
-            "define": "UNITY_TESTS_FRAMEWORK"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

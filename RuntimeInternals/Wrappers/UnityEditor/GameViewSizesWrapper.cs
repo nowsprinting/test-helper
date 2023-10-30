@@ -7,10 +7,11 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace TestHelper.Wrappers.UnityEditor
+namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
 {
     /// <summary>
-    /// Wrapper for <c>UnityEditor.GameViewSizes</c>.
+    /// Wrapper class for <c>UnityEditor.GameViewSizes</c>.
+    /// This class can be used from the runtime code because it does not depend on test-framework.
     /// </summary>
     public class GameViewSizesWrapper
     {

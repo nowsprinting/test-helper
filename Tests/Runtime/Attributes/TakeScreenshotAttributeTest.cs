@@ -37,6 +37,16 @@ namespace TestHelper.Attributes
         [TakeScreenshot]
         public void Attach_TakeScreenshotAndSaveToDefaultPath()
         {
+            var path = Path.Combine(
+                _defaultOutputDirectory,
+                $"{nameof(Attach_TakeScreenshotAndSaveToDefaultPath)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
             // Take screenshot after running the test.
         }
 
@@ -54,6 +64,16 @@ namespace TestHelper.Attributes
         [TakeScreenshot]
         public async Task AttachToAsyncTest_TakeScreenshotAndSaveToDefaultPath()
         {
+            var path = Path.Combine(
+                _defaultOutputDirectory,
+                $"{nameof(AttachToAsyncTest_TakeScreenshotAndSaveToDefaultPath)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
             await Task.Yield();
             // Take screenshot after running the test.
         }
@@ -72,6 +92,16 @@ namespace TestHelper.Attributes
         [TakeScreenshot]
         public IEnumerator AttachToUnityTest_TakeScreenshotAndSaveToDefaultPath()
         {
+            var path = Path.Combine(
+                _defaultOutputDirectory,
+                $"{nameof(AttachToUnityTest_TakeScreenshotAndSaveToDefaultPath)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
             yield return null;
             // Take screenshot after running the test.
         }
@@ -90,6 +120,16 @@ namespace TestHelper.Attributes
         [TakeScreenshot(filename: nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath) + ".png")]
         public void AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath()
         {
+            var path = Path.Combine(
+                _defaultOutputDirectory,
+                $"{nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
             // Take screenshot after running the test.
         }
 
