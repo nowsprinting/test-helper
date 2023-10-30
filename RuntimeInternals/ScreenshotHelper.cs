@@ -49,6 +49,12 @@ namespace TestHelper.RuntimeInternals
                 yield break;
             }
 
+            if (filename == null)
+            {
+                Debug.LogError("filename must be specified.");
+                yield break;
+            }
+
             if (Thread.CurrentThread.ManagedThreadId != 1)
             {
                 Debug.LogError("Must be called from the main thread.");
@@ -67,7 +73,7 @@ namespace TestHelper.RuntimeInternals
 
             Directory.CreateDirectory(directory);
 
-            if (filename != null && !filename.EndsWith(".png"))
+            if (!filename.EndsWith(".png"))
             {
                 filename += ".png";
             }
@@ -78,7 +84,7 @@ namespace TestHelper.RuntimeInternals
                 ? ScreenCapture.CaptureScreenshotAsTexture(superSize)
                 : ScreenCapture.CaptureScreenshotAsTexture(stereoCaptureMode);
 
-            var path = Path.Combine(directory, filename!);
+            var path = Path.Combine(directory, filename);
             var bytes = texture.EncodeToPNG();
             File.WriteAllBytes(path, bytes);
             Debug.Log($"Save screenshot to {path}");
