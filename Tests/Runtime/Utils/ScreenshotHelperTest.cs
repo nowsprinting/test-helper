@@ -70,26 +70,6 @@ namespace TestHelper.Utils
         }
 
         [UnityTest]
-        [UnityPlatform(exclude =
-            new[] { RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor })]
-        [LoadScene(TestScene)]
-        public IEnumerator TakeScreenshot_SpecifyDirectoryOnPlayer_SaveToDefaultPath()
-        {
-            const string RelativePath = "Logs/Screenshots";
-            var path = Path.Combine(_defaultOutputDirectory,
-                $"{nameof(TakeScreenshot_SpecifyDirectoryOnPlayer_SaveToDefaultPath)}.png");
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-
-            Assume.That(path, Does.Not.Exist);
-
-            yield return ScreenshotHelper.TakeScreenshot(directory: RelativePath);
-            Assert.That(path, Does.Exist);
-        }
-
-        [UnityTest]
         [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SpecifyFilename_SaveToSpecifyPath()
         {

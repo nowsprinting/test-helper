@@ -34,7 +34,7 @@ namespace TestHelper.Utils
         /// <br/>
         /// Using <c>ScreenCapture.CaptureScreenshotAsTexture</c> internally.
         /// </remarks>
-        /// <param name="directory">Directory to save screenshots relative to project path. Only effective in Editor.</param>
+        /// <param name="directory">Directory to save screenshots.</param>
         /// <param name="filename">Filename to store screenshot.</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
