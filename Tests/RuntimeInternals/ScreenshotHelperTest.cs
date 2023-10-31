@@ -3,16 +3,21 @@
 
 using System.Collections;
 using System.IO;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
-using TestHelper.Attributes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 namespace TestHelper.RuntimeInternals
 {
     [TestFixture]
-    [GameViewResolution(GameViewResolution.VGA)]
+    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class ScreenshotHelperTest
     {
         private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
@@ -23,9 +28,14 @@ namespace TestHelper.RuntimeInternals
 
         private Text _text;
 
-        [SetUp]
-        public void SetUp()
+        [UnitySetUp]
+        public IEnumerator SetUp()
         {
+#if UNITY_EDITOR
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode(
+                TestScene,
+                new LoadSceneParameters(LoadSceneMode.Single));
+#endif
             var textObject = GameObject.Find("Text");
             Assume.That(textObject, Is.Not.Null);
 
@@ -34,7 +44,6 @@ namespace TestHelper.RuntimeInternals
         }
 
         [UnityTest]
-        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SaveToDefaultPath()
         {
             var path = Path.Combine(_defaultOutputDirectory, $"{nameof(TakeScreenshot_SaveToDefaultPath)}.png");
@@ -49,6 +58,30 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(path, Does.Exist);
             Assert.That(File.ReadAllBytes(path), Has.Length.GreaterThan(FileSizeThreshold));
+        }
+
+        [Test]
+        public async Task TakeScreenshot_FromAsyncTest()
+        {
+            var path = Path.Combine(_defaultOutputDirectory, $"{nameof(TakeScreenshot_FromAsyncTest)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
+            var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
+            await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner);
+            // Note: UniTask is required to be used from the async test.
+            //   And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside.
+            //   See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+
+            Assert.That(path, Does.Exist);
+        }
+
+        private class CoroutineRunner : MonoBehaviour
+        {
         }
     }
 }

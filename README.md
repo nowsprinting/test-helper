@@ -390,6 +390,15 @@ public class MyTestClass
     {
         yield return ScreenshotHelper.TakeScreenshot();
     }
+
+    [Test]
+    public async Task MyTestMethodAsync()
+    {
+        var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
+        await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner);
+    }
+
+    private class CoroutineRunner : MonoBehaviour { }
 }
 ```
 
@@ -398,6 +407,7 @@ public class MyTestClass
 > - Must be called from main thread.
 > - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
 > - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
+> - UniTask is required to be used from the async test. And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
 
 ### Editor Extensions
@@ -478,6 +488,10 @@ Generate a temporary project and run tests on each Unity version from the comman
 make create_project
 UNITY_VERSION=2019.4.40f1 make -k test
 ```
+
+> **Warning**  
+> Required install packages for running tests (when adding to the `testables` in package.json), as follows:
+> - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or later
 
 
 

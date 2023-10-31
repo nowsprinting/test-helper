@@ -4,8 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "TestHelper",
-        "TestHelper.RuntimeInternals"
+        "TestHelper.RuntimeInternals",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
