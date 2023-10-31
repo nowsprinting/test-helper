@@ -3,6 +3,8 @@
 
 using System.Collections;
 using System.IO;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
@@ -186,6 +188,31 @@ namespace TestHelper.Utils
 
             yield return ScreenshotHelper.TakeScreenshot();
             Assert.That(path, Does.Exist);
+        }
+
+        [Test]
+        [LoadScene(TestScene)]
+        public async Task TakeScreenshot_FromAsyncTest()
+        {
+            var path = Path.Combine(_defaultOutputDirectory, $"{nameof(TakeScreenshot_FromAsyncTest)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
+            var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
+            await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner);
+            // Note: UniTask is required to be used from the async test.
+            //   And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside.
+            //   See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+
+            Assert.That(path, Does.Exist);
+        }
+
+        private class CoroutineRunner : MonoBehaviour
+        {
         }
     }
 }
