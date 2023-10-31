@@ -1,9 +1,11 @@
 // Copyright (c) 2023 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using UnityEngine;
+#if UNITY_EDITOR
 using TestHelper.RuntimeInternals.Wrappers.UnityEditor;
 using UnityEditor;
-using UnityEngine;
+#endif
 
 namespace TestHelper.RuntimeInternals
 {
