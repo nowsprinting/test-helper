@@ -68,6 +68,7 @@ jobs:
           npm install -g openupm-cli
           openupm add -f com.unity.test-framework
           openupm add -f com.unity.testtools.codecoverage
+          openupm add -f com.cysharp.unitask
           openupm add -ft "${{ env.package_name }}"@file:../../
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
 

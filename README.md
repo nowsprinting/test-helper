@@ -479,6 +479,10 @@ make create_project
 UNITY_VERSION=2019.4.40f1 make -k test
 ```
 
+> **Warning**  
+> Required install packages for running tests (when adding to the `testables` in package.json), as follows:
+> - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or later
+
 
 
 ## Release workflow

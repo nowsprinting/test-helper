@@ -124,6 +124,7 @@ create_project:
 	touch UnityProject~/Assets/.gitkeep
 	openupm -c $(PROJECT_HOME) add -f com.unity.test-framework
 	openupm -c $(PROJECT_HOME) add -f com.unity.testtools.codecoverage
+	openupm -c $(PROJECT_HOME) add -f com.cysharp.unitask
 	openupm -c $(PROJECT_HOME) add -ft $(PACKAGE_NAME)@file:../../
 
 .PHONY: remove_project
