@@ -31,11 +31,14 @@ namespace TestHelper.RuntimeInternals
         [UnitySetUp]
         public IEnumerator SetUp()
         {
+            AsyncOperation loadSceneAsync = null;
 #if UNITY_EDITOR
-            yield return EditorSceneManager.LoadSceneAsyncInPlayMode(
+            loadSceneAsync = EditorSceneManager.LoadSceneAsyncInPlayMode(
                 TestScene,
                 new LoadSceneParameters(LoadSceneMode.Single));
 #endif
+            yield return loadSceneAsync;
+
             var textObject = GameObject.Find("Text");
             Assume.That(textObject, Is.Not.Null);
 
