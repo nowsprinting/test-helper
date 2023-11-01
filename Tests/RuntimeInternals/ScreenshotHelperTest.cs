@@ -10,17 +10,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
-#if UNITY_EDITOR
-using UnityEditor.SceneManagement;
-#endif
 
 namespace TestHelper.RuntimeInternals
 {
     [TestFixture]
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+    [PrebuildSetup(typeof(ScreenshotHelperTestSceneBuilder))]
+    [PostBuildCleanup(typeof(ScreenshotHelperTestSceneBuilder))]
     public class ScreenshotHelperTest
     {
-        private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
+        internal const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
         private const int FileSizeThreshold = 5441; // VGA size solid color file size
 
         private readonly string _defaultOutputDirectory =
@@ -31,13 +29,7 @@ namespace TestHelper.RuntimeInternals
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            AsyncOperation loadSceneAsync = null;
-#if UNITY_EDITOR
-            loadSceneAsync = EditorSceneManager.LoadSceneAsyncInPlayMode(
-                TestScene,
-                new LoadSceneParameters(LoadSceneMode.Single));
-#endif
-            yield return loadSceneAsync;
+            yield return SceneManager.LoadSceneAsync(TestScene);
 
             var textObject = GameObject.Find("Text");
             Assume.That(textObject, Is.Not.Null);
@@ -61,6 +53,118 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(path, Does.Exist);
             Assert.That(File.ReadAllBytes(path), Has.Length.GreaterThan(FileSizeThreshold));
+        }
+
+        [UnityTest]
+        public IEnumerator TakeScreenshot_SpecifyRelativeDirectory_SaveToSpecifyPath()
+        {
+            const string RelativePath = "Logs/TestHelper/Screenshots";
+            var path = Path.Combine(Path.GetFullPath(RelativePath),
+                $"{nameof(TakeScreenshot_SpecifyRelativeDirectory_SaveToSpecifyPath)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
+            yield return ScreenshotHelper.TakeScreenshot(directory: RelativePath);
+            Assert.That(path, Does.Exist);
+        }
+
+        [UnityTest]
+        public IEnumerator TakeScreenshot_SpecifyFilename_SaveToSpecifyPath()
+        {
+            const string Filename1 = "TakeScreenshot_SpecifyFilename1.png";
+            const string Filename2 = "TakeScreenshot_SpecifyFilename2.png";
+
+            var path1 = Path.Combine(_defaultOutputDirectory, Filename1);
+            if (File.Exists(path1))
+            {
+                File.Delete(path1);
+            }
+
+            var path2 = Path.Combine(_defaultOutputDirectory, Filename2);
+            if (File.Exists(path2))
+            {
+                File.Delete(path2);
+            }
+
+            Assume.That(path1, Does.Not.Exist);
+            Assume.That(path2, Does.Not.Exist);
+
+            _text.text = Filename1;
+            yield return ScreenshotHelper.TakeScreenshot(filename: Filename1);
+
+            _text.text = Filename2;
+            yield return ScreenshotHelper.TakeScreenshot(filename: Filename2);
+
+            // Verify after calling twice
+            Assert.That(path1, Does.Exist);
+            Assert.That(path2, Does.Exist);
+        }
+
+        [UnityTest]
+        public IEnumerator TakeScreenshot_SpecifySuperSize_SaveSuperSizeFile()
+        {
+            var path = Path.Combine(_defaultOutputDirectory,
+                $"{nameof(TakeScreenshot_SpecifySuperSize_SaveSuperSizeFile)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
+            yield return ScreenshotHelper.TakeScreenshot(superSize: 2);
+            Assert.That(path, Does.Exist);
+            // Please visually check the file.
+        }
+
+        [UnityTest]
+        public IEnumerator TakeScreenshot_SpecifyStereoCaptureMode_SaveStereoFile()
+        {
+            var path = Path.Combine(_defaultOutputDirectory,
+                $"{nameof(TakeScreenshot_SpecifyStereoCaptureMode_SaveStereoFile)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
+            yield return ScreenshotHelper.TakeScreenshot(
+                stereoCaptureMode: ScreenCapture.StereoScreenCaptureMode.BothEyes);
+            Assert.That(path, Does.Exist);
+            // Require stereo rendering settings.
+            // See: https://docs.unity3d.com/Manual/SinglePassStereoRendering.html
+        }
+
+        [UnityTest]
+        public IEnumerator TakeScreenshot_SpecifySuperSizeAndStereoCaptureMode_NotWork()
+        {
+            yield return ScreenshotHelper.TakeScreenshot(
+                superSize: 2,
+                stereoCaptureMode: ScreenCapture.StereoScreenCaptureMode.BothEyes);
+            LogAssert.Expect(LogType.Error, "superSize and stereoCaptureMode cannot be specified at the same time.");
+        }
+
+        [UnityTest]
+        public IEnumerator TakeScreenshot_Parameterized_SaveAllFiles(
+            [Values(0, 1)] int i,
+            [Values(2, 3)] int j)
+        {
+            var path = Path.Combine(_defaultOutputDirectory,
+                $"{nameof(TakeScreenshot_Parameterized_SaveAllFiles)}_{i}-{j}_.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
+            yield return ScreenshotHelper.TakeScreenshot();
+            Assert.That(path, Does.Exist);
         }
 
         [Test]
