@@ -16,13 +16,14 @@ namespace TestHelper.Attributes
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class FocusGameViewAttributeTest
     {
+        private const string GameView = "UnityEditor.GameView";
+        private const string SimulatorWindow = "UnityEditor.DeviceSimulation.SimulatorWindow";
+
         [Test]
         [IgnoreBatchMode("Open GameView in batchmode but can not get window.")]
         [FocusGameView]
         public void Attach_GameViewHasFocus()
         {
-            const string GameView = "UnityEditor.GameView";
-            const string SimulatorWindow = "UnityEditor.DeviceSimulation.SimulatorWindow";
 #if UNITY_EDITOR
             var focusedWindow = EditorWindow.focusedWindow;
             Assert.That(focusedWindow, Is.Not.Null);
@@ -39,16 +40,28 @@ namespace TestHelper.Attributes
         }
 
         [Test]
+        [IgnoreBatchMode("Open GameView in batchmode but can not get window.")]
         [FocusGameView]
-        public async Task AttachToAsyncTest_Normally()
+        public async Task AttachToAsyncTest_GameViewHasFocus()
         {
+#if UNITY_EDITOR
+            var focusedWindow = EditorWindow.focusedWindow;
+            Assert.That(focusedWindow, Is.Not.Null);
+            Assert.That(focusedWindow.GetType().FullName, Is.EqualTo(GameView).Or.EqualTo(SimulatorWindow));
+#endif
             await Task.Yield();
         }
 
         [UnityTest]
+        [IgnoreBatchMode("Open GameView in batchmode but can not get window.")]
         [FocusGameView]
-        public IEnumerator AttachToUnityTest_Normally()
+        public IEnumerator AttachToUnityTest_GameViewHasFocus()
         {
+#if UNITY_EDITOR
+            var focusedWindow = EditorWindow.focusedWindow;
+            Assert.That(focusedWindow, Is.Not.Null);
+            Assert.That(focusedWindow.GetType().FullName, Is.EqualTo(GameView).Or.EqualTo(SimulatorWindow));
+#endif
             yield return null;
         }
     }
