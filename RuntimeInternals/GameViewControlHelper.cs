@@ -21,6 +21,9 @@ namespace TestHelper.RuntimeInternals
         public static void Focus()
         {
 #if UNITY_EDITOR
+#if UNITY_2022_2_OR_NEWER
+            PlayModeWindow.SetViewType(PlayModeWindow.PlayModeViewTypes.GameView);
+#endif
             GameViewWrapper.GetWindow();
 #endif
         }
@@ -33,6 +36,9 @@ namespace TestHelper.RuntimeInternals
         {
             var gizmos = false;
 #if UNITY_EDITOR
+#if UNITY_2022_2_OR_NEWER
+            PlayModeWindow.SetViewType(PlayModeWindow.PlayModeViewTypes.GameView);
+#endif
             var gameViewWrapper = GameViewWrapper.GetWindow(false);
             if (gameViewWrapper != null)
             {
@@ -49,6 +55,9 @@ namespace TestHelper.RuntimeInternals
         public static void SetGizmos(bool show)
         {
 #if UNITY_EDITOR
+#if UNITY_2022_2_OR_NEWER
+            PlayModeWindow.SetViewType(PlayModeWindow.PlayModeViewTypes.GameView);
+#endif
             var gameViewWrapper = GameViewWrapper.GetWindow(false);
             if (gameViewWrapper != null)
             {
