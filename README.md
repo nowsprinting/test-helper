@@ -365,13 +365,16 @@ public class MyTestClass
 > When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
 
 
-### Utilities
+### RuntimeInternals
+
+`TestHelper.RuntimeInternals` assembly can be used from the runtime code because it does not depend on test-framework.
 
 #### ScreenshotHelper
 
 `ScreenshotHelper` is a utility class to take a screenshot and save it to a file.
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`CurrentTest.Name`.png".
+(Replace `CurrentTest.Name` to caller method name when run in runtime context.)
 You can specify the save directory and/or filename by arguments.
 
 Usage:
@@ -379,7 +382,7 @@ Usage:
 ```csharp
 using System.Collections;
 using NUnit.Framework;
-using TestHelper.Utils;
+using TestHelper.RuntimeInternals;
 using UnityEngine.TestTools;
 
 [TestFixture]
@@ -407,7 +410,7 @@ public class MyTestClass
 > - Must be called from main thread.
 > - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
 > - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
-> - UniTask is required to be used from the async test. And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+> - UniTask is required to be used from the async method. And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
 
 ### Editor Extensions

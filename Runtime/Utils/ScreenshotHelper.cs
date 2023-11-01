@@ -1,6 +1,7 @@
 // Copyright (c) 2023 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace TestHelper.Utils
     /// <summary>
     /// Helper class for taking a screenshots.
     /// </summary>
+    [Obsolete("Use RuntimeInternals.ScreenshotHelper instead.")]
     public static class ScreenshotHelper
     {
         private static string DefaultFilename()

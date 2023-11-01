@@ -5,6 +5,7 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "TestHelper",
+        "TestHelper.RuntimeInternals",
         "UniTask"
     ],
     "includePlatforms": [],

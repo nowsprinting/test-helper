@@ -8,7 +8,6 @@ using NUnit.Framework.Interfaces;
 using TestHelper.RuntimeInternals;
 using UnityEngine;
 using UnityEngine.TestTools;
-using ScreenshotHelper = TestHelper.Utils.ScreenshotHelper;
 
 namespace TestHelper.Attributes
 {
