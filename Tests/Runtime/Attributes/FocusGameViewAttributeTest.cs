@@ -17,8 +17,8 @@ namespace TestHelper.Attributes
     public class FocusGameViewAttributeTest
     {
         [Test]
-        [FocusGameView]
         [IgnoreBatchMode("Open GameView in batchmode but can not get window.")]
+        [FocusGameView]
         public void Attach_GameViewHasFocus()
         {
             const string GameView = "UnityEditor.GameView";
@@ -31,8 +31,8 @@ namespace TestHelper.Attributes
         }
 
         [Test]
-        [FocusGameView]
         [IgnoreWindowMode("For batchmode test.")]
+        [FocusGameView]
         public void Attach_KeepBatchmode()
         {
             Assert.That(Application.isBatchMode, Is.True);

@@ -11,6 +11,7 @@ using UnityEngine.TestTools;
 namespace TestHelper.Attributes
 {
     [TestFixture]
+    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class GizmosShowOnGameViewAttributeTest
     {
         private class GizmoDemo : MonoBehaviour
@@ -54,18 +55,20 @@ namespace TestHelper.Attributes
 
         [Test]
         [CreateScene(camera: true, light: true)]
-        [GizmosShowOnGameView()]
+        [GizmosShowOnGameView]
         public async Task AttachToAsyncTest_ShowGizmos()
         {
             await Task.Yield();
+            // verify screenshot.
         }
 
         [UnityTest]
         [CreateScene(camera: true, light: true)]
-        [GizmosShowOnGameView()]
+        [GizmosShowOnGameView]
         public IEnumerator AttachToUnityTest_ShowGizmos()
         {
             yield return null;
+            // verify screenshot.
         }
     }
 }
