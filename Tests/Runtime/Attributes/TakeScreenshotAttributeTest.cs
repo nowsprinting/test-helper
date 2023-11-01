@@ -115,14 +115,17 @@ namespace TestHelper.Attributes
             Assert.That(path, Does.Exist);
         }
 
+        private const string SpecifyFilename =
+            nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath) + "_Specified.png";
+
         [Test, Order(0)]
         [LoadScene(TestScene)]
-        [TakeScreenshot(filename: nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath) + ".png")]
+        [TakeScreenshot(filename: SpecifyFilename)]
         public void AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
-                $"{nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath)}.png");
+                SpecifyFilename);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -138,7 +141,7 @@ namespace TestHelper.Attributes
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
-                $"{nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath)}.png");
+                SpecifyFilename);
             Assert.That(path, Does.Exist);
         }
 
@@ -151,7 +154,8 @@ namespace TestHelper.Attributes
             }
         }
 
-        [Test]
+        [Test, Order(0)]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         [LoadScene(TestScene)]
         [TakeScreenshot(gizmos: true)]
         public void AttachWithGizmos_TakeScreenshotWithGizmos()
@@ -160,6 +164,16 @@ namespace TestHelper.Attributes
             gameObject.AddComponent<GizmoDemo>();
 
             // Take screenshot after running the test.
+        }
+
+        [Test, Order(1)]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        public void AttachWithGizmos_TakeScreenshotWithGizmos_AfterRunningTest_ExistFile()
+        {
+            var path = Path.Combine(
+                _defaultOutputDirectory,
+                $"{nameof(AttachWithGizmos_TakeScreenshotWithGizmos)}.png");
+            Assert.That(path, Does.Exist);
         }
     }
 }
