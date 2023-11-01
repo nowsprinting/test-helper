@@ -4,7 +4,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using TestHelper.Utils;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
 using UnityEngine.TestTools;
 
