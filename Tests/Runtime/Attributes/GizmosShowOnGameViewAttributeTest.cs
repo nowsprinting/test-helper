@@ -34,7 +34,7 @@ namespace TestHelper.Attributes
         [UnityTearDown]
         public IEnumerator UnityTearDown()
         {
-            yield return ScreenshotHelper.TakeScreenshot(); // Take screenshot before hide Gizmos.
+            yield return ScreenshotHelper.TakeScreenshot(); // Take screenshot before revert Gizmos.
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace TestHelper.Attributes
         [GizmosShowOnGameView]
         public void Attach_True_ShowGizmos()
         {
-            // verify screenshot.
+            // See the screenshot yourself! Be a witness!!
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace TestHelper.Attributes
         [GizmosShowOnGameView(false)]
         public void Attach_False_HideGizmos()
         {
-            // verify screenshot.
+            // See the screenshot yourself! Be a witness!!
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace TestHelper.Attributes
         public async Task AttachToAsyncTest_ShowGizmos()
         {
             await Task.Yield();
-            // verify screenshot.
+            // See the screenshot yourself! Be a witness!!
         }
 
         [UnityTest]
@@ -68,7 +68,7 @@ namespace TestHelper.Attributes
         public IEnumerator AttachToUnityTest_ShowGizmos()
         {
             yield return null;
-            // verify screenshot.
+            // See the screenshot yourself! Be a witness!!
         }
     }
 }
