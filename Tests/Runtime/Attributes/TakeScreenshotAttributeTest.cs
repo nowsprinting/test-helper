@@ -35,11 +35,11 @@ namespace TestHelper.Attributes
         [Test, Order(0)]
         [LoadScene(TestScene)]
         [TakeScreenshot]
-        public void Attach_TakeScreenshotAndSaveToDefaultPath()
+        public void Attach_SaveScreenshotToDefaultPath()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
-                $"{nameof(Attach_TakeScreenshotAndSaveToDefaultPath)}.png");
+                $"{nameof(Attach_SaveScreenshotToDefaultPath)}.png");
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -51,22 +51,22 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(1)]
-        public void Attach_TakeScreenshotAndSaveToDefaultPath_AfterRunningTest_ExistFile()
+        public void Attach_SaveScreenshotToDefaultPath_ExistFile()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
-                $"{nameof(Attach_TakeScreenshotAndSaveToDefaultPath)}.png");
+                $"{nameof(Attach_SaveScreenshotToDefaultPath)}.png");
             Assert.That(path, Does.Exist);
         }
 
         [Test, Order(0)]
         [LoadScene(TestScene)]
         [TakeScreenshot]
-        public async Task AttachToAsyncTest_TakeScreenshotAndSaveToDefaultPath()
+        public async Task AttachToAsyncTest_SaveScreenshotToDefaultPath()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
-                $"{nameof(AttachToAsyncTest_TakeScreenshotAndSaveToDefaultPath)}.png");
+                $"{nameof(AttachToAsyncTest_SaveScreenshotToDefaultPath)}.png");
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -79,22 +79,22 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(1)]
-        public void AttachToAsyncTest_TakeScreenshotAndSaveToDefaultPath_AfterRunningTest_ExistFile()
+        public void AttachToAsyncTest_SaveScreenshotToDefaultPath_ExistFile()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
-                $"{nameof(AttachToAsyncTest_TakeScreenshotAndSaveToDefaultPath)}.png");
+                $"{nameof(AttachToAsyncTest_SaveScreenshotToDefaultPath)}.png");
             Assert.That(path, Does.Exist);
         }
 
         [UnityTest, Order(0)]
         [LoadScene(TestScene)]
         [TakeScreenshot]
-        public IEnumerator AttachToUnityTest_TakeScreenshotAndSaveToDefaultPath()
+        public IEnumerator AttachToUnityTest_SaveScreenshotToDefaultPath()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
-                $"{nameof(AttachToUnityTest_TakeScreenshotAndSaveToDefaultPath)}.png");
+                $"{nameof(AttachToUnityTest_SaveScreenshotToDefaultPath)}.png");
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -107,21 +107,21 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(1)]
-        public void AttachToUnityTest_TakeScreenshotAndSaveToDefaultPath_AfterRunningTest_ExistFile()
+        public void AttachToUnityTest_SaveScreenshotToDefaultPath_ExistFile()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
-                $"{nameof(AttachToUnityTest_TakeScreenshotAndSaveToDefaultPath)}.png");
+                $"{nameof(AttachToUnityTest_SaveScreenshotToDefaultPath)}.png");
             Assert.That(path, Does.Exist);
         }
 
         private const string SpecifyFilename =
-            nameof(AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath) + "_Specified.png";
+            nameof(AttachWithFilename_SaveScreenshotToSpecifyPath) + "_Specified.png";
 
         [Test, Order(0)]
         [LoadScene(TestScene)]
         [TakeScreenshot(filename: SpecifyFilename)]
-        public void AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath()
+        public void AttachWithFilename_SaveScreenshotToSpecifyPath()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
@@ -137,7 +137,7 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(1)]
-        public void AttachWithFilename_TakeScreenshotAndSaveToSpecifyPath_AfterRunningTest_ExistFile()
+        public void AttachWithFilename_SaveScreenshotToSpecifyPath_ExistFile()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
@@ -168,7 +168,7 @@ namespace TestHelper.Attributes
 
         [Test, Order(1)]
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-        public void AttachWithGizmos_TakeScreenshotWithGizmos_AfterRunningTest_ExistFile()
+        public void AttachWithGizmos_TakeScreenshotWithGizmos_ExistFile()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
