@@ -110,7 +110,7 @@ namespace TestHelper.RuntimeInternals
             var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
             await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner);
             // Note: UniTask is required to be used from the async test.
-            //   And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside.
+            //   And also needs CoroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside.
             //   See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
             Assert.That(path, Does.Exist);

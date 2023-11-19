@@ -229,6 +229,7 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(1)]
+        [Description("This test fails with stereo rendering settings.")]
         public void AttachWithSuperSize_SaveSuperSizeScreenshot_ExistFile()
         {
             var path = Path.Combine(
@@ -236,6 +237,8 @@ namespace TestHelper.Attributes
                 $"{nameof(AttachWithSuperSize_SaveSuperSizeScreenshot)}.png");
             Assert.That(path, Does.Exist);
             Assert.That(File.ReadAllBytes(path), Has.Length.GreaterThan(FileSizeThreshold2X));
+            // Note: This test fails with stereo rendering settings.
+            //  See: https://docs.unity3d.com/Manual/SinglePassStereoRendering.html
         }
 
         [Test, Order(0)]
@@ -265,7 +268,7 @@ namespace TestHelper.Attributes
             Assert.That(path, Does.Exist);
             // Is it a stereo screenshot? See for yourself! Be a witness!!
             // Note: Require stereo rendering settings.
-            // See: https://docs.unity3d.com/Manual/SinglePassStereoRendering.html
+            //  See: https://docs.unity3d.com/Manual/SinglePassStereoRendering.html
         }
 
         private class GizmoDemo : MonoBehaviour
