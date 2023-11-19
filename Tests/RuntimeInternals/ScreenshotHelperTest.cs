@@ -93,7 +93,7 @@ namespace TestHelper.RuntimeInternals
             yield return ScreenshotHelper.TakeScreenshot(
                 superSize: 2,
                 stereoCaptureMode: ScreenCapture.StereoScreenCaptureMode.BothEyes);
-            LogAssert.Expect(LogType.Error, "superSize and stereoCaptureMode cannot be specified at the same time.");
+            LogAssert.Expect(LogType.Warning, "superSize and stereoCaptureMode cannot be specified at the same time.");
         }
 
         [Test]

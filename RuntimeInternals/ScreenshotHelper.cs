@@ -66,13 +66,13 @@ namespace TestHelper.RuntimeInternals
         {
             if (superSize != 1 && stereoCaptureMode != ScreenCapture.StereoScreenCaptureMode.LeftEye)
             {
-                Debug.LogError("superSize and stereoCaptureMode cannot be specified at the same time.");
+                Debug.LogWarning("superSize and stereoCaptureMode cannot be specified at the same time.");
                 yield break;
             }
 
             if (Thread.CurrentThread.ManagedThreadId != 1)
             {
-                Debug.LogError("Must be called from the main thread.");
+                Debug.LogWarning("Must be called from the main thread.");
                 yield break;
                 // Note: This is not the case since it is a coroutine.
             }
