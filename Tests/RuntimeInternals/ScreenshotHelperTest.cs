@@ -93,7 +93,7 @@ namespace TestHelper.RuntimeInternals
             yield return ScreenshotHelper.TakeScreenshot(
                 superSize: 2,
                 stereoCaptureMode: ScreenCapture.StereoScreenCaptureMode.BothEyes);
-            LogAssert.Expect(LogType.Error, "superSize and stereoCaptureMode cannot be specified at the same time.");
+            LogAssert.Expect(LogType.Warning, "superSize and stereoCaptureMode cannot be specified at the same time.");
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace TestHelper.RuntimeInternals
             var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
             await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner);
             // Note: UniTask is required to be used from the async test.
-            //   And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside.
+            //   And also needs CoroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside.
             //   See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
             Assert.That(path, Does.Exist);
