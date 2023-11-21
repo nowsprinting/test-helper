@@ -70,13 +70,6 @@ namespace TestHelper.RuntimeInternals
                 yield break;
             }
 
-            if (Thread.CurrentThread.ManagedThreadId != 1)
-            {
-                Debug.LogWarning("Must be called from the main thread.");
-                yield break;
-                // Note: This is not the case since it is a coroutine.
-            }
-
             if (directory != null)
             {
                 directory = Path.GetFullPath(directory);
