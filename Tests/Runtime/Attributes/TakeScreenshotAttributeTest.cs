@@ -58,8 +58,7 @@ namespace TestHelper.Attributes
             var path = Path.Combine(
                 _defaultOutputDirectory,
                 $"{nameof(Attach_SaveScreenshotToDefaultPath)}.png");
-            Assert.That(path, Does.Exist);
-            Assert.That(File.ReadAllBytes(path), Has.Length.GreaterThan(FileSizeThreshold));
+            Assert.That(new FileInfo(path), Has.Length.GreaterThan(FileSizeThreshold));
         }
 
         [Test, Order(0)]
@@ -87,8 +86,7 @@ namespace TestHelper.Attributes
             var path = Path.Combine(
                 _defaultOutputDirectory,
                 $"{nameof(AttachToAsyncTest_SaveScreenshotToDefaultPath)}.png");
-            Assert.That(path, Does.Exist);
-            Assert.That(File.ReadAllBytes(path), Has.Length.GreaterThan(FileSizeThreshold));
+            Assert.That(new FileInfo(path), Has.Length.GreaterThan(FileSizeThreshold));
         }
 
         [UnityTest, Order(0)]
@@ -116,8 +114,7 @@ namespace TestHelper.Attributes
             var path = Path.Combine(
                 _defaultOutputDirectory,
                 $"{nameof(AttachToUnityTest_SaveScreenshotToDefaultPath)}.png");
-            Assert.That(path, Does.Exist);
-            Assert.That(File.ReadAllBytes(path), Has.Length.GreaterThan(FileSizeThreshold));
+            Assert.That(new FileInfo(path), Has.Length.GreaterThan(FileSizeThreshold));
         }
 
         [Test, Order(0)]
@@ -235,8 +232,7 @@ namespace TestHelper.Attributes
             var path = Path.Combine(
                 _defaultOutputDirectory,
                 $"{nameof(AttachWithSuperSize_SaveSuperSizeScreenshot)}.png");
-            Assert.That(path, Does.Exist);
-            Assert.That(File.ReadAllBytes(path), Has.Length.GreaterThan(FileSizeThreshold2X));
+            Assert.That(new FileInfo(path), Has.Length.GreaterThan(FileSizeThreshold2X));
             // Note: This test fails with stereo rendering settings.
             //  See: https://docs.unity3d.com/Manual/SinglePassStereoRendering.html
         }
@@ -260,13 +256,13 @@ namespace TestHelper.Attributes
         }
 
         [Test, Order(1)]
+        [Description("Is it a stereo screenshot? See for yourself! Be a witness!!")]
         public void AttachWithStereoCaptureMode_SaveStereoScreenshot_ExistFile()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
                 $"{nameof(AttachWithStereoCaptureMode_SaveStereoScreenshot)}.png");
             Assert.That(path, Does.Exist);
-            // Is it a stereo screenshot? See for yourself! Be a witness!!
             // Note: Require stereo rendering settings.
             //  See: https://docs.unity3d.com/Manual/SinglePassStereoRendering.html
         }
@@ -294,13 +290,13 @@ namespace TestHelper.Attributes
 
         [Test, Order(1)]
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        [Description("Is Gizmos shown in the screenshot? See for yourself! Be a witness!!")]
         public void AttachWithGizmos_TakeScreenshotWithGizmos_ExistFile()
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,
                 $"{nameof(AttachWithGizmos_TakeScreenshotWithGizmos)}.png");
             Assert.That(path, Does.Exist);
-            // Is Gizmos shown in the screenshot? See for yourself! Be a witness!!
         }
     }
 }
