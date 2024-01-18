@@ -35,10 +35,10 @@ jobs:
       matrix:
         unityVersion: # Available versions see: https://game.ci/docs/docker/versions
           - 2019.4.40f1
-          - 2022.3.11f1
-          - 2023.1.16f1
+          - 2022.3.17f1
+          - 2023.2.5f1
         include:
-          - unityVersion: 2022.3.11f1
+          - unityVersion: 2019.4.40f1
             octocov: true
 
     steps:
