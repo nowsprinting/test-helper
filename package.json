@@ -12,8 +12,13 @@
   "documentationUrl": "https://github.com/nowsprinting/test-helper/blob/master/README.md",
   "files": [
     "Documentation~",
+    "Editor",
     "Editor*",
+    "Runtime",
     "Runtime*",
+    "RuntimeInternals",
+    "RuntimeInternals*",
+    "Tests",
     "Tests*",
     "LICENSE.md*",
     "package.json*",
