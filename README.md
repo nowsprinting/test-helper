@@ -485,16 +485,16 @@ Add this repository as a submodule to the Packages/ directory in your project.
 git submodule add https://github.com/nowsprinting/test-helper.git Packages/com.nowsprinting.test-helper
 ```
 
+> [!WARNING]  
+> Required install packages for running tests (when adding to the `testables` in package.json), as follows:
+> - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or later
+
 Generate a temporary project and run tests on each Unity version from the command line.
 
 ```bash
 make create_project
 UNITY_VERSION=2019.4.40f1 make -k test
 ```
-
-> [!WARNING]  
-> Required install packages for running tests (when adding to the `testables` in package.json), as follows:
-> - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or later
 
 
 
