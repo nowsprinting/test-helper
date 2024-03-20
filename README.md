@@ -39,7 +39,7 @@ public class MyTestClass
 }
 ```
 
-> **Note**  
+> [!NOTE]  
 > In batchmode, open `GameView` window.
 
 
@@ -72,11 +72,11 @@ public class MyTestClass
 }
 ```
 
-> **Warning**  
+> [!WARNING]  
 > Wait for one frame to apply resolution.
 > However, if used with [CreateSceneAttribute](#CreateScene) or [LoadSceneAttribute](#LoadScene), wait is not necessary.
 
-> **Note**  
+> [!NOTE]  
 > In batchmode, open `GameView` window.
 
 
@@ -105,7 +105,7 @@ public class MyTestClass
 }
 ```
 
-> **Note**  
+> [!NOTE]  
 > In batchmode, open `GameView` window.
 
 
@@ -204,7 +204,7 @@ public class MyTestClass
 }
 ```
 
-> **Note**
+> [!NOTE]  
 > - Create scene run after `OneTimeSetUp` and before `SetUp`
 > - Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
 
@@ -241,7 +241,7 @@ public class MyTestClass
 }
 ```
 
-> **Note**  
+> [!NOTE]  
 > - Load scene run after `OneTimeSetUp` and before `SetUp`
 > - Scene file path is starts with `Assets/` or `Packages/`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
@@ -274,11 +274,11 @@ public class MyTestClass
 }
 ```
 
-> **Warning**
+> [!WARNING]  
 > - Do not attach to Edit Mode tests.
 > - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
 
-> **Note**  
+> [!NOTE]  
 > If you want to take screenshots at any time, use the [ScreenshotHelper](#ScreenshotHelper) class.
 
 
@@ -361,7 +361,7 @@ public class MyTestClass
 }
 ```
 
-> **Note**  
+> [!NOTE]  
 > When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
 
 
@@ -405,7 +405,7 @@ public class MyTestClass
 }
 ```
 
-> **Warning**  
+> [!WARNING]  
 > - Do not call from Edit Mode tests.
 > - Must be called from main thread.
 > - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
@@ -492,7 +492,7 @@ make create_project
 UNITY_VERSION=2019.4.40f1 make -k test
 ```
 
-> **Warning**  
+> [!WARNING]  
 > Required install packages for running tests (when adding to the `testables` in package.json), as follows:
 > - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or later
 
