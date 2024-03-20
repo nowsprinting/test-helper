@@ -1,6 +1,6 @@
 {
   "name": "com.nowsprinting.test-helper",
-  "description": "Test helper library for Unity Test Framework.",
+  "description": "Provides custom attributes, comparers, and constraints useful for testing with Unity Test Framework.",
   "version": "0.4.2",
   "author": "Koji Hasegawa <hasegawa@hubsys.co.jp> (https://github.com/nowsprinting)",
   "category": "Unity Test Framework",
@@ -12,8 +12,13 @@
   "documentationUrl": "https://github.com/nowsprinting/test-helper/blob/master/README.md",
   "files": [
     "Documentation~",
+    "Editor",
     "Editor*",
+    "Runtime",
     "Runtime*",
+    "RuntimeInternals",
+    "RuntimeInternals*",
+    "Tests",
     "Tests*",
     "LICENSE.md*",
     "package.json*",
