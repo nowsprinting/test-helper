@@ -1,10 +1,9 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using UnityEngine;
 #if UNITY_INCLUDE_TESTS
 using NUnit.Framework;
@@ -18,10 +17,7 @@ namespace TestHelper.RuntimeInternals
     /// </summary>
     public static class ScreenshotHelper
     {
-        private static string DefaultDirectoryPath()
-        {
-            return Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots");
-        }
+        private static string DefaultDirectoryPath => CommandLineArgs.GetScreenshotDirectory();
 
         private static string DefaultFilename(string callerMemberName)
         {
@@ -50,7 +46,9 @@ namespace TestHelper.RuntimeInternals
         /// <br/>
         /// Using <c>ScreenCapture.CaptureScreenshotAsTexture</c> internally.
         /// </remarks>
-        /// <param name="directory">Directory to save screenshots. Default save path is <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/".</param>
+        /// <param name="directory">Directory to save screenshots.
+        /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
+        /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
         /// <param name="filename">Filename to store screenshot.
         /// Default filename is <c>CurrentTest.Name</c> + ".png" when run in test-framework context.
         /// Using caller method name when run in runtime context.</param>
@@ -76,7 +74,7 @@ namespace TestHelper.RuntimeInternals
             }
             else
             {
-                directory = DefaultDirectoryPath(); // Not apply specific directory when running on player
+                directory = DefaultDirectoryPath; // Not apply specific directory when running on player
             }
 
             Directory.CreateDirectory(directory);

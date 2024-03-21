@@ -252,6 +252,7 @@ public class MyTestClass
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`CurrentTest.Name`.png".
 You can specify the save directory and/or filename by arguments.
+Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
 
 This attribute can attached to test method only.
 Can be used with sync Test, async Test, and UnityTest.
@@ -376,6 +377,7 @@ public class MyTestClass
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`CurrentTest.Name`.png".
 (Replace `CurrentTest.Name` to caller method name when run in runtime context.)
 You can specify the save directory and/or filename by arguments.
+Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
 
 Usage:
 

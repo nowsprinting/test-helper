@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -18,9 +19,7 @@ namespace TestHelper.Attributes
         private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
         private const int FileSizeThreshold = 5441; // VGA size solid color file size
         private const int FileSizeThreshold2X = 100 * 1024; // Normal size is 80 to 90KB
-
-        private readonly string _defaultOutputDirectory =
-            Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots");
+        private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
 
         private Text _text;
 

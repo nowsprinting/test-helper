@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -26,7 +26,7 @@ namespace TestHelper.Attributes
         /// <summary>
         /// Take a screenshot and save it to file after running the test.
         /// Default save path is $"{Application.persistentDataPath}/TestHelper/Screenshots/{CurrentTest.Name}.png".
-        /// If you want to take screenshots at any time, use the <c>ScreenshotHelper</c> class.
+        /// If you want to take screenshots at any time, use the <c>TestHelper.RuntimeInternals.ScreenshotHelper</c> class.
         /// </summary>
         /// <remarks>
         /// Limitations:
@@ -35,8 +35,12 @@ namespace TestHelper.Attributes
         /// <br/>
         /// Using <c>ScreenCapture.CaptureScreenshotAsTexture</c> internally.
         /// </remarks>
-        /// <param name="directory">Directory to save screenshots.</param>
-        /// <param name="filename">Filename to store screenshot.</param>
+        /// <param name="directory">Directory to save screenshots.
+        /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
+        /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
+        /// <param name="filename">Filename to store screenshot.
+        /// Default filename is <c>CurrentTest.Name</c> + ".png" when run in test-framework context.
+        /// Using caller method name when run in runtime context.</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
         /// <param name="gizmos">True: show Gizmos on GameView</param>
