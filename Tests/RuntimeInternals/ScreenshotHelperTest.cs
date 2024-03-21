@@ -20,9 +20,7 @@ namespace TestHelper.RuntimeInternals
     {
         internal const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
         private const int FileSizeThreshold = 5441; // VGA size solid color file size
-
-        private readonly string _defaultOutputDirectory =
-            Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots");
+        private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
 
         private Text _text;
 
