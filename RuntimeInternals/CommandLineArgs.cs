@@ -27,7 +27,7 @@ namespace TestHelper.RuntimeInternals
             var arg = CachedCommandLineArgs.FirstOrDefault(x => x.StartsWith(ScreenshotDirectoryKey));
             if (arg != null)
             {
-                return arg[ScreenshotDirectoryKey.Length..];
+                return arg.Substring(ScreenshotDirectoryKey.Length);
             }
             else
             {
