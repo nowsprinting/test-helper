@@ -11,25 +11,32 @@ namespace TestHelper.RuntimeInternals
     [TestFixture]
     public class CommandLineArgsTest
     {
-        [TearDown]
-        public void TearDown()
+        [Test]
+        public void DictionaryFromCommandLineArgs()
         {
-            CommandLineArgs.CachedCommandLineArgs = Environment.GetCommandLineArgs();
+            var args = new[] { "-flag1", "-key1", "value1", "-flag2" };
+            var expected = new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "-flag1", string.Empty }, //
+                { "-key1", "value1" }, //
+                { "-flag2", string.Empty },
+            };
+            var actual = CommandLineArgs.DictionaryFromCommandLineArgs(args);
+
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
         public void GetScreenshotDirectory_WithArgument_GotSpecifiedDirectory()
         {
-            CommandLineArgs.CachedCommandLineArgs = new[] { "-testHelperScreenshotDirectory=Test" };
-            var actual = CommandLineArgs.GetScreenshotDirectory();
+            var actual = CommandLineArgs.GetScreenshotDirectory(new[] { "-testHelperScreenshotDirectory", "Test" });
             Assert.That(actual, Is.EqualTo("Test"));
         }
 
         [Test]
         public void GetScreenshotDirectory_WithoutArgument_GotDefaultDirectory()
         {
-            CommandLineArgs.CachedCommandLineArgs = Array.Empty<string>();
-            var actual = CommandLineArgs.GetScreenshotDirectory();
+            var actual = CommandLineArgs.GetScreenshotDirectory(Array.Empty<string>());
             Assert.That(actual, Is.EqualTo(Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots")));
         }
     }
