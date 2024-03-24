@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using TestHelper.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -35,12 +36,14 @@ namespace TestHelper.Attributes
 
         /// <summary>
         /// Load scene before running test.
+        /// Can be specified path by glob pattern. However, there are restrictions, top level and scene name cannot be omitted.
         /// </summary>
         /// <param name="path">Scene file path.
         /// The path starts with `Assets/` or `Packages/`.
         /// And package name using `name` instead of `displayName`, when scenes in the package.
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
         /// </param>
+        /// <seealso href="https://en.wikipedia.org/wiki/Glob_(programming)"/>
         public LoadSceneAttribute(string path)
         {
             ScenePath = path;
@@ -49,6 +52,7 @@ namespace TestHelper.Attributes
         /// <inheritdoc />
         public IEnumerator BeforeTest(ITest test)
         {
+            var existScenePath = ScenePathFinder.GetExistScenePath(ScenePath);
             AsyncOperation loadSceneAsync = null;
 
             if (Application.isEditor)
@@ -58,20 +62,20 @@ namespace TestHelper.Attributes
                 {
                     // Play Mode tests running in Editor
                     loadSceneAsync = EditorSceneManager.LoadSceneAsyncInPlayMode(
-                        ScenePath,
+                        existScenePath,
                         new LoadSceneParameters(LoadSceneMode.Single));
                 }
                 else
                 {
                     // Edit Mode tests
-                    EditorSceneManager.OpenScene(ScenePath);
+                    EditorSceneManager.OpenScene(existScenePath);
                 }
 #endif
             }
             else
             {
                 // Play Mode tests running on Player
-                loadSceneAsync = SceneManager.LoadSceneAsync(ScenePath);
+                loadSceneAsync = SceneManager.LoadSceneAsync(existScenePath);
             }
 
             yield return loadSceneAsync;

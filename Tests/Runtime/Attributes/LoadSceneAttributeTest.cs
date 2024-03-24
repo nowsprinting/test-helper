@@ -17,7 +17,7 @@ namespace TestHelper.Attributes
 
         [Test]
         [LoadScene(TestScene)]
-        public void Attach_AlreadyLoadedSceneNotInBuild()
+        public void Attach_LoadedSceneNotInBuild()
         {
             var cube = GameObject.Find(ObjectName);
             Assert.That(cube, Is.Not.Null);
@@ -27,7 +27,7 @@ namespace TestHelper.Attributes
 
         [Test]
         [LoadScene(TestScene)]
-        public async Task AttachToAsyncTest_AlreadyLoadedSceneNotInBuild()
+        public async Task AttachToAsyncTest_LoadedSceneNotInBuild()
         {
             var cube = GameObject.Find(ObjectName);
             Assert.That(cube, Is.Not.Null);
@@ -38,13 +38,23 @@ namespace TestHelper.Attributes
 
         [UnityTest]
         [LoadScene(TestScene)]
-        public IEnumerator AttachToUnityTest_AlreadyLoadedSceneNotInBuild()
+        public IEnumerator AttachToUnityTest_LoadedSceneNotInBuild()
         {
             var cube = GameObject.Find(ObjectName);
             Assert.That(cube, Is.Not.Null);
 
             Object.Destroy(cube); // For not giving false negatives in subsequent tests.
             yield return null;
+        }
+
+        [Test]
+        [LoadScene("Packages/com.nowsprinting.test-helper/**/NotInScenesInBuild.unity")]
+        public void UsingGlob_LoadedSceneNotInBuild()
+        {
+            var cube = GameObject.Find(ObjectName);
+            Assert.That(cube, Is.Not.Null);
+
+            Object.Destroy(cube); // For not giving false negatives in subsequent tests.
         }
     }
 }
