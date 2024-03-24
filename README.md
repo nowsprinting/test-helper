@@ -211,15 +211,16 @@ public class MyTestClass
 
 #### LoadScene
 
-`LoadSceneAttribute` is an NUnit test attribute class to load scene before running test.
+`LoadSceneAttribute` is a NUnit test attribute class that loads the scene before running the test.
 
 It has the following benefits:
 
-- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
-- Can be specified scenes that are **NOT** in "Scenes in Build"
+- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
+- Can be specified scenes that are **NOT** in "Scenes in Build".
+- Can be specified path by glob pattern. However, there are restrictions, top level and scene name cannot be omitted.
 
-This attribute can attached to test method only.
-Can be used with sync Test, async Test, and UnityTest.
+- This attribute can attached to the test method only.
+It can be used with sync Tests, async Tests, and UnityTest.
 
 Usage:
 
