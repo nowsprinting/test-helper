@@ -22,7 +22,7 @@ endif
 ifdef CATEGORY
 TEST_CATEGORY=-testCategory "$(CATEGORY)"
 else
-TEST_CATEGORY=-testCategory "!IgnoreCI;!Integration"
+TEST_CATEGORY=-testCategory "!IgnoreCI"
 endif
 
 # -testFilter option. see https://docs.unity3d.com/Packages/com.unity.test-framework@1.3/manual/reference-command-line.html#testfilter
