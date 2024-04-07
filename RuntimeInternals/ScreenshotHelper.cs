@@ -25,7 +25,8 @@ namespace TestHelper.RuntimeInternals
             return TestContext.CurrentTestExecutionContext.CurrentTest.Name
                 .Replace('(', '_')
                 .Replace(')', '_')
-                .Replace(',', '-');
+                .Replace(',', '-')
+                .Replace("\"", "");
             // Note: Same as the file name created under ActualImages of the Graphics Tests Framework package.
 #else
             return callerMemberName;
