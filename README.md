@@ -370,6 +370,10 @@ public class MyTestClass
 
 `TestHelper.RuntimeInternals` assembly can be used from the runtime code because it does not depend on test-framework.
 
+> [!NOTE]
+> The "Define Constraints" is set to `UNITY_INCLUDE_TESTS || COM_NOWSPRINTING_TEST_HELPER_ENABLE` in this assembly definition files, so it is generally excluded from release builds.
+> To use the feature in release builds, add `COM_NOWSPRINTING_TEST_HELPER_ENABLE` to the "Define Symbols" at build time.
+
 #### ScreenshotHelper
 
 `ScreenshotHelper` is a utility class to take a screenshot and save it to a file.
