@@ -4,8 +4,6 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace TestHelper.Utils
 {
@@ -16,8 +14,7 @@ namespace TestHelper.Utils
         [TestCase("Packages/com.nowsprinting.test-helper/Tes?s/S?enes/NotInScenesInBuild.unity")]
         [TestCase("Packages/com.nowsprinting.test-helper/*/*/NotInScenesInBuild.unity")]
         [TestCase("Packages/com.nowsprinting.test-helper/**/NotInScenesInBuild.unity")]
-        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-        public void GetExistScenePath_InEditor_GotExistScenePath(string path)
+        public void GetExistScenePath_ExistPath_GotExistScenePath(string path)
         {
             const string ExistScenePath = "Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity";
 
@@ -25,21 +22,19 @@ namespace TestHelper.Utils
             Assert.That(actual, Is.EqualTo(ExistScenePath));
         }
 
-        [TestCase("Tests/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity")]
         [TestCase("Packages/**/NotInScenesInBuild.unity")]
+        [TestCase("**/NotInScenesInBuild.unity")]
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild")]
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/Not??ScenesInBuild.unity")]
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/*InScenesInBuild.unity")]
-        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-        public void GetExistScenePath_InEditor_ThrowsArgumentException(string path)
+        public void GetExistScenePath_InvalidGlobPattern_ThrowsArgumentException(string path)
         {
             Assert.That(() => ScenePathFinder.GetExistScenePath(path), Throws.TypeOf<ArgumentException>());
         }
 
-        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotExistScene.unity")]
+        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotExistScene.unity")] // Not exist path
         [TestCase("Packages/com.nowsprinting.test-helper/*/NotInScenesInBuild.unity")] // Not match path pattern
-        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-        public void GetExistScenePath_InEditor_ThrowsFileNotFoundException(string path)
+        public void GetExistScenePath_NotExistPath_ThrowsFileNotFoundException(string path)
         {
             Assert.That(() => ScenePathFinder.GetExistScenePath(path), Throws.TypeOf<FileNotFoundException>());
         }

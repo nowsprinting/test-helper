@@ -15,7 +15,7 @@ namespace TestHelper.Editor
 
         [Test]
         [LoadScene(TestScene)]
-        public void Attach_AlreadyLoadedSceneNotInBuild()
+        public void Attach_LoadedSceneNotInBuild()
         {
             var cube = GameObject.Find(ObjectName);
             Assert.That(cube, Is.Not.Null);
