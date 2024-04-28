@@ -8,12 +8,13 @@ namespace TestHelper.Editor
     [TestFixture]
     public class TemporaryBuildScenesUsingInTestTest
     {
+        private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity";
+
         [Test]
         public void GetScenesUsingInTest_AttachedToMethod_ReturnScenesSpecifiedByAttribute()
         {
             var actual = TemporaryBuildScenesUsingInTest.GetScenesUsingInTest();
-            Assert.That(actual,
-                Does.Contain("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity"));
+            Assert.That(actual, Does.Contain(TestScene));
         }
     }
 }

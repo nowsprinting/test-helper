@@ -3,11 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TestHelper.Attributes;
 using TestHelper.Editor;
+using TestHelper.Utils;
 using UnityEditor;
 using UnityEditor.TestTools;
+using UnityEngine;
 
 [assembly: TestPlayerBuildModifier(typeof(TemporaryBuildScenesUsingInTest))]
 
@@ -58,17 +61,23 @@ namespace TestHelper.Editor
                 .Concat(FindLoadSceneAttributesOnMethods());
             foreach (var attribute in attributes)
             {
-                if (attribute.ScenePath.ToLower().EndsWith(".unity"))
+                string scenePath;
+                try
                 {
-                    yield return attribute.ScenePath;
+                    scenePath = ScenePathFinder.GetExistScenePath(attribute.ScenePath);
                 }
-                else
+                catch (ArgumentException e)
                 {
-                    foreach (var guid in AssetDatabase.FindAssets("t:SceneAsset", new[] { attribute.ScenePath }))
-                    {
-                        yield return AssetDatabase.GUIDToAssetPath(guid);
-                    }
+                    Debug.LogWarning(e.Message);
+                    continue;
                 }
+                catch (FileNotFoundException e)
+                {
+                    Debug.LogWarning(e.Message);
+                    continue;
+                }
+
+                yield return scenePath;
             }
         }
 
