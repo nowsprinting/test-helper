@@ -99,7 +99,7 @@ jobs:
         id: test
 
       - name: Set coverage path for octocov
-        run: sed -i -r 's/\.\/Logs/${{ steps.test.outputs.coveragePath }}/' .octocov.yml
+        run: sed -i -r 's/UnityProject~\/Logs/${{ steps.test.outputs.coveragePath }}/' .octocov.yml
         if: ${{ matrix.octocov }}
 
       - name: Run octocov
