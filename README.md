@@ -218,6 +218,7 @@ It has the following benefits:
 - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
 - Can be specified scenes that are **NOT** in "Scenes in Build".
 - Can be specified path by glob pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- Can be specified path by relative path from the test class file.
 
 - This attribute can attached to the test method only.
 It can be used with sync Tests, async Tests, and UnityTest.
@@ -238,6 +239,20 @@ public class MyTestClass
     {
         var cube = GameObject.Find("Cube in TestScene");
         Assert.That(cube, Is.Not.Null);
+    }
+
+    [Test]
+    [LoadScene("Packages/YourPackageName/**/SampleScene.unity")]
+    public void UsingGlobPattern()
+    {
+        // snip
+    }
+
+    [Test]
+    [LoadScene("../../Scenes/SampleScene.unity")]
+    public void UsingRelativePath()
+    {
+        // snip
     }
 }
 ```
