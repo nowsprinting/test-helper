@@ -1,7 +1,10 @@
 // Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
 
 namespace TestHelper.Attributes
@@ -10,16 +13,19 @@ namespace TestHelper.Attributes
     [TestFixture]
     public class BuildSceneAttributeTest
     {
+        private const string TestScene = "../../Scenes/NotInScenesInBuildForUse.unity";
         private const string ObjectName = "CubeInNotInScenesInBuild";
 
         [Test]
-        [BuildScene("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuildForUse.unity")]
-        public void Attach_BuildScene()
+        [BuildScene(TestScene)]
+        public async Task Attach_SceneIntoBuild()
         {
             var cube = GameObject.Find(ObjectName);
             Assume.That(cube, Is.Null, "Not loaded ");
 
-            // TODO: Load scene
+            await SceneManagerHelper.LoadSceneCoroutine(TestScene); // Can also be loaded by running the player
+            cube = GameObject.Find(ObjectName);
+            Assume.That(cube, Is.Not.Null);
         }
 
         [TestCase("./Scene.unity", // include `./`

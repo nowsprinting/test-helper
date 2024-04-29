@@ -2,7 +2,8 @@
     "name": "TestHelper.Editor",
     "rootNamespace": "TestHelper",
     "references": [
-        "TestHelper"
+        "TestHelper",
+        "TestHelper.RuntimeInternals"
     ],
     "includePlatforms": [
         "Editor"

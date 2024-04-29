@@ -6,13 +6,8 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using NUnit.Framework.Interfaces;
-using TestHelper.Utils;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+using TestHelper.RuntimeInternals;
 using UnityEngine.TestTools;
-#if UNITY_EDITOR
-using UnityEditor.SceneManagement;
-#endif
 
 namespace TestHelper.Attributes
 {
@@ -49,33 +44,7 @@ namespace TestHelper.Attributes
         /// <inheritdoc />
         public IEnumerator BeforeTest(ITest test)
         {
-            var existScenePath = ScenePathFinder.GetExistScenePath(ScenePath);
-            AsyncOperation loadSceneAsync = null;
-
-            if (Application.isEditor)
-            {
-#if UNITY_EDITOR
-                if (Application.isPlaying)
-                {
-                    // Play Mode tests running in Editor
-                    loadSceneAsync = EditorSceneManager.LoadSceneAsyncInPlayMode(
-                        existScenePath,
-                        new LoadSceneParameters(LoadSceneMode.Single));
-                }
-                else
-                {
-                    // Edit Mode tests
-                    EditorSceneManager.OpenScene(existScenePath);
-                }
-#endif
-            }
-            else
-            {
-                // Play Mode tests running on Player
-                loadSceneAsync = SceneManager.LoadSceneAsync(existScenePath);
-            }
-
-            yield return loadSceneAsync;
+            yield return SceneManagerHelper.LoadSceneCoroutine(ScenePath);
         }
 
         /// <inheritdoc />

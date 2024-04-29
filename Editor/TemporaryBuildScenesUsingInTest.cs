@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using TestHelper.Attributes;
 using TestHelper.Editor;
-using TestHelper.Utils;
+using TestHelper.RuntimeInternals;
 using UnityEditor;
 using UnityEditor.TestTools;
 using UnityEngine;
@@ -64,7 +64,7 @@ namespace TestHelper.Editor
                 string scenePath;
                 try
                 {
-                    scenePath = ScenePathFinder.GetExistScenePath(attribute.ScenePath);
+                    scenePath = SceneManagerHelper.GetExistScenePath(attribute.ScenePath);
                 }
                 catch (ArgumentException e)
                 {
