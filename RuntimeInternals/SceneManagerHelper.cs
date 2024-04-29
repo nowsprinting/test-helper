@@ -40,7 +40,7 @@ namespace TestHelper.RuntimeInternals
         /// When loading the scene that is not in "Scenes in Build", use <see cref="TestHelper.Attributes.BuildSceneAttribute"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
-        public static IEnumerator LoadSceneCoroutine(string path, [CallerFilePath] string callerFilePath = null)
+        public static IEnumerator LoadSceneAsync(string path, [CallerFilePath] string callerFilePath = null)
         {
             var existScenePath = GetExistScenePath(path, callerFilePath);
             AsyncOperation loadSceneAsync = null;
@@ -75,7 +75,7 @@ namespace TestHelper.RuntimeInternals
         /// Get existing scene file path matches a glob pattern.
         /// </summary>
         /// <param name="path">Scene file path. Can be specified path by glob pattern. However, there are restrictions, top level and scene name cannot be omitted.</param>
-        /// <param name="callerFilePath">CallerFilePath via <c>LoadSceneAttribute</c>, <c>BuildSceneAttribute</c>, and <c>LoadSceneCoroutine</c>.</param>
+        /// <param name="callerFilePath">CallerFilePath via <c>LoadSceneAttribute</c>, <c>BuildSceneAttribute</c>, and <c>LoadSceneAsync</c>.</param>
         /// <returns>Existing scene file path</returns>
         /// <exception cref="ArgumentException">Invalid path format</exception>
         /// <exception cref="FileNotFoundException">Scene file not found</exception>

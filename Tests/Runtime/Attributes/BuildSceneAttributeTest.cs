@@ -23,7 +23,7 @@ namespace TestHelper.Attributes
             var cube = GameObject.Find(ObjectName);
             Assume.That(cube, Is.Null, "Not loaded ");
 
-            await SceneManagerHelper.LoadSceneCoroutine(TestScene); // Can also be loaded by running the player
+            await SceneManagerHelper.LoadSceneAsync(TestScene); // Can also be loaded by running the player
             cube = GameObject.Find(ObjectName);
             Assume.That(cube, Is.Not.Null);
         }

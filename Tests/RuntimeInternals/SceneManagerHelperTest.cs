@@ -19,9 +19,9 @@ namespace TestHelper.RuntimeInternals
         [TestCase("../Scenes/NotInScenesInBuildForRelative.unity")]
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         // Note: Tests to run on the player, see `BuildSceneAttributeTest`
-        public async Task LoadSceneCoroutine_LoadedScene(string path)
+        public async Task LoadSceneAsync_LoadedScene(string path)
         {
-            await SceneManagerHelper.LoadSceneCoroutine(path);
+            await SceneManagerHelper.LoadSceneAsync(path);
             var cube = GameObject.Find("CubeInNotInScenesInBuild");
             Assume.That(cube, Is.Not.Null);
         }

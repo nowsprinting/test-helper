@@ -31,7 +31,7 @@ namespace TestHelper.Attributes
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
         /// </param>
         /// <remarks>
-        /// - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>. If you want to setup before loading Use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneCoroutine"/> instead.
+        /// - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>. If you want to setup before loading Use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneAsync"/> instead.
         /// - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
@@ -45,7 +45,7 @@ namespace TestHelper.Attributes
         public IEnumerator BeforeTest(ITest test)
         {
             // ReSharper disable once ExplicitCallerInfoArgument
-            yield return SceneManagerHelper.LoadSceneCoroutine(ScenePath, CallerFilePath);
+            yield return SceneManagerHelper.LoadSceneAsync(ScenePath, CallerFilePath);
         }
 
         /// <inheritdoc />
