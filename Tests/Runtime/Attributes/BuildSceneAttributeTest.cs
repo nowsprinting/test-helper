@@ -13,7 +13,7 @@ namespace TestHelper.Attributes
     [TestFixture]
     public class BuildSceneAttributeTest
     {
-        private const string TestScene = "../../Scenes/NotInScenesInBuildForUse.unity";
+        private const string TestScene = "../../Scenes/NotInScenesInBuildForBuild.unity";
         private const string ObjectName = "CubeInNotInScenesInBuild";
 
         [Test]
@@ -26,18 +26,6 @@ namespace TestHelper.Attributes
             await SceneManagerHelper.LoadSceneCoroutine(TestScene); // Can also be loaded by running the player
             cube = GameObject.Find(ObjectName);
             Assume.That(cube, Is.Not.Null);
-        }
-
-        [TestCase("./Scene.unity", // include `./`
-            "Assets/Tests/Runtime/Caller.cs",
-            "Assets/Tests/Runtime/Scene.unity")]
-        [TestCase("../../BadPath/../Scenes/Scene.unity", // include `../`
-            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
-            "Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity")]
-        public void GetAbsolutePath(string relativePath, string callerFilePath, string expected)
-        {
-            var actual = BuildSceneAttribute.GetAbsolutePath(relativePath, callerFilePath);
-            Assert.That(actual, Is.EqualTo(expected));
         }
     }
 }

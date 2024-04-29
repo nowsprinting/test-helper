@@ -6,6 +6,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -39,9 +40,9 @@ namespace TestHelper.RuntimeInternals
         /// When loading the scene that is not in "Scenes in Build", use <see cref="TestHelper.Attributes.BuildSceneAttribute"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
-        public static IEnumerator LoadSceneCoroutine(string path)
+        public static IEnumerator LoadSceneCoroutine(string path, [CallerFilePath] string callerFilePath = null)
         {
-            var existScenePath = GetExistScenePath(path);
+            var existScenePath = GetExistScenePath(path, callerFilePath);
             AsyncOperation loadSceneAsync = null;
 
             if (Application.isEditor)
@@ -74,17 +75,47 @@ namespace TestHelper.RuntimeInternals
         /// Get existing scene file path matches a glob pattern.
         /// </summary>
         /// <param name="path">Scene file path. Can be specified path by glob pattern. However, there are restrictions, top level and scene name cannot be omitted.</param>
+        /// <param name="callerFilePath">CallerFilePath via <c>LoadSceneAttribute</c>, <c>BuildSceneAttribute</c>, and <c>LoadSceneCoroutine</c>.</param>
         /// <returns>Existing scene file path</returns>
         /// <exception cref="ArgumentException">Invalid path format</exception>
         /// <exception cref="FileNotFoundException">Scene file not found</exception>
-        public static string GetExistScenePath(string path)
+        internal static string GetExistScenePath(string path, string callerFilePath)
         {
+            if (path.StartsWith("."))
+            {
+                path = GetAbsolutePath(path, callerFilePath);
+            }
+
             ValidatePath(path);
 #if UNITY_EDITOR
             return GetExistScenePathInEditor(path);
 #else
             return GetExistScenePathOnPlayer(path);
 #endif
+        }
+
+        internal static string GetAbsolutePath(string relativePath, string callerFilePath)
+        {
+            var callerDirectory = Path.GetDirectoryName(callerFilePath);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
+
+            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
+            if (assetsIndexOf > 0)
+            {
+                return absolutePath.Substring(assetsIndexOf);
+            }
+
+            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
+            if (packageIndexOf > 0)
+            {
+                return absolutePath.Substring(packageIndexOf);
+            }
+
+            Debug.LogError(
+                $"Can not resolve absolute path. relativePath: {relativePath}, callerFilePath: {callerFilePath}");
+            return null;
+            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
         }
 
         private static void ValidatePath(string path)

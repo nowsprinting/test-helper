@@ -64,7 +64,7 @@ namespace TestHelper.Editor
                 string scenePath;
                 try
                 {
-                    scenePath = SceneManagerHelper.GetExistScenePath(attribute.ScenePath);
+                    scenePath = SceneManagerHelper.GetExistScenePath(attribute.ScenePath, attribute.CallerFilePath);
                 }
                 catch (ArgumentException e)
                 {

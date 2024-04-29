@@ -3,10 +3,8 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace TestHelper.Attributes
 {
@@ -17,6 +15,7 @@ namespace TestHelper.Attributes
     public class BuildSceneAttribute : NUnitAttribute
     {
         internal string ScenePath { get; private set; }
+        internal string CallerFilePath { get; private set; }
 
         /// <summary>
         /// Build scene before running test on player.
@@ -36,38 +35,8 @@ namespace TestHelper.Attributes
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
         public BuildSceneAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
-            if (path.StartsWith("."))
-            {
-                ScenePath = GetAbsolutePath(path, callerFilePath);
-            }
-            else
-            {
-                ScenePath = path;
-            }
-        }
-
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        internal static string GetAbsolutePath(string relativePath, string callerFilePath)
-        {
-            var callerDirectory = Path.GetDirectoryName(callerFilePath);
-            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
-
-            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
-            if (assetsIndexOf > 0)
-            {
-                return absolutePath.Substring(assetsIndexOf);
-            }
-
-            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
-            if (packageIndexOf > 0)
-            {
-                return absolutePath.Substring(packageIndexOf);
-            }
-
-            Debug.LogError(
-                $"Can not resolve absolute path. relativePath: {relativePath}, callerFilePath: {callerFilePath}");
-            return null;
-            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
+            ScenePath = path;
+            CallerFilePath = callerFilePath;
         }
     }
 }

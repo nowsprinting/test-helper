@@ -14,20 +14,28 @@ namespace TestHelper.RuntimeInternals
     [TestFixture]
     public class SceneManagerHelperTest
     {
-        [Test]
+        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity")]
+        [TestCase("Packages/com.nowsprinting.test-helper/**/NotInScenesInBuildForGlob.unity")]
+        [TestCase("../Scenes/NotInScenesInBuildForRelative.unity")]
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         // Note: Tests to run on the player, see `BuildSceneAttributeTest`
-        public async Task LoadSceneCoroutine_LoadedScene()
+        public async Task LoadSceneCoroutine_LoadedScene(string path)
         {
-            const string TestScene = "../Scenes/NotInScenesInBuildForUse.unity";
-            const string ObjectName = "CubeInNotInScenesInBuild";
-
-            var cube = GameObject.Find(ObjectName);
-            Assume.That(cube, Is.Null, "Not loaded ");
-
-            await SceneManagerHelper.LoadSceneCoroutine(TestScene);
-            cube = GameObject.Find(ObjectName);
+            await SceneManagerHelper.LoadSceneCoroutine(path);
+            var cube = GameObject.Find("CubeInNotInScenesInBuild");
             Assume.That(cube, Is.Not.Null);
+        }
+
+        [TestCase("./Scene.unity", // include `./`
+            "Assets/Tests/Runtime/Caller.cs",
+            "Assets/Tests/Runtime/Scene.unity")]
+        [TestCase("../../BadPath/../Scenes/Scene.unity", // include `../`
+            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
+            "Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity")]
+        public void GetAbsolutePath(string relativePath, string callerFilePath, string expected)
+        {
+            var actual = SceneManagerHelper.GetAbsolutePath(relativePath, callerFilePath);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity")]
@@ -42,7 +50,7 @@ namespace TestHelper.RuntimeInternals
             const string ExistScenePath = "NotInScenesInBuild"; // Scene name only
 #endif
 
-            var actual = SceneManagerHelper.GetExistScenePath(path);
+            var actual = SceneManagerHelper.GetExistScenePath(path, null);
             Assert.That(actual, Is.EqualTo(ExistScenePath));
         }
 
@@ -53,7 +61,7 @@ namespace TestHelper.RuntimeInternals
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/*InScenesInBuild.unity")]
         public void GetExistScenePath_InvalidGlobPattern_ThrowsArgumentException(string path)
         {
-            Assert.That(() => SceneManagerHelper.GetExistScenePath(path), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => SceneManagerHelper.GetExistScenePath(path, null), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotExistScene.unity")] // Not exist path
@@ -61,7 +69,7 @@ namespace TestHelper.RuntimeInternals
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         public void GetExistScenePath_NotExistPath_InEditor_ThrowsFileNotFoundException(string path)
         {
-            Assert.That(() => SceneManagerHelper.GetExistScenePath(path), Throws.TypeOf<FileNotFoundException>());
+            Assert.That(() => SceneManagerHelper.GetExistScenePath(path, null), Throws.TypeOf<FileNotFoundException>());
             // Note: Returns scene name when running on player.
         }
 
