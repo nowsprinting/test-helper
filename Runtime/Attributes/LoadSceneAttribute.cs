@@ -4,82 +4,46 @@
 using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using TestHelper.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 #if UNITY_EDITOR
-using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-
-// ReSharper disable InvalidXmlDocComment
 
 namespace TestHelper.Attributes
 {
     /// <summary>
     /// Load scene before running test.
-    ///
-    /// It has the following benefits:
-    ///  - Can be used when running play mode tests in-editor and on-player
-    ///  - Can be specified scenes that are not in "Scenes in Build"
-    ///
-    /// Notes:
-    ///  - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>
-    ///  - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="Editor.TemporaryBuildScenesUsingInTest"/>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public class LoadSceneAttribute : NUnitAttribute, IOuterUnityTestAction
+    public class LoadSceneAttribute : BuildSceneAttribute, IOuterUnityTestAction
     {
-        internal string ScenePath { get; private set; }
-
         /// <summary>
         /// Load scene before running test.
-        /// Can be specified path by glob pattern. However, there are restrictions, top level and scene name cannot be omitted.
-        /// Can be specified relative path.
+        /// This attribute has the following benefits:
+        /// - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
+        /// - Can be specified scenes that are **NOT** in "Scenes in Build".
+        /// - Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+        /// - Can be specified scene path by relative path from the test class file.
         /// </summary>
         /// <param name="path">Scene file path.
-        /// The path starts with `Assets/` or `Packages/`.
+        /// The path starts with `Assets/` or `Packages/` or `.`.
         /// And package name using `name` instead of `displayName`, when scenes in the package.
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
         /// </param>
-        /// <seealso href="https://en.wikipedia.org/wiki/Glob_(programming)"/>
+        /// <remarks>
+        /// - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
+        /// - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
+        /// </remarks>
+        [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
+        [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
         public LoadSceneAttribute(string path, [CallerFilePath] string callerFilePath = null)
+            : base(path, callerFilePath)
         {
-            if (path.StartsWith("."))
-            {
-                ScenePath = GetAbsolutePath(path, callerFilePath);
-            }
-            else
-            {
-                ScenePath = path;
-            }
-        }
-
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        internal static string GetAbsolutePath(string relativePath, string callerFilePath)
-        {
-            var callerDirectory = Path.GetDirectoryName(callerFilePath);
-            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
-
-            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
-            if (assetsIndexOf > 0)
-            {
-                return absolutePath.Substring(assetsIndexOf);
-            }
-
-            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
-            if (packageIndexOf > 0)
-            {
-                return absolutePath.Substring(packageIndexOf);
-            }
-
-            throw new ArgumentException(
-                $"Can not resolve absolute path. relativePath: {relativePath}, callerFilePath: {callerFilePath}");
         }
 
         /// <inheritdoc />

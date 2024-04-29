@@ -48,7 +48,7 @@ namespace TestHelper.Attributes
         }
 
         [Test]
-        [LoadScene("Packages/com.nowsprinting.test-helper/**/NotInScenesInBuild.unity")]
+        [LoadScene("Packages/com.nowsprinting.test-helper/**/NotInScenesInBuildForGlob.unity")]
         public void UsingGlob_LoadedSceneNotInBuild()
         {
             var cube = GameObject.Find(ObjectName);
@@ -58,25 +58,13 @@ namespace TestHelper.Attributes
         }
 
         [Test]
-        [LoadScene("../../Scenes/NotInScenesInBuild.unity")]
+        [LoadScene("../../Scenes/NotInScenesInBuildForRelative.unity")]
         public void UsingRelativePath_LoadedSceneNotInBuild()
         {
             var cube = GameObject.Find(ObjectName);
             Assert.That(cube, Is.Not.Null);
 
             Object.Destroy(cube); // For not giving false negatives in subsequent tests.
-        }
-
-        [TestCase("./Scene.unity", // include `./`
-            "Assets/Tests/Runtime/Caller.cs",
-            "Assets/Tests/Runtime/Scene.unity")]
-        [TestCase("../../BadPath/../Scenes/Scene.unity", // include `../`
-            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
-            "Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity")]
-        public void GetAbsolutePath(string relativePath, string callerFilePath, string expected)
-        {
-            var actual = LoadSceneAttribute.GetAbsolutePath(relativePath, callerFilePath);
-            Assert.That(actual, Is.EqualTo(expected));
         }
     }
 }

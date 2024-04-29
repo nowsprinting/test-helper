@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -56,9 +56,9 @@ namespace TestHelper.Editor
 
         internal static IEnumerable<string> GetScenesUsingInTest()
         {
-            var attributes = FindAttributesOnAssemblies<LoadSceneAttribute>()
-                .Concat(FindAttributesOnTypes<LoadSceneAttribute>())
-                .Concat(FindAttributesOnMethods<LoadSceneAttribute>());
+            var attributes = FindAttributesOnAssemblies<BuildSceneAttribute>()
+                .Concat(FindAttributesOnTypes<BuildSceneAttribute>())
+                .Concat(FindAttributesOnMethods<BuildSceneAttribute>());
             foreach (var attribute in attributes)
             {
                 string scenePath;
