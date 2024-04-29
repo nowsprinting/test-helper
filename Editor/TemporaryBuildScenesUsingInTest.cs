@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using TestHelper.Attributes;
 using TestHelper.Editor;
-using TestHelper.Utils;
+using TestHelper.RuntimeInternals;
 using UnityEditor;
 using UnityEditor.TestTools;
 using UnityEngine;
@@ -21,50 +21,50 @@ namespace TestHelper.Editor
     /// </summary>
     public class TemporaryBuildScenesUsingInTest : ITestPlayerBuildModifier
     {
-        private static IEnumerable<LoadSceneAttribute> FindLoadSceneAttributesOnAssemblies()
+        private static IEnumerable<T> FindAttributesOnAssemblies<T>() where T : Attribute
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var attribute in assemblies
-                         .Select(assembly => assembly.GetCustomAttributes(typeof(LoadSceneAttribute), false))
+                         .Select(assembly => assembly.GetCustomAttributes(typeof(T), false))
                          .SelectMany(attributes => attributes))
             {
-                yield return attribute as LoadSceneAttribute;
+                yield return attribute as T;
             }
         }
 
-        private static IEnumerable<LoadSceneAttribute> FindLoadSceneAttributesOnTypes()
+        private static IEnumerable<T> FindAttributesOnTypes<T>() where T : Attribute
         {
-            var symbols = TypeCache.GetTypesWithAttribute<LoadSceneAttribute>();
+            var symbols = TypeCache.GetTypesWithAttribute<T>();
             foreach (var attribute in symbols
-                         .Select(symbol => symbol.GetCustomAttributes(typeof(LoadSceneAttribute), false))
+                         .Select(symbol => symbol.GetCustomAttributes(typeof(T), false))
                          .SelectMany(attributes => attributes))
             {
-                yield return attribute as LoadSceneAttribute;
+                yield return attribute as T;
             }
         }
 
-        private static IEnumerable<LoadSceneAttribute> FindLoadSceneAttributesOnMethods()
+        private static IEnumerable<T> FindAttributesOnMethods<T>() where T : Attribute
         {
-            var symbols = TypeCache.GetMethodsWithAttribute<LoadSceneAttribute>();
+            var symbols = TypeCache.GetMethodsWithAttribute<T>();
             foreach (var attribute in symbols
-                         .Select(symbol => symbol.GetCustomAttributes(typeof(LoadSceneAttribute), false))
+                         .Select(symbol => symbol.GetCustomAttributes(typeof(T), false))
                          .SelectMany(attributes => attributes))
             {
-                yield return attribute as LoadSceneAttribute;
+                yield return attribute as T;
             }
         }
 
         internal static IEnumerable<string> GetScenesUsingInTest()
         {
-            var attributes = FindLoadSceneAttributesOnAssemblies()
-                .Concat(FindLoadSceneAttributesOnTypes())
-                .Concat(FindLoadSceneAttributesOnMethods());
+            var attributes = FindAttributesOnAssemblies<BuildSceneAttribute>()
+                .Concat(FindAttributesOnTypes<BuildSceneAttribute>())
+                .Concat(FindAttributesOnMethods<BuildSceneAttribute>());
             foreach (var attribute in attributes)
             {
                 string scenePath;
                 try
                 {
-                    scenePath = ScenePathFinder.GetExistScenePath(attribute.ScenePath);
+                    scenePath = SceneManagerHelper.GetExistScenePath(attribute.ScenePath, attribute.CallerFilePath);
                 }
                 catch (ArgumentException e)
                 {

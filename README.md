@@ -217,10 +217,10 @@ It has the following benefits:
 
 - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
 - Can be specified scenes that are **NOT** in "Scenes in Build".
-- Can be specified path by glob pattern. However, there are restrictions, top level and scene name cannot be omitted.
-- Can be specified path by relative path from the test class file.
+- Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- Can be specified scene path by relative path from the test class file.
 
-- This attribute can attached to the test method only.
+This attribute can attached to the test method only.
 It can be used with sync Tests, async Tests, and UnityTest.
 
 Usage:
@@ -258,8 +258,50 @@ public class MyTestClass
 ```
 
 > [!NOTE]  
-> - Load scene run after `OneTimeSetUp` and before `SetUp`
-> - Scene file path is starts with `Assets/` or `Packages/`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+> - Load scene run after `OneTimeSetUp` and before `SetUp`. If you want to setup before loading Use [BuildSceneAttribute](#BuildScene) and [SceneManagerHelper](#SceneManagerHelper) method instead.
+> - Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+
+
+#### BuildScene
+
+`BuildSceneAttribute` is a NUnit test attribute class that build the scene before running the test on player.
+
+It has the following benefits:
+
+- Can be specified scenes that are **NOT** in "Scenes in Build".
+- Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- Can be specified scene path by relative path from the test class file.
+
+This attribute can attached to the test method only.
+It can be used with sync Tests, async Tests, and UnityTest.
+
+Usage:
+
+```csharp
+using NUnit.Framework;
+using TestHelper.Attributes;
+using TestHelper.RuntimeInternals;
+using UnityEngine;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [BuildScene("../../Scenes/SampleScene.unity")]
+    public void MyTestMethod()
+    {
+        // Setup before load scene
+
+        // Load scene
+        await SceneManagerHelper.LoadSceneAsync("../../Scenes/SampleScene.unity");
+
+        // Excercise the test
+    }
+}
+```
+
+> [!NOTE]
+> - Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 #### TakeScreenshot
@@ -433,6 +475,44 @@ public class MyTestClass
 > - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
 > - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
 > - UniTask is required to be used from the async method. And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+
+
+#### SceneManagerHelper
+
+`SceneManagerHelper` is a utility class to load the scene file.
+
+It has the following benefits:
+
+- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
+- Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- Can be specified scene path by relative path from the test class file.
+
+Usage:
+
+```csharp
+using NUnit.Framework;
+using TestHelper.RuntimeInternals;
+using UnityEngine;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public void MyTestMethod()
+    {
+        // Setup before load scene
+
+        // Load scene
+        await SceneManagerHelper.LoadSceneAsync("../../Scenes/SampleScene.unity");
+        
+        // Excercise the test
+    }
+}
+```
+
+> [!NOTE]
+> - Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+> - When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#BuildScene).
 
 
 ### Editor Extensions

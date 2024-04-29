@@ -2,25 +2,24 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using NUnit.Framework.Interfaces;
-using TestHelper.RuntimeInternals;
-using UnityEngine.TestTools;
+using NUnit.Framework;
 
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Load scene before running test.
+    /// Build scene before running test on player.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public class LoadSceneAttribute : BuildSceneAttribute, IOuterUnityTestAction
+    public class BuildSceneAttribute : NUnitAttribute
     {
+        internal string ScenePath { get; private set; }
+        internal string CallerFilePath { get; private set; }
+
         /// <summary>
-        /// Load scene before running test.
+        /// Build scene before running test on player.
         /// This attribute has the following benefits:
-        /// - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
         /// - Can be specified scenes that are **NOT** in "Scenes in Build".
         /// - Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
         /// - Can be specified scene path by relative path from the test class file.
@@ -31,27 +30,13 @@ namespace TestHelper.Attributes
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
         /// </param>
         /// <remarks>
-        /// - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>. If you want to setup before loading Use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneAsync"/> instead.
         /// - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
         /// </remarks>
-        [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
-        public LoadSceneAttribute(string path, [CallerFilePath] string callerFilePath = null)
-            : base(path, callerFilePath)
+        public BuildSceneAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
-        }
-
-        /// <inheritdoc />
-        public IEnumerator BeforeTest(ITest test)
-        {
-            // ReSharper disable once ExplicitCallerInfoArgument
-            yield return SceneManagerHelper.LoadSceneAsync(ScenePath, CallerFilePath);
-        }
-
-        /// <inheritdoc />
-        public IEnumerator AfterTest(ITest test)
-        {
-            yield return null;
+            ScenePath = path;
+            CallerFilePath = callerFilePath;
         }
     }
 }
