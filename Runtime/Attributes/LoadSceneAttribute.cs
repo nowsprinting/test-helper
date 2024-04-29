@@ -50,7 +50,7 @@ namespace TestHelper.Attributes
         /// <seealso href="https://en.wikipedia.org/wiki/Glob_(programming)"/>
         public LoadSceneAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
-            if (path.StartsWith('.'))
+            if (path.StartsWith("."))
             {
                 ScenePath = GetAbsolutePath(path, callerFilePath);
             }
