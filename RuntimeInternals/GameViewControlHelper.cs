@@ -23,8 +23,9 @@ namespace TestHelper.RuntimeInternals
 #if UNITY_EDITOR
 #if UNITY_2022_2_OR_NEWER
             PlayModeWindow.SetViewType(PlayModeWindow.PlayModeViewTypes.GameView);
-#endif
+#else
             GameViewWrapper.GetWindow();
+#endif
 #endif
         }
 
