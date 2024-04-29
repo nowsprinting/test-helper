@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections;
@@ -55,6 +55,28 @@ namespace TestHelper.Attributes
             Assert.That(cube, Is.Not.Null);
 
             Object.Destroy(cube); // For not giving false negatives in subsequent tests.
+        }
+
+        [Test]
+        [LoadScene("../../Scenes/NotInScenesInBuild.unity")]
+        public void UsingRelativePath_LoadedSceneNotInBuild()
+        {
+            var cube = GameObject.Find(ObjectName);
+            Assert.That(cube, Is.Not.Null);
+
+            Object.Destroy(cube); // For not giving false negatives in subsequent tests.
+        }
+
+        [TestCase("./Scene.unity", // include `./`
+            "Assets/Tests/Runtime/Caller.cs",
+            "Assets/Tests/Runtime/Scene.unity")]
+        [TestCase("../../BadPath/../Scenes/Scene.unity", // include `../`
+            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
+            "Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity")]
+        public void GetAbsolutePath(string relativePath, string callerFilePath, string expected)
+        {
+            var actual = LoadSceneAttribute.GetAbsolutePath(relativePath, callerFilePath);
+            Assert.That(actual, Is.EqualTo(expected));
         }
     }
 }
