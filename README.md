@@ -170,6 +170,40 @@ public class MyTestClass
 ```
 
 
+#### UnityVersion
+
+`UnityVersionAttribute` is an NUnit test attribute class to skip test run if Unity version is older and/or newer than specified.
+
+This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+Can be used with sync Test, async Test, and UnityTest.
+
+Usage:
+
+```csharp
+using System;
+using NUnit.Framework;
+using TestHelper.Attributes;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [UnityVersion(newerThanOrEqual: "2022")]
+    public void MyTestMethod()
+    {
+        // Test run only for Unity 2022.1.0f1 or later.
+    }
+
+    [Test]
+    [UnityVersion(olderThan: "2019.4.0f1")]
+    public void MyTestMethod()
+    {
+        // Test run only for Unity older than 2019.4.0f1.
+    }
+}
+```
+
+
 #### CreateScene
 
 `CreateSceneAttribute` is an NUnit test attribute class to create new scene before running test.
