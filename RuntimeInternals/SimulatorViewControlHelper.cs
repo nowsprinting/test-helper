@@ -12,6 +12,7 @@ namespace TestHelper.RuntimeInternals
     /// <summary>
     /// <c>SimulatorView</c> control helper.
     /// This class can be used from the runtime code because it does not depend on test-framework.
+    /// This class works only with Unity 2022.2 or newer. (not support device simulator package)
     /// </summary>
     public static class SimulatorViewControlHelper
     {

@@ -12,6 +12,7 @@ namespace TestHelper.Attributes
 {
     /// <summary>
     /// Set <c>SimulatorView</c> orientation before SetUp test.
+    /// This attribute works only with Unity 2022.2 or newer. (not support device simulator package)
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
     public class SimulatorViewAttribute : NUnitAttribute, IApplyToContext
@@ -20,6 +21,7 @@ namespace TestHelper.Attributes
 
         /// <summary>
         /// Set <c>SimulatorView</c> orientation before SetUp test.
+        /// This attribute works only with Unity 2022.2 or newer. (not support device simulator package)
         /// </summary>
         /// <param name="orientation">Set screen orientation</param>
         public SimulatorViewAttribute(ScreenOrientation orientation = ScreenOrientation.Portrait)
