@@ -20,6 +20,7 @@ namespace TestHelper.Attributes
 
         /// <summary>
         /// Skip this test run if Unity version is older and/or newer than specified.
+        /// Valid format, e.g., "2023.2.16f1", "2023.2", and "2023".
         /// </summary>
         /// <param name="newerThanOrEqual">This test will run if the Unity editor version is newer than or equal the specified version.</param>
         /// <param name="olderThan">This test will run if the Unity editor version is older than the specified version.</param>
