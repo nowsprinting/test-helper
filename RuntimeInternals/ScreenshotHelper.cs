@@ -22,15 +22,17 @@ namespace TestHelper.RuntimeInternals
         private static string DefaultFilename(string callerMemberName)
         {
 #if UNITY_INCLUDE_TESTS
-            return TestContext.CurrentTestExecutionContext.CurrentTest.Name
-                .Replace('(', '_')
-                .Replace(')', '_')
-                .Replace(',', '-')
-                .Replace("\"", "");
-            // Note: Same as the file name created under ActualImages of the Graphics Tests Framework package.
-#else
-            return callerMemberName;
+            if (TestContext.CurrentTestExecutionContext != null)
+            {
+                return TestContext.CurrentTestExecutionContext.CurrentTest.Name
+                    .Replace('(', '_')
+                    .Replace(')', '_')
+                    .Replace(',', '-')
+                    .Replace("\"", "");
+                // Note: Same as the file name created under ActualImages of the Graphics Tests Framework package.
+            }
 #endif
+            return callerMemberName;
         }
 
         /// <summary>
