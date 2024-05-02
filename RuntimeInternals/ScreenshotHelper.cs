@@ -19,7 +19,7 @@ namespace TestHelper.RuntimeInternals
     {
         private static string DefaultDirectoryPath => CommandLineArgs.GetScreenshotDirectory();
 
-        private static string DefaultFilename(string callerMemberName)
+        internal static string DefaultFilename(string callerMemberName)
         {
 #if UNITY_INCLUDE_TESTS
             if (TestContext.CurrentTestExecutionContext != null)
@@ -57,11 +57,13 @@ namespace TestHelper.RuntimeInternals
         /// Using caller method name when run in runtime context.</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
+        /// <param name="logFilepath">Output filename to Debug.Log</param>
         public static IEnumerator TakeScreenshot(
             string directory = null,
             string filename = null,
             int superSize = 1,
             ScreenCapture.StereoScreenCaptureMode stereoCaptureMode = ScreenCapture.StereoScreenCaptureMode.LeftEye,
+            bool logFilepath = true,
             // ReSharper disable once InvalidXmlDocComment
             [CallerMemberName] string callerMemberName = null)
         {
@@ -101,7 +103,11 @@ namespace TestHelper.RuntimeInternals
             var path = Path.Combine(directory, filename);
             var bytes = texture.EncodeToPNG();
             File.WriteAllBytes(path, bytes);
-            Debug.Log($"Save screenshot to {path}");
+
+            if (logFilepath)
+            {
+                Debug.Log($"Save screenshot to {path}");
+            }
         }
     }
 }

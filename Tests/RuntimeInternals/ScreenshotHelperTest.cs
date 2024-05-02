@@ -6,29 +6,25 @@ using System.IO;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
+using TestHelper.Attributes;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
 namespace TestHelper.RuntimeInternals
 {
     [TestFixture]
-    [PrebuildSetup(typeof(ScreenshotHelperTestSceneBuilder))]
-    [PostBuildCleanup(typeof(ScreenshotHelperTestSceneBuilder))]
     public class ScreenshotHelperTest
     {
-        internal const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
+        private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
         private const int FileSizeThreshold = 5441; // VGA size solid color file size
         private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
 
         private Text _text;
 
-        [UnitySetUp]
-        public IEnumerator SetUp()
+        [SetUp]
+        public void SetUp()
         {
-            yield return SceneManager.LoadSceneAsync(TestScene);
-
             var textObject = GameObject.Find("Text");
             Assume.That(textObject, Is.Not.Null);
 
@@ -37,6 +33,7 @@ namespace TestHelper.RuntimeInternals
         }
 
         [UnityTest]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SaveToDefaultPath()
         {
             var path = Path.Combine(_defaultOutputDirectory, $"{nameof(TakeScreenshot_SaveToDefaultPath)}.png");
@@ -53,6 +50,7 @@ namespace TestHelper.RuntimeInternals
         }
 
         [UnityTest]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_Multiple_SaveToEachSpecifyPaths()
         {
             const string Filename1 = "TakeScreenshot_Multiple_SpecifyFilename1.png";
@@ -85,6 +83,7 @@ namespace TestHelper.RuntimeInternals
         }
 
         [UnityTest]
+        [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SpecifySuperSizeAndStereoCaptureMode_NotWork()
         {
             yield return ScreenshotHelper.TakeScreenshot(
@@ -94,6 +93,7 @@ namespace TestHelper.RuntimeInternals
         }
 
         [Test]
+        [LoadScene(TestScene)]
         public async Task TakeScreenshot_FromAsyncTest()
         {
             var path = Path.Combine(_defaultOutputDirectory, $"{nameof(TakeScreenshot_FromAsyncTest)}.png");
@@ -115,6 +115,27 @@ namespace TestHelper.RuntimeInternals
 
         private class CoroutineRunner : MonoBehaviour
         {
+        }
+
+        [UnityTest]
+        [LoadScene(TestScene)]
+        public IEnumerator TakeScreenshot_WithoutLogFilepath_SuppressLogging()
+        {
+            yield return ScreenshotHelper.TakeScreenshot(logFilepath: false);
+
+            LogAssert.NoUnexpectedReceived(); // No output to Debug.Log
+        }
+
+        [TestFixture]
+        public class Internal
+        {
+            [TestCase(0, "s")]
+            public void DefaultFilename_Parameterized(int i, string s)
+            {
+                var actual = ScreenshotHelper.DefaultFilename(null);
+
+                Assert.That(actual, Is.EqualTo("DefaultFilename_Parameterized_0-s_"));
+            }
         }
     }
 }
