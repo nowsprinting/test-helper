@@ -19,7 +19,7 @@ namespace TestHelper.RuntimeInternals
     {
         private static string DefaultDirectoryPath => CommandLineArgs.GetScreenshotDirectory();
 
-        private static string DefaultFilename(string callerMemberName)
+        internal static string DefaultFilename(string callerMemberName)
         {
 #if UNITY_INCLUDE_TESTS
             if (TestContext.CurrentTestExecutionContext != null)

@@ -116,5 +116,17 @@ namespace TestHelper.RuntimeInternals
         private class CoroutineRunner : MonoBehaviour
         {
         }
+
+        [TestFixture]
+        public class Internal
+        {
+            [TestCase(0, "s")]
+            public void DefaultFilename_Parameterized(int i, string s)
+            {
+                var actual = ScreenshotHelper.DefaultFilename(null);
+
+                Assert.That(actual, Is.EqualTo("DefaultFilename_Parameterized_0-s_"));
+            }
+        }
     }
 }
