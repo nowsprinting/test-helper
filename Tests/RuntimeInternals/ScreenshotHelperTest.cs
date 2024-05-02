@@ -117,6 +117,15 @@ namespace TestHelper.RuntimeInternals
         {
         }
 
+        [UnityTest]
+        [LoadScene(TestScene)]
+        public IEnumerator TakeScreenshot_WithoutLogFilepath_SuppressLogging()
+        {
+            yield return ScreenshotHelper.TakeScreenshot(logFilepath: false);
+
+            LogAssert.NoUnexpectedReceived(); // No output to Debug.Log
+        }
+
         [TestFixture]
         public class Internal
         {
