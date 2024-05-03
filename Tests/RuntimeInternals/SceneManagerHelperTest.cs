@@ -1,8 +1,7 @@
 // Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
-using System;
-using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
@@ -54,23 +53,32 @@ namespace TestHelper.RuntimeInternals
             Assert.That(actual, Is.EqualTo(ExistScenePath));
         }
 
-        [TestCase("Packages/**/NotInScenesInBuild.unity")]
-        [TestCase("**/NotInScenesInBuild.unity")]
-        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild")]
-        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/Not??ScenesInBuild.unity")]
-        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/*InScenesInBuild.unity")]
-        public void GetExistScenePath_InvalidGlobPattern_ThrowsArgumentException(string path)
+        [TestCase("**/NotInScenesInBuild.unity", "Scene path must start with `Assets/` or `Packages/`")]
+        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild",
+            "Scene path must ends with `.unity`")]
+        [TestCase("Packages/**/NotInScenesInBuild.unity", "Wildcards cannot be used in the package name of path")]
+        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/Not??ScenesInBuild.unity",
+            "Wildcards cannot be used in the scene name of path")]
+        [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/*InScenesInBuild.unity",
+            "Wildcards cannot be used in the scene name of path")]
+        public void GetExistScenePath_InvalidGlobPattern_OutputLogError(string path, string expected)
         {
-            Assert.That(() => SceneManagerHelper.GetExistScenePath(path, null), Throws.TypeOf<ArgumentException>());
+            var actual = SceneManagerHelper.GetExistScenePath(path, null);
+
+            Assert.That(actual, Is.Null);
+            LogAssert.Expect(LogType.Error, new Regex(expected));
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotExistScene.unity")] // Not exist path
         [TestCase("Packages/com.nowsprinting.test-helper/*/NotInScenesInBuild.unity")] // Not match path pattern
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-        public void GetExistScenePath_NotExistPath_InEditor_ThrowsFileNotFoundException(string path)
+        // Note: Returns scene name when running on player.
+        public void GetExistScenePath_NotExistPath_InEditor_OutputLogError(string path)
         {
-            Assert.That(() => SceneManagerHelper.GetExistScenePath(path, null), Throws.TypeOf<FileNotFoundException>());
-            // Note: Returns scene name when running on player.
+            var actual = SceneManagerHelper.GetExistScenePath(path, null);
+
+            Assert.That(actual, Is.Null);
+            LogAssert.Expect(LogType.Error, $"Scene `{path}` is not found in AssetDatabase");
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity")]

@@ -86,7 +86,10 @@ namespace TestHelper.RuntimeInternals
                 path = GetAbsolutePath(path, callerFilePath);
             }
 
-            ValidatePath(path);
+            if (!ValidatePath(path))
+            {
+                return null;
+            }
 #if UNITY_EDITOR
             return GetExistScenePathInEditor(path);
 #else
@@ -112,34 +115,43 @@ namespace TestHelper.RuntimeInternals
                 return absolutePath.Substring(packageIndexOf);
             }
 
-            Debug.LogError(
-                $"Can not resolve absolute path. relativePath: {relativePath}, callerFilePath: {callerFilePath}");
+            Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
             return null;
             // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
         }
 
-        private static void ValidatePath(string path)
+        private static bool ValidatePath(string path)
         {
             if (!path.StartsWith("Assets/") && !path.StartsWith("Packages/"))
             {
-                throw new ArgumentException($"Scene path must start with `Assets/` or `Packages/`. path: {path}");
+                Debug.LogError($"Scene path must start with `Assets/` or `Packages/`. path: {path}");
+                return false;
+                // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
             }
 
             var split = path.Split('/');
             if (split[0].Equals("Packages") && split[1].IndexOfAny(new[] { '*', '?' }) >= 0)
             {
-                throw new ArgumentException($"Wildcards cannot be used in the package name of path: {path}");
+                Debug.LogError($"Wildcards cannot be used in the package name of path: {path}");
+                return false;
+                // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
             }
 
             if (!path.EndsWith(".unity"))
             {
-                throw new ArgumentException($"Scene path must ends with `.unity`. path: {path}");
+                Debug.LogError($"Scene path must ends with `.unity`. path: {path}");
+                return false;
+                // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
             }
 
             if (split.Last().IndexOfAny(new[] { '*', '?' }) >= 0)
             {
-                throw new ArgumentException($"Wildcards cannot be used in the most right section of path: {path}");
+                Debug.LogError($"Wildcards cannot be used in the scene name of path: {path}");
+                return false;
+                // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
             }
+
+            return true;
         }
 
         private static string SearchFolder(string path)
@@ -208,7 +220,9 @@ namespace TestHelper.RuntimeInternals
                 }
             }
 
-            throw new FileNotFoundException($"Scene `{path}` is not found in AssetDatabase");
+            Debug.LogError($"Scene `{path}` is not found in AssetDatabase");
+            return null;
+            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
         }
 #endif
 
