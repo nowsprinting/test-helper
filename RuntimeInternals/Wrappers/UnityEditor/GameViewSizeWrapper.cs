@@ -110,7 +110,9 @@ namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
             var displayTextProperty = s_gameViewSize.GetProperty("displayText");
             if (displayTextProperty == null)
             {
-                throw new NullReferenceException("GameViewSize.displayText property not found.");
+                Debug.LogError("GameViewSize.displayText property not found.");
+                return null;
+                // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
             }
 
             var displayText = displayTextProperty.GetValue(_instance);
