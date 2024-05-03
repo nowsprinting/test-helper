@@ -18,7 +18,7 @@ Required Unity 2019 LTS or later.
 
 `FocusGameViewAttribute` is an NUnit test attribute class to focus `GameView` or `SimulatorWindow` before run test.
 
-This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
@@ -47,7 +47,7 @@ public class MyTestClass
 
 `GameViewResolutionAttribute` is an NUnit test attribute class to set custom resolution to `GameView` before run test.
 
-This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with async Test and UnityTest.
 
 Usage:
@@ -84,7 +84,7 @@ public class MyTestClass
 
 `GizmosShowOnGameViewAttribute` is an NUnit test attribute class to show/hide Gizmos on `GameView` during the test running.
 
-This attribute can attached to test method only.
+This attribute can attach to test method only.
 Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
@@ -113,7 +113,7 @@ public class MyTestClass
 
 `IgnoreBatchModeAttribute` is an NUnit test attribute class to skip test execution when run tests with `-batchmode` from the commandline.
 
-This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
@@ -146,7 +146,7 @@ public class MyTestClass
 
 `IgnoreWindowModeAttribute` is an NUnit test attribute class to skip test execution when run tests on Unity editor window.
 
-This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
@@ -174,7 +174,7 @@ public class MyTestClass
 
 `UnityVersionAttribute` is an NUnit test attribute class to skip test run if Unity version is older and/or newer than specified.
 
-This attribute can attached to test method, test class (`TestFixture`) and test assembly.
+This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
@@ -212,7 +212,7 @@ It has the following benefits:
 
 - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
 
-This attribute can attached to test method only.
+This attribute can attach to test method only.
 Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
@@ -254,7 +254,7 @@ It has the following benefits:
 - Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
 - Can be specified scene path by relative path from the test class file.
 
-This attribute can attached to the test method only.
+This attribute can attach to the test method only.
 It can be used with sync Tests, async Tests, and UnityTest.
 
 Usage:
@@ -346,7 +346,7 @@ Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`C
 You can specify the save directory and/or filename by arguments.
 Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
 
-This attribute can attached to test method only.
+This attribute can attach to test method only.
 Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
@@ -379,7 +379,7 @@ public class MyTestClass
 
 `TimeScaleAttribute` is an NUnit test attribute class to change the [Time.timeScale](https://docs.unity3d.com/ScriptReference/Time-timeScale.html) during the test running.
 
-This attribute can attached to test method only.
+This attribute can attach to test method only.
 Can be used with sync Test, async Test, and UnityTest.
 
 Usage:
