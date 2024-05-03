@@ -11,13 +11,13 @@ namespace TestHelper.Attributes
 {
     /// <seealso cref="LoadSceneAttributeTest"/>
     [TestFixture]
+    [BuildScene(TestScene)]
     public class BuildSceneAttributeTest
     {
         private const string TestScene = "../../Scenes/NotInScenesInBuildForBuild.unity";
         private const string ObjectName = "CubeInNotInScenesInBuild";
 
         [Test]
-        [BuildScene(TestScene)]
         public async Task Attach_SceneIntoBuild()
         {
             var cube = GameObject.Find(ObjectName);
