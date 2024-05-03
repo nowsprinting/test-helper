@@ -306,7 +306,7 @@ It has the following benefits:
 - Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
 - Can be specified scene path by relative path from the test class file.
 
-This attribute can attached to the test method only.
+This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 It can be used with sync Tests, async Tests, and UnityTest.
 
 Usage:
