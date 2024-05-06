@@ -39,5 +39,19 @@ namespace TestHelper.RuntimeInternals
             var actual = CommandLineArgs.GetScreenshotDirectory(Array.Empty<string>());
             Assert.That(actual, Is.EqualTo(Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots")));
         }
+
+        [Test]
+        public void GetJUnitResultsPath_WithArgument_GotSpecifiedPath()
+        {
+            var actual = CommandLineArgs.GetJUnitResultsPath(new[] { "-testHelperJUnitResults", "Test" });
+            Assert.That(actual, Is.EqualTo("Test"));
+        }
+
+        [Test]
+        public void GetJUnitResultsPath_WithoutArgument_ReturnsNull()
+        {
+            var actual = CommandLineArgs.GetJUnitResultsPath(Array.Empty<string>());
+            Assert.That(actual, Is.Null);
+        }
     }
 }

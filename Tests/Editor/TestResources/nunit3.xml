@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.2538825">
+  <test-suite type="TestSuite" id="1000" name="UnityProject~" fullname="UnityProject~" runstate="Runnable" testcasecount="3" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.253883" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1009" name="TestHelper.Editor.Tests.dll" fullname="/github/workspace/UnityProject~/Library/ScriptAssemblies/TestHelper.Editor.Tests.dll" runstate="Runnable" testcasecount="3" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.246003" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="3301" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1010" name="TestHelper" fullname="TestHelper" runstate="Runnable" testcasecount="3" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.245391" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1011" name="Editor" fullname="TestHelper.Editor" runstate="Runnable" testcasecount="3" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.241916" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1003" name="CreateSceneAttributeTest" fullname="TestHelper.Editor.CreateSceneAttributeTest" classname="TestHelper.Editor.CreateSceneAttributeTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.092622" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1004" name="Attach_CreateNewSceneWithCameraAndLight" fullname="TestHelper.Editor.CreateSceneAttributeTest.Attach_CreateNewSceneWithCameraAndLight" methodname="Attach_CreateNewSceneWithCameraAndLight" classname="TestHelper.Editor.CreateSceneAttributeTest" runstate="Runnable" seed="1087926775" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.036802" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0001.xml
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1005" name="LoadSceneAttributeTest" fullname="TestHelper.Editor.LoadSceneAttributeTest" classname="TestHelper.Editor.LoadSceneAttributeTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.089184" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1006" name="Attach_LoadedSceneNotInBuild" fullname="TestHelper.Editor.LoadSceneAttributeTest.Attach_LoadedSceneNotInBuild" methodname="Attach_LoadedSceneNotInBuild" classname="TestHelper.Editor.LoadSceneAttributeTest" runstate="Runnable" seed="818183097" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.053176" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0002.xml
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1007" name="TemporaryBuildScenesUsingInTestTest" fullname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest" classname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.055223" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1008" name="GetScenesUsingInTest_AttachedToMethod_ReturnScenesSpecifiedByAttribute" fullname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest.GetScenesUsingInTest_AttachedToMethod_ReturnScenesSpecifiedByAttribute" methodname="GetScenesUsingInTest_AttachedToMethod_ReturnScenesSpecifiedByAttribute" classname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest" runstate="Runnable" seed="1243330322" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.014506" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0003.xml
+[Code Coverage] Code Coverage Report was generated in /github/workspace/CodeCoverage/Report
+Included Assemblies: TestHelper,TestHelper.RuntimeInternals,TestHelper.Editor,
+Excluded Assemblies: *.Tests
+Included Paths: <Not specified>
+Excluded Paths: <Not specified>
+Saving results to: /github/workspace/artifacts/editmode-results.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
