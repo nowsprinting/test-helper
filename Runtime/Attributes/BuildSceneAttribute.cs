@@ -11,7 +11,7 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Build scene before running test on player.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class BuildSceneAttribute : NUnitAttribute
     {
         internal string ScenePath { get; private set; }
