@@ -14,7 +14,7 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Load scene before running test.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class LoadSceneAttribute : BuildSceneAttribute, IOuterUnityTestAction
     {
         /// <summary>
