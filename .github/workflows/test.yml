@@ -38,7 +38,7 @@ jobs:
           - 2022.3.29f1
           - 2023.2.20f1
         include:
-          - unityVersion: 2019.4.40f1
+          - unityVersion: 2022.3.17f1
             octocov: true
 
     steps:
