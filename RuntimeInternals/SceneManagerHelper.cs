@@ -35,12 +35,18 @@ namespace TestHelper.RuntimeInternals
         /// And package name using `name` instead of `displayName`, when scenes in the package.
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
         /// </param>
+        /// <param name="mode">See LoadSceneMode. Not used when called from Edit Mode tests</param>
+        /// <param name="physicsMode">See SceneManagement.LocalPhysicsMode. Not used when called from Edit Mode tests</param>
         /// <returns></returns>
         /// <remarks>
         /// When loading the scene that is not in "Scenes in Build", use <see cref="TestHelper.Attributes.BuildSceneAttribute"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
-        public static IEnumerator LoadSceneAsync(string path, [CallerFilePath] string callerFilePath = null)
+        public static IEnumerator LoadSceneAsync(
+            string path,
+            LoadSceneMode mode = LoadSceneMode.Single,
+            LocalPhysicsMode physicsMode = LocalPhysicsMode.None,
+            [CallerFilePath] string callerFilePath = null)
         {
             var existScenePath = GetExistScenePath(path, callerFilePath);
             AsyncOperation loadSceneAsync = null;
@@ -51,21 +57,21 @@ namespace TestHelper.RuntimeInternals
                 if (Application.isPlaying)
                 {
                     // Play Mode tests running in Editor
-                    loadSceneAsync = EditorSceneManager.LoadSceneAsyncInPlayMode(
-                        existScenePath,
-                        new LoadSceneParameters(LoadSceneMode.Single));
+                    loadSceneAsync = EditorSceneManager.LoadSceneAsyncInPlayMode(existScenePath,
+                        new LoadSceneParameters(mode, physicsMode));
                 }
                 else
                 {
                     // Edit Mode tests
-                    EditorSceneManager.OpenScene(existScenePath);
+                    EditorSceneManager.OpenScene(existScenePath); // Note: Not accept LoadSceneParameters as an argument
                 }
 #endif
             }
             else
             {
                 // Play Mode tests running on Player
-                loadSceneAsync = SceneManager.LoadSceneAsync(existScenePath);
+                loadSceneAsync = SceneManager.LoadSceneAsync(existScenePath,
+                    new LoadSceneParameters(mode, physicsMode));
             }
 
             yield return loadSceneAsync;
