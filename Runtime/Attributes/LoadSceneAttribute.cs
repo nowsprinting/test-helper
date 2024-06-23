@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using NUnit.Framework.Interfaces;
 using TestHelper.RuntimeInternals;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace TestHelper.Attributes
@@ -45,7 +46,8 @@ namespace TestHelper.Attributes
         public IEnumerator BeforeTest(ITest test)
         {
             // ReSharper disable once ExplicitCallerInfoArgument
-            yield return SceneManagerHelper.LoadSceneAsync(ScenePath, CallerFilePath);
+            yield return SceneManagerHelper.LoadSceneAsync(ScenePath, LoadSceneMode.Single, LocalPhysicsMode.None,
+                CallerFilePath);
         }
 
         /// <inheritdoc />
