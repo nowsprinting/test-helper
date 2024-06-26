@@ -22,7 +22,8 @@
     "Tests.meta",
     "LICENSE.md*",
     "package.json*",
-    "README.md*"
+    "README.md*",
+    "Third Party Notices.md*"
   ],
   "keywords": [
     "TestFramework",
