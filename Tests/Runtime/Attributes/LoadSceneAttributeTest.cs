@@ -66,5 +66,15 @@ namespace TestHelper.Attributes
 
             Object.Destroy(cube); // For not giving false negatives in subsequent tests.
         }
+        
+        [Test]
+        [LoadScene]
+        public void UsingInferredPath_LoadedSceneNotInBuild()
+        {
+            var cube = GameObject.Find(ObjectName);
+            Assert.That(cube, Is.Not.Null);
+
+            Object.Destroy(cube); // For not giving false negatives in subsequent tests.
+        }
     }
 }
