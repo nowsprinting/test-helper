@@ -112,18 +112,23 @@ namespace TestHelper.RuntimeInternals
             var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
             if (assetsIndexOf > 0)
             {
-                return absolutePath.Substring(assetsIndexOf);
+                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf));
             }
 
             var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
             if (packageIndexOf > 0)
             {
-                return absolutePath.Substring(packageIndexOf);
+                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf));
             }
 
             Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
             return null;
             // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
+            
+            static string ConvertToUnixPathSeparator(string path)
+            {
+                return path.Replace('\\', '/'); // Normalize path separator
+            }
         }
 
         private static bool ValidatePath(string path)
