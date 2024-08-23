@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
-using UnityEditor;
 
 namespace TestHelper.Attributes
 {
@@ -35,7 +34,7 @@ namespace TestHelper.Attributes
         /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`)
         /// </param>
         /// <remarks>
-        /// - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="Editor.TemporaryBuildScenesUsingInTest"/>.
+        /// - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
         public BuildSceneAttribute(string path = null, [CallerFilePath] string callerFilePath = null)
