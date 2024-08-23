@@ -124,8 +124,8 @@ namespace TestHelper.RuntimeInternals
             Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
             return null;
             // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
-            
-            static string ConvertToUnixPathSeparator(string path)
+
+            string ConvertToUnixPathSeparator(string path)
             {
                 return path.Replace('\\', '/'); // Normalize path separator
             }
