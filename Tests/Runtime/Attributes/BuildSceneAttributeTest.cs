@@ -27,5 +27,20 @@ namespace TestHelper.Attributes
             cube = GameObject.Find(ObjectName);
             Assume.That(cube, Is.Not.Null);
         }
+        
+        private const string InferredObjectName = "CubeInInferredBuildSceneAttribute";
+        private readonly string InferredScene = $"./{nameof(BuildSceneAttributeTest)}.unity";
+
+        [BuildScene]
+        [Test]
+        public async Task Attach_InferredSceneIntoBuild()
+        {
+            var cube = GameObject.Find(InferredObjectName);
+            Assume.That(cube, Is.Null, "Not loaded ");
+
+            await SceneManagerHelper.LoadSceneAsync(InferredScene); // Can also be loaded by running the player
+            cube = GameObject.Find(InferredObjectName);
+            Assume.That(cube, Is.Not.Null);
+        }
     }
 }

@@ -26,10 +26,13 @@ namespace TestHelper.Attributes
         /// - Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
         /// - Can be specified scene path by relative path from the test class file.
         /// </summary>
-        /// <param name="path">Scene file path.
+        /// <param name="path">Scene file path. (Optional)
         /// The path starts with `Assets/` or `Packages/` or `.`.
         /// And package name using `name` instead of `displayName`, when scenes in the package.
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+        /// 
+        /// If the value is omitted, the scene name will be derived from the test file name.
+        /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`)
         /// </param>
         /// <remarks>
         /// - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>. If you want to setup before loading Use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneAsync"/> instead.
@@ -37,7 +40,7 @@ namespace TestHelper.Attributes
         /// </remarks>
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
-        public LoadSceneAttribute(string path, [CallerFilePath] string callerFilePath = null)
+        public LoadSceneAttribute(string path=null, [CallerFilePath] string callerFilePath = null)
             : base(path, callerFilePath)
         {
         }
