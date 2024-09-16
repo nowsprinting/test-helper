@@ -62,6 +62,8 @@ namespace TestHelper.Attributes
             await Task.Yield();
         }
 
+        [IgnoreBatchMode(
+            "The following error occurred since UTF v1.4.5: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.")]
         [UnityTest]
         [CreateScene(camera: true, light: true)]
         [GizmosShowOnGameView]
