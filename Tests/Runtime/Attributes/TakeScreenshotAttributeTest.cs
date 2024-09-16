@@ -88,6 +88,8 @@ namespace TestHelper.Attributes
             Assert.That(new FileInfo(path), Has.Length.GreaterThan(FileSizeThreshold));
         }
 
+        [IgnoreBatchMode(
+            "The following error occurred since UTF v1.4.5: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.")]
         [UnityTest, Order(0)]
         [LoadScene(TestScene)]
         [TakeScreenshot]
@@ -107,6 +109,8 @@ namespace TestHelper.Attributes
             // Take screenshot after running the test.
         }
 
+        [IgnoreBatchMode(
+            "The following error occurred since UTF v1.4.5: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.")]
         [Test, Order(1)]
         public void AttachToUnityTest_SaveScreenshotToDefaultPath_ExistFile()
         {
