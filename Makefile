@@ -65,6 +65,7 @@ $(TEST_FILTER) \
 $(ASSEMBLY_NAMES) \
 -testPlatform $(TEST_PLATFORM) \
 -testResults $(LOG_DIR)/test_$(TEST_PLATFORM)_results.xml \
+-testHelperJUnitResults $(LOG_DIR)/test_$(TEST_PLATFORM)_junit_results.xml \
 -testHelperScreenshotDirectory $(LOG_DIR)/Screenshots
 endef
 

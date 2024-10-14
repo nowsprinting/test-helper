@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?><testsuites tests="3" failures="0" disabled="0" time="0.2538825"><testsuite tests="1" time="0.092622" errors="0" failures="0" skipped="0" timestamp="2024-05-03 10:09:28Z" name="UnityProject~.TestHelper.Editor."><testcase name="Attach_CreateNewSceneWithCameraAndLight" assertions="0" time="0.036802" status="Passed" classname="TestHelper.Editor.CreateSceneAttributeTest"><system-out>[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0001.xml
+</system-out></testcase></testsuite><testsuite tests="1" time="0.089184" errors="0" failures="0" skipped="0" timestamp="2024-05-03 10:09:28Z" name="UnityProject~.TestHelper.Editor."><testcase name="Attach_LoadedSceneNotInBuild" assertions="0" time="0.053176" status="Passed" classname="TestHelper.Editor.LoadSceneAttributeTest"><system-out>[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0002.xml
+</system-out></testcase></testsuite><testsuite tests="1" time="0.055223" errors="0" failures="0" skipped="0" timestamp="2024-05-03 10:09:28Z" name="UnityProject~.TestHelper.Editor."><testcase name="GetScenesUsingInTest_AttachedToMethod_ReturnScenesSpecifiedByAttribute" assertions="0" time="0.014506" status="Passed" classname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest"><system-out>[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0003.xml
+[Code Coverage] Code Coverage Report was generated in /github/workspace/CodeCoverage/Report
+Included Assemblies: TestHelper,TestHelper.RuntimeInternals,TestHelper.Editor,
+Excluded Assemblies: *.Tests
+Included Paths: &lt;Not specified&gt;
+Excluded Paths: &lt;Not specified&gt;
+Saving results to: /github/workspace/artifacts/editmode-results.xml
+</system-out></testcase></testsuite></testsuites>

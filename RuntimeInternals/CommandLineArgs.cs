@@ -54,5 +54,24 @@ namespace TestHelper.RuntimeInternals
                 return Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots");
             }
         }
+
+        /// <summary>
+        /// JUnit XML report save path.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetJUnitResultsPath(string[] args = null)
+        {
+            const string JUnitResultsKey = "-testHelperJUnitResults";
+
+            try
+            {
+                args = args ?? Environment.GetCommandLineArgs();
+                return DictionaryFromCommandLineArgs(args)[JUnitResultsKey];
+            }
+            catch (KeyNotFoundException)
+            {
+                return null;
+            }
+        }
     }
 }
