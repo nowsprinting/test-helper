@@ -14,6 +14,7 @@ namespace TestHelper.Attributes
 {
     [TestFixture]
     [GameViewResolution(GameViewResolution.VGA)]
+    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class TakeScreenshotAttributeTest
     {
         private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
