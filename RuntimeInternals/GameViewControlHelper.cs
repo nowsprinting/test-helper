@@ -16,7 +16,7 @@ namespace TestHelper.RuntimeInternals
     public static class GameViewControlHelper
     {
         /// <summary>
-        /// Focus <c>GameView</c> or <c>SimulatorWindow</c>.
+        /// Focus <c>GameView</c>.
         /// </summary>
         public static void Focus()
         {
