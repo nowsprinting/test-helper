@@ -112,8 +112,7 @@ namespace TestHelper.Comparers
         private static XElement FindElementAndRemove(XElement target, ref Dictionary<string, List<XElement>> dictionary)
         {
             var xPath = GetXPath(target);
-            var elements = dictionary.GetValueOrDefault(xPath);
-            if (elements == null)
+            if (!dictionary.TryGetValue(xPath, out var elements))
             {
                 return null;
             }
