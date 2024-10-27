@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml.Linq;
+using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using UnityEditor.TestTools.TestRunner.Api;
 using TestStatus = UnityEditor.TestTools.TestRunner.Api.TestStatus;
@@ -20,7 +22,7 @@ namespace TestHelper.Editor.TestDoubles
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="path">NUnit3 XML file path used in <c>ToXml</c> method.</param>
+        /// <param name="path">Fake input NUnit3 XML file. This file should not contain XML declaration; <c>TNode</c> does not expect it.</param>
         public FakeTestResultAdaptor(string path)
         {
             _path = path;
@@ -29,6 +31,10 @@ namespace TestHelper.Editor.TestDoubles
         public TNode ToXml()
         {
             var xmlText = File.ReadAllText(_path);
+            var xDocument = XDocument.Parse(xmlText);
+            Assume.That(xDocument.Declaration, Is.Null,
+                "The test input file should not contain XML declaration; TNode does not expect this.");
+
             return TNode.FromXml(xmlText);
         }
 

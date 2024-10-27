@@ -11,11 +11,11 @@ namespace TestHelper.Editor
     public class JUnitXmlWriterTest
     {
         private const string TestResourcesPath = "Packages/com.nowsprinting.test-helper/Tests/Editor/TestResources";
-        private const string TestOutputDirectoryPath = "Logs/JUnitXmlWriterTest";
+        private const string TestOutputDirectoryPath = "Logs/TestHelper/JUnitXmlWriterTest";
         // Note: relative path from the project root directory.
 
         [Test, Order(0)]
-        public void WriteTo_DirectoryDoesNotExist_CreateDirectoryAndWriteToFile()
+        public void WriteTo_CreatedJUnitXmlFormatFile()
         {
             if (Directory.Exists(TestOutputDirectoryPath))
             {
@@ -27,20 +27,13 @@ namespace TestHelper.Editor
             var path = Path.Combine(TestOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
             JUnitXmlWriter.WriteTo(result, path);
 
-            Assert.That(path, Does.Exist);
-        }
-
-        [Test]
-        public void WriteTo_WriteToFile()
-        {
-            var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
-            var result = new FakeTestResultAdaptor(nunitXmlPath);
-            var path = Path.Combine(TestOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
-            JUnitXmlWriter.WriteTo(result, path);
+            Assume.That(path, Does.Exist);
 
             var actual = File.ReadAllText(path);
-            var expected = File.ReadAllText(Path.Combine(TestResourcesPath, "junit.xml"));
+            var expected = File.ReadAllText(Path.Combine(TestResourcesPath, "junit.xml"));  // TODO: use XmlComparer
             Assert.That(actual, Is.EqualTo(expected));
         }
+
+        // TODO: overwrite test
     }
 }

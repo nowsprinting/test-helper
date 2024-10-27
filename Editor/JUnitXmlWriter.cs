@@ -20,6 +20,7 @@ namespace TestHelper.Editor
             var nunit3XmlStream = new MemoryStream();
             var nunit3Writer = XmlWriter.Create(nunit3XmlStream);
             result.ToXml().WriteTo(nunit3Writer);
+            nunit3XmlStream.Position = 0;
             var nunit3Xml = new XPathDocument(nunit3XmlStream);
 
             // Create output directory if it does not exist.
