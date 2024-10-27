@@ -334,7 +334,7 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]
+> [!NOTE]  
 > - Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
@@ -529,11 +529,11 @@ public class MyTestClass
 > When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
 
 
-### RuntimeInternals
+### Runtime APIs
 
 `TestHelper.RuntimeInternals` assembly can be used from the runtime code because it does not depend on test-framework.
 
-> [!NOTE]
+> [!NOTE]  
 > The "Define Constraints" is set to `UNITY_INCLUDE_TESTS || COM_NOWSPRINTING_TEST_HELPER_ENABLE` in this assembly definition files, so it is generally excluded from release builds.
 > To use the feature in release builds, add `COM_NOWSPRINTING_TEST_HELPER_ENABLE` to the "Define Symbols" at build time.
 
@@ -615,7 +615,7 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]
+> [!NOTE]  
 > - Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 > - When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#BuildScene).
 
@@ -624,7 +624,15 @@ public class MyTestClass
 
 #### Open Persistent Data Directory
 
-Select **Window** > **Open Persistent Data Directory**, which opens the directory pointed to by [Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html) in the Finder/ File Explorer.
+Select **Window > Open Persistent Data Directory**, which opens the directory pointed to by [Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html) in the Finder/ File Explorer.
+
+
+### JUnit XML format report
+
+If you specify path with `-testHelperJUnitResults` command line option, the test result will be written in JUnit XML format when the tests are finished.
+
+> [!NOTE]  
+> The JUnit XML format is the so-called "Legacy." It does not support the "Open Test Reporting format" introduced in JUnit 5.
 
 
 

@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<testsuites name="" disabled="1" errors="0" failures="7" tests="11" time="0.0876691">
+    <testsuite name="NUnitXml" tests="11" id="1031" disabled="1" errors="0" failures="7" skipped="1" time="0.087669"
+               timestamp="2024-10-27 20:25:09Z">
+        <properties>
+            <property name="platform" value="EditMode"/>
+        </properties>
+        <testsuite name="MyFeature1.Editor.Tests.dll" tests="10" id="1018" disabled="1" errors="0" failures="6"
+                   skipped="1" time="0.072287" timestamp="2024-10-27 20:25:09Z">
+            <properties>
+                <property name="_PID" value="19711"/>
+                <property name="_APPDOMAIN" value="Unity Child Domain"/>
+                <property name="platform" value="EditMode"/>
+                <property name="EditorOnly" value="True"/>
+            </properties>
+            <testsuite name="MyFeature1" tests="10" id="1019" disabled="1" errors="0" failures="6" skipped="1"
+                       time="0.071332" timestamp="2024-10-27 20:25:09Z">
+                <testsuite name="Editor" tests="10" id="1020" disabled="1" errors="0" failures="6" skipped="1"
+                           time="0.07093" timestamp="2024-10-27 20:25:09Z">
+                    <testsuite name="MyFeature1Test" tests="7" id="1005" disabled="1" errors="0" failures="5"
+                               skipped="1" time="0.046854" timestamp="2024-10-27 20:25:09Z">
+                        <testcase name="TestFailedByAssertion" classname="MyFeature1.Editor.MyFeature1Test"
+                                  assertions="0" time="0.010554" status="Failed">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure message="failed" type=""/>
+                        </testcase>
+                        <testcase name="TestFailedByException" classname="MyFeature1.Editor.MyFeature1Test"
+                                  assertions="0" time="0.001907" status="Failed">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure message="System.ApplicationException : Fail test by exception" type=""/>
+                        </testcase>
+                        <testcase name="TestFailedByLogError" classname="MyFeature1.Editor.MyFeature1Test"
+                                  assertions="0" time="0.004971" status="Failed">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure
+                                    message="Unhandled log message: '[Error] Fail test by log error'. Use UnityEngine.TestTools.LogAssert.Expect"
+                                    type=""/>
+                            <system-out><![CDATA[Fail test by log error]]></system-out>
+                        </testcase>
+                        <testcase name="TestFailedByUnityEngineAssertion" classname="MyFeature1.Editor.MyFeature1Test"
+                                  assertions="0" time="0.000755" status="Failed">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure
+                                    message="UnityEngine.Assertions.AssertionException : Fail test by UnityEngine.Assertions.Assert&#xA;Assertion failure. Value was False&#xA;Expected: True"
+                                    type=""/>
+                        </testcase>
+                        <testcase name="TestInconclusive" classname="MyFeature1.Editor.MyFeature1Test" assertions="0"
+                                  time="0.006531" status="Inconclusive">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure message="inconclusive&#xA;  Expected: False&#xA;  But was:  True" type=""/>
+                        </testcase>
+                        <testcase name="TestPassed" classname="MyFeature1.Editor.MyFeature1Test" assertions="0"
+                                  time="0.002809" status="Passed">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <system-out><![CDATA[passed]]></system-out>
+                        </testcase>
+                        <testcase name="TestSkipped" classname="MyFeature1.Editor.MyFeature1Test" assertions="0"
+                                  time="0.000242" status="Skipped">
+                            <properties>
+                                <property name="_SKIPREASON" value="Skipped test"/>
+                            </properties>
+                            <skipped>Skipped test</skipped>
+                        </testcase>
+                    </testsuite>
+                    <testsuite name="MyFeature1TestParameterized" tests="3" id="1013" disabled="0" errors="0"
+                               failures="1" skipped="0" time="0.02234" timestamp="2024-10-27 20:25:09Z">
+                        <testsuite name="Parameterized" tests="3" id="1017" disabled="0" errors="0" failures="1"
+                                   skipped="0" time="0.009447" timestamp="2024-10-27 20:25:09Z">
+                            <testcase name="Parameterized(1,2,3)"
+                                      classname="MyFeature1.Editor.MyFeature1TestParameterized" assertions="0"
+                                      time="0.00569" status="Passed">
+                                <properties>
+                                    <property name="retryIteration" value="0"/>
+                                    <property name="repeatIteration" value="0"/>
+                                </properties>
+                            </testcase>
+                            <testcase name="Parameterized(2,3,5)"
+                                      classname="MyFeature1.Editor.MyFeature1TestParameterized" assertions="0"
+                                      time="9.8E-05" status="Passed">
+                                <properties>
+                                    <property name="retryIteration" value="0"/>
+                                    <property name="repeatIteration" value="0"/>
+                                </properties>
+                            </testcase>
+                            <testcase name="Parameterized(3,4,9)"
+                                      classname="MyFeature1.Editor.MyFeature1TestParameterized" assertions="0"
+                                      time="0.001034" status="Failed">
+                                <properties>
+                                    <property name="retryIteration" value="0"/>
+                                    <property name="repeatIteration" value="0"/>
+                                </properties>
+                                <failure message="Expected: 9&#xA;  But was:  7" type=""/>
+                            </testcase>
+                        </testsuite>
+                    </testsuite>
+                </testsuite>
+            </testsuite>
+        </testsuite>
+        <testsuite name="MyFeature2.Editor.Tests.dll" tests="1" id="1023" disabled="0" errors="0" failures="1"
+                   skipped="0" time="0.005488" timestamp="2024-10-27 20:25:09Z">
+            <properties>
+                <property name="_PID" value="19711"/>
+                <property name="_APPDOMAIN" value="Unity Child Domain"/>
+                <property name="platform" value="EditMode"/>
+                <property name="EditorOnly" value="True"/>
+            </properties>
+            <testsuite name="MyFeature2" tests="1" id="1024" disabled="0" errors="0" failures="1" skipped="0"
+                       time="0.002666" timestamp="2024-10-27 20:25:09Z">
+                <testsuite name="Editor" tests="1" id="1025" disabled="0" errors="0" failures="1" skipped="0"
+                           time="0.002034" timestamp="2024-10-27 20:25:09Z">
+                    <testsuite name="MyFeature2Test" tests="1" id="1021" disabled="0" errors="0" failures="1"
+                               skipped="0" time="0.00151" timestamp="2024-10-27 20:25:09Z">
+                        <testcase name="TestInconclusive" classname="MyFeature2.Editor.MyFeature2Test" assertions="0"
+                                  time="0.000408" status="Inconclusive">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure message="inconclusive&#xA;  Expected: False&#xA;  But was:  True" type=""/>
+                        </testcase>
+                    </testsuite>
+                </testsuite>
+            </testsuite>
+        </testsuite>
+    </testsuite>
+</testsuites>
