@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using TestHelper.Editor.JUnitXml;
 using TestHelper.RuntimeInternals;
 using UnityEditor;
 using UnityEditor.TestTools.TestRunner.Api;

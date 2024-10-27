@@ -5,7 +5,7 @@ using System.IO;
 using NUnit.Framework;
 using TestHelper.Editor.TestDoubles;
 
-namespace TestHelper.Editor
+namespace TestHelper.Editor.JUnitXml
 {
     [TestFixture]
     public class JUnitXmlWriterTest
@@ -25,12 +25,12 @@ namespace TestHelper.Editor
             var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
             var result = new FakeTestResultAdaptor(nunitXmlPath);
             var path = Path.Combine(TestOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
-            JUnitXmlWriter.WriteTo(result, path);
+            JUnitXml.JUnitXmlWriter.WriteTo(result, path);
 
             Assume.That(path, Does.Exist);
 
             var actual = File.ReadAllText(path);
-            var expected = File.ReadAllText(Path.Combine(TestResourcesPath, "junit.xml"));  // TODO: use XmlComparer
+            var expected = File.ReadAllText(Path.Combine(TestResourcesPath, "junit.xml")); // TODO: use XmlComparer
             Assert.That(actual, Is.EqualTo(expected));
         }
 
