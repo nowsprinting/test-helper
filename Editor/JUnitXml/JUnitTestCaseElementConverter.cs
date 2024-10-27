@@ -22,7 +22,7 @@ namespace TestHelper.Editor.JUnitXml
             var element = new XElement(JUnitElementTestcase);
             element.Add(new XAttribute(JUnitAttributeName, Name));
             element.Add(new XAttribute(JUnitAttributeClassname, ClassName));
-            element.Add(new XAttribute(JUnitAttributeAssertions, Assertions));
+            element.Add(new XAttribute(JUnitAttributeAssertions, Assertions)); // always 0
             element.Add(new XAttribute(JUnitAttributeTime, Time));
             element.Add(new XAttribute(JUnitAttributeStatus, Status));
 
@@ -46,7 +46,7 @@ namespace TestHelper.Editor.JUnitXml
                 element.Add(skippedNode);
             }
 
-            if (Failures > 0)
+            if (IsTestCaseFailed)
             {
                 var failure = new XElement(JUnitElementFailure);
                 failure.Add(new XAttribute(JUnitAttributeMessage, Failure.Item1));
@@ -54,9 +54,17 @@ namespace TestHelper.Editor.JUnitXml
                 element.Add(failure);
             }
 
-            if (string.IsNullOrEmpty(SystemOut))
+            if (IsTestCaseInconclusive)
             {
-                element.Add(new XElement(JUnitElementSystemOut, SystemOut));
+                var failure = new XElement(JUnitElementFailure);
+                failure.Add(new XAttribute(JUnitAttributeMessage, Reason));
+                failure.Add(new XAttribute(JUnitAttributeType, string.Empty));
+                element.Add(failure);
+            }
+
+            if (!string.IsNullOrEmpty(SystemOut))
+            {
+                element.Add(new XElement(JUnitElementSystemOut, new XCData(SystemOut)));
             }
 
             return element;

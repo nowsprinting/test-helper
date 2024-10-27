@@ -3,6 +3,7 @@
 
 using System.IO;
 using NUnit.Framework;
+using TestHelper.Comparers;
 using TestHelper.Editor.TestDoubles;
 
 namespace TestHelper.Editor.JUnitXml
@@ -25,15 +26,30 @@ namespace TestHelper.Editor.JUnitXml
             var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
             var result = new FakeTestResultAdaptor(nunitXmlPath);
             var path = Path.Combine(TestOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
-            JUnitXml.JUnitXmlWriter.WriteTo(result, path);
+            JUnitXmlWriter.WriteTo(result, path);
 
             Assume.That(path, Does.Exist);
 
             var actual = File.ReadAllText(path);
-            var expected = File.ReadAllText(Path.Combine(TestResourcesPath, "junit.xml")); // TODO: use XmlComparer
-            Assert.That(actual, Is.EqualTo(expected));
+            var expected = File.ReadAllText(Path.Combine(TestResourcesPath, "junit.xml"));
+            Assert.That(actual, Is.EqualTo(expected).Using(new XmlComparer()));
         }
 
-        // TODO: overwrite test
+        [Test]
+        public void WriteTo_ExistFile_OverwriteFile()
+        {
+            var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
+            var result = new FakeTestResultAdaptor(nunitXmlPath);
+            var path = Path.Combine(TestOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
+
+            // Destroy the output destination file.
+            File.Copy(nunitXmlPath, path, true);
+
+            JUnitXmlWriter.WriteTo(result, path);
+
+            var actual = File.ReadAllText(path);
+            var expected = File.ReadAllText(Path.Combine(TestResourcesPath, "junit.xml"));
+            Assert.That(actual, Is.EqualTo(expected).Using(new XmlComparer()));
+        }
     }
 }

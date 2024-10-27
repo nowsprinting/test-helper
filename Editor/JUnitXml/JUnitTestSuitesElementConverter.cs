@@ -22,7 +22,7 @@ namespace TestHelper.Editor.JUnitXml
             var element = new XElement(JUnitElementTestsuites);
             element.Add(new XAttribute(JUnitAttributeName, Name));
             element.Add(new XAttribute(JUnitAttributeDisabled, Disabled));
-            element.Add(new XAttribute(JUnitAttributeErrors, Errors));
+            element.Add(new XAttribute(JUnitAttributeErrors, Errors)); // always 0
             element.Add(new XAttribute(JUnitAttributeFailures, Failures));
             element.Add(new XAttribute(JUnitAttributeTests, Tests));
             element.Add(new XAttribute(JUnitAttributeTime, Time));

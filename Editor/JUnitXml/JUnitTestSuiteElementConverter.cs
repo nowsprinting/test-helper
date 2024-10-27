@@ -24,7 +24,7 @@ namespace TestHelper.Editor.JUnitXml
             element.Add(new XAttribute(JUnitAttributeTests, Tests));
             element.Add(new XAttribute(JUnitAttributeID, ID));
             element.Add(new XAttribute(JUnitAttributeDisabled, Disabled));
-            element.Add(new XAttribute(JUnitAttributeErrors, Errors));
+            element.Add(new XAttribute(JUnitAttributeErrors, Errors));  // always 0
             element.Add(new XAttribute(JUnitAttributeFailures, Failures));
             element.Add(new XAttribute(JUnitAttributeSkipped, Skipped));
             element.Add(new XAttribute(JUnitAttributeTime, Time));
@@ -44,9 +44,9 @@ namespace TestHelper.Editor.JUnitXml
                 element.Add(propertiesElement);
             }
 
-            if (string.IsNullOrEmpty(SystemOut))
+            if (!string.IsNullOrEmpty(SystemOut))
             {
-                element.Add(new XElement(JUnitElementSystemOut, SystemOut));
+                element.Add(new XElement(JUnitElementSystemOut, new XCData(SystemOut)));
             }
 
             return element;

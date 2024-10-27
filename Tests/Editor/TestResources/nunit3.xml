@@ -1,60 +1,289 @@
-<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.2538825">
-  <test-suite type="TestSuite" id="1000" name="UnityProject~" fullname="UnityProject~" runstate="Runnable" testcasecount="3" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.253883" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
-    <properties>
-      <property name="platform" value="EditMode" />
-    </properties>
-    <test-suite type="Assembly" id="1009" name="TestHelper.Editor.Tests.dll" fullname="/github/workspace/UnityProject~/Library/ScriptAssemblies/TestHelper.Editor.Tests.dll" runstate="Runnable" testcasecount="3" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.246003" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
-      <properties>
-        <property name="_PID" value="3301" />
-        <property name="_APPDOMAIN" value="Unity Child Domain" />
-        <property name="platform" value="EditMode" />
-        <property name="EditorOnly" value="True" />
-      </properties>
-      <test-suite type="TestSuite" id="1010" name="TestHelper" fullname="TestHelper" runstate="Runnable" testcasecount="3" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.245391" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
-        <properties />
-        <test-suite type="TestSuite" id="1011" name="Editor" fullname="TestHelper.Editor" runstate="Runnable" testcasecount="3" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.241916" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
-          <properties />
-          <test-suite type="TestFixture" id="1003" name="CreateSceneAttributeTest" fullname="TestHelper.Editor.CreateSceneAttributeTest" classname="TestHelper.Editor.CreateSceneAttributeTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.092622" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1004" name="Attach_CreateNewSceneWithCameraAndLight" fullname="TestHelper.Editor.CreateSceneAttributeTest.Attach_CreateNewSceneWithCameraAndLight" methodname="Attach_CreateNewSceneWithCameraAndLight" classname="TestHelper.Editor.CreateSceneAttributeTest" runstate="Runnable" seed="1087926775" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.036802" asserts="0">
-              <properties>
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0001.xml
+<test-run id="2" testcasecount="11" result="Failed(Child)" total="11" passed="3" failed="5" inconclusive="2" skipped="1"
+          asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2024-10-27 20:25:09Z"
+          end-time="2024-10-27 20:25:09Z" duration="0.0876691">
+    <test-suite type="TestSuite" id="1031" name="NUnitXml" fullname="NUnitXml" runstate="Runnable" testcasecount="11"
+                result="Failed" site="Child" start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z"
+                duration="0.087669" total="11" passed="3" failed="5" inconclusive="2" skipped="1" asserts="0">
+        <properties>
+            <property name="platform" value="EditMode"/>
+        </properties>
+        <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="Assembly" id="1018" name="MyFeature1.Editor.Tests.dll"
+                    fullname="/Users/ko2hase/Documents/NUnitXml/Library/ScriptAssemblies/MyFeature1.Editor.Tests.dll"
+                    runstate="Runnable" testcasecount="10" result="Failed" site="Child"
+                    start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.072287" total="10"
+                    passed="3" failed="5" inconclusive="1" skipped="1" asserts="0">
+            <properties>
+                <property name="_PID" value="19711"/>
+                <property name="_APPDOMAIN" value="Unity Child Domain"/>
+                <property name="platform" value="EditMode"/>
+                <property name="EditorOnly" value="True"/>
+            </properties>
+            <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestSuite" id="1019" name="MyFeature1" fullname="MyFeature1" runstate="Runnable"
+                        testcasecount="10" result="Failed" site="Child" start-time="2024-10-27 20:25:09Z"
+                        end-time="2024-10-27 20:25:09Z" duration="0.071332" total="10" passed="3" failed="5"
+                        inconclusive="1" skipped="1" asserts="0">
+                <properties/>
+                <failure>
+                    <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-suite type="TestSuite" id="1020" name="Editor" fullname="MyFeature1.Editor" runstate="Runnable"
+                            testcasecount="10" result="Failed" site="Child" start-time="2024-10-27 20:25:09Z"
+                            end-time="2024-10-27 20:25:09Z" duration="0.070930" total="10" passed="3" failed="5"
+                            inconclusive="1" skipped="1" asserts="0">
+                    <properties/>
+                    <failure>
+                        <message><![CDATA[One or more child tests had errors]]></message>
+                    </failure>
+                    <test-suite type="TestFixture" id="1005" name="MyFeature1Test"
+                                fullname="MyFeature1.Editor.MyFeature1Test" classname="MyFeature1.Editor.MyFeature1Test"
+                                runstate="Runnable" testcasecount="7" result="Failed" site="Child"
+                                start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.046854"
+                                total="7" passed="1" failed="4" inconclusive="1" skipped="1" asserts="0">
+                        <properties/>
+                        <failure>
+                            <message><![CDATA[One or more child tests had errors]]></message>
+                        </failure>
+                        <test-case id="1007" name="TestFailedByAssertion"
+                                   fullname="MyFeature1.Editor.MyFeature1Test.TestFailedByAssertion"
+                                   methodname="TestFailedByAssertion" classname="MyFeature1.Editor.MyFeature1Test"
+                                   runstate="Runnable" seed="1040389132" result="Failed"
+                                   start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.010554"
+                                   asserts="0">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure>
+                                <message><![CDATA[failed]]></message>
+                                <stack-trace><![CDATA[at MyFeature1.Editor.MyFeature1Test.TestFailedByAssertion () [0x00001] in /Users/ko2hase/Documents/NUnitXml/Assets/MyFeature1/Tests/Editor/MyFeature1Test.cs:25
+]]></stack-trace>
+                            </failure>
+                        </test-case>
+                        <test-case id="1008" name="TestFailedByException"
+                                   fullname="MyFeature1.Editor.MyFeature1Test.TestFailedByException"
+                                   methodname="TestFailedByException" classname="MyFeature1.Editor.MyFeature1Test"
+                                   runstate="Runnable" seed="2056623004" result="Failed" label="Error"
+                                   start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.001907"
+                                   asserts="0">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure>
+                                <message><![CDATA[System.ApplicationException : Fail test by exception]]></message>
+                                <stack-trace><![CDATA[  at MyFeature1.Editor.MyFeature1Test.TestFailedByException () [0x00001] in /Users/ko2hase/Documents/NUnitXml/Assets/MyFeature1/Tests/Editor/MyFeature1Test.cs:31 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <b904252b6b4e4277834bcca7e51f318d>:0 ]]></stack-trace>
+                            </failure>
+                        </test-case>
+                        <test-case id="1009" name="TestFailedByLogError"
+                                   fullname="MyFeature1.Editor.MyFeature1Test.TestFailedByLogError"
+                                   methodname="TestFailedByLogError" classname="MyFeature1.Editor.MyFeature1Test"
+                                   runstate="Runnable" seed="810015734" result="Failed"
+                                   start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.004971"
+                                   asserts="0">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure>
+                                <message>
+                                    <![CDATA[Unhandled log message: '[Error] Fail test by log error'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                                <stack-trace><![CDATA[MyFeature1.Editor.MyFeature1Test:TestFailedByLogError () (at Assets/MyFeature1/Tests/Editor/MyFeature1Test.cs:37)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions () (at /Users/bokken/build/output/unity/unity/Editor/Mono/EditorApplication.cs:381)
+
+]]></stack-trace>
+                            </failure>
+                            <output><![CDATA[Fail test by log error
 ]]></output>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1005" name="LoadSceneAttributeTest" fullname="TestHelper.Editor.LoadSceneAttributeTest" classname="TestHelper.Editor.LoadSceneAttributeTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.089184" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1006" name="Attach_LoadedSceneNotInBuild" fullname="TestHelper.Editor.LoadSceneAttributeTest.Attach_LoadedSceneNotInBuild" methodname="Attach_LoadedSceneNotInBuild" classname="TestHelper.Editor.LoadSceneAttributeTest" runstate="Runnable" seed="818183097" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.053176" asserts="0">
-              <properties>
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0002.xml
+                        </test-case>
+                        <test-case id="1010" name="TestFailedByUnityEngineAssertion"
+                                   fullname="MyFeature1.Editor.MyFeature1Test.TestFailedByUnityEngineAssertion"
+                                   methodname="TestFailedByUnityEngineAssertion"
+                                   classname="MyFeature1.Editor.MyFeature1Test" runstate="Runnable" seed="2040230563"
+                                   result="Failed" label="Error" start-time="2024-10-27 20:25:09Z"
+                                   end-time="2024-10-27 20:25:09Z" duration="0.000755" asserts="0">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <failure>
+                                <message><![CDATA[UnityEngine.Assertions.AssertionException : Fail test by UnityEngine.Assertions.Assert
+Assertion failure. Value was False
+Expected: True]]></message>
+                                <stack-trace><![CDATA[  at UnityEngine.Assertions.Assert.Fail (System.String message, System.String userMessage) [0x0003c] in /Users/bokken/build/output/unity/unity/Runtime/Export/Assertions/Assert/AssertBase.cs:29 
+  at UnityEngine.Assertions.Assert.IsTrue (System.Boolean condition, System.String message) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/Assertions/Assert/AssertBool.cs:20 
+  at MyFeature1.Editor.MyFeature1Test.TestFailedByUnityEngineAssertion () [0x00001] in /Users/ko2hase/Documents/NUnitXml/Assets/MyFeature1/Tests/Editor/MyFeature1Test.cs:43 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <b904252b6b4e4277834bcca7e51f318d>:0 ]]></stack-trace>
+                            </failure>
+                        </test-case>
+                        <test-case id="1011" name="TestInconclusive"
+                                   fullname="MyFeature1.Editor.MyFeature1Test.TestInconclusive"
+                                   methodname="TestInconclusive" classname="MyFeature1.Editor.MyFeature1Test"
+                                   runstate="Runnable" seed="1689148236" result="Inconclusive"
+                                   start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.006531"
+                                   asserts="0">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <reason>
+                                <message><![CDATA[  inconclusive
+  Expected: False
+  But was:  True
+]]></message>
+                            </reason>
+                        </test-case>
+                        <test-case id="1006" name="TestPassed" fullname="MyFeature1.Editor.MyFeature1Test.TestPassed"
+                                   methodname="TestPassed" classname="MyFeature1.Editor.MyFeature1Test"
+                                   runstate="Runnable" seed="694536572" result="Passed"
+                                   start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.002809"
+                                   asserts="0">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <output><![CDATA[passed
 ]]></output>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1007" name="TemporaryBuildScenesUsingInTestTest" fullname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest" classname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest" runstate="Runnable" testcasecount="1" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.055223" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1008" name="GetScenesUsingInTest_AttachedToMethod_ReturnScenesSpecifiedByAttribute" fullname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest.GetScenesUsingInTest_AttachedToMethod_ReturnScenesSpecifiedByAttribute" methodname="GetScenesUsingInTest_AttachedToMethod_ReturnScenesSpecifiedByAttribute" classname="TestHelper.Editor.TemporaryBuildScenesUsingInTestTest" runstate="Runnable" seed="1243330322" result="Passed" start-time="2024-05-03 10:09:28Z" end-time="2024-05-03 10:09:28Z" duration="0.014506" asserts="0">
-              <properties>
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[[Code Coverage] Code Coverage results for visited sequence points were saved in /github/workspace/CodeCoverage/UnityProject~-opencov/EditMode/TestCoverageResults_0003.xml
-[Code Coverage] Code Coverage Report was generated in /github/workspace/CodeCoverage/Report
-Included Assemblies: TestHelper,TestHelper.RuntimeInternals,TestHelper.Editor,
-Excluded Assemblies: *.Tests
-Included Paths: <Not specified>
-Excluded Paths: <Not specified>
-Saving results to: /github/workspace/artifacts/editmode-results.xml
-]]></output>
-            </test-case>
-          </test-suite>
+                        </test-case>
+                        <test-case id="1012" name="TestSkipped" fullname="MyFeature1.Editor.MyFeature1Test.TestSkipped"
+                                   methodname="TestSkipped" classname="MyFeature1.Editor.MyFeature1Test"
+                                   runstate="Ignored" seed="2113885182" result="Skipped" label="Ignored"
+                                   start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.000242"
+                                   asserts="0">
+                            <properties>
+                                <property name="_SKIPREASON" value="Skipped test"/>
+                            </properties>
+                            <reason>
+                                <message><![CDATA[Skipped test]]></message>
+                            </reason>
+                        </test-case>
+                    </test-suite>
+                    <test-suite type="TestFixture" id="1013" name="MyFeature1TestParameterized"
+                                fullname="MyFeature1.Editor.MyFeature1TestParameterized"
+                                classname="MyFeature1.Editor.MyFeature1TestParameterized" runstate="Runnable"
+                                testcasecount="3" result="Failed" site="Child" start-time="2024-10-27 20:25:09Z"
+                                end-time="2024-10-27 20:25:09Z" duration="0.022340" total="3" passed="2" failed="1"
+                                inconclusive="0" skipped="0" asserts="0">
+                        <properties/>
+                        <failure>
+                            <message><![CDATA[One or more child tests had errors]]></message>
+                        </failure>
+                        <test-suite type="ParameterizedMethod" id="1017" name="Parameterized"
+                                    fullname="MyFeature1.Editor.MyFeature1TestParameterized.Parameterized"
+                                    classname="MyFeature1.Editor.MyFeature1TestParameterized" runstate="Runnable"
+                                    testcasecount="3" result="Failed" site="Child" start-time="2024-10-27 20:25:09Z"
+                                    end-time="2024-10-27 20:25:09Z" duration="0.009447" total="3" passed="2" failed="1"
+                                    inconclusive="0" skipped="0" asserts="0">
+                            <properties/>
+                            <failure>
+                                <message><![CDATA[One or more child tests had errors]]></message>
+                            </failure>
+                            <test-case id="1014" name="Parameterized(1,2,3)"
+                                       fullname="MyFeature1.Editor.MyFeature1TestParameterized.Parameterized(1,2,3)"
+                                       methodname="Parameterized"
+                                       classname="MyFeature1.Editor.MyFeature1TestParameterized" runstate="Runnable"
+                                       seed="470631257" result="Passed" start-time="2024-10-27 20:25:09Z"
+                                       end-time="2024-10-27 20:25:09Z" duration="0.005690" asserts="0">
+                                <properties>
+                                    <property name="retryIteration" value="0"/>
+                                    <property name="repeatIteration" value="0"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1015" name="Parameterized(2,3,5)"
+                                       fullname="MyFeature1.Editor.MyFeature1TestParameterized.Parameterized(2,3,5)"
+                                       methodname="Parameterized"
+                                       classname="MyFeature1.Editor.MyFeature1TestParameterized" runstate="Runnable"
+                                       seed="2138031648" result="Passed" start-time="2024-10-27 20:25:09Z"
+                                       end-time="2024-10-27 20:25:09Z" duration="0.000098" asserts="0">
+                                <properties>
+                                    <property name="retryIteration" value="0"/>
+                                    <property name="repeatIteration" value="0"/>
+                                </properties>
+                            </test-case>
+                            <test-case id="1016" name="Parameterized(3,4,9)"
+                                       fullname="MyFeature1.Editor.MyFeature1TestParameterized.Parameterized(3,4,9)"
+                                       methodname="Parameterized"
+                                       classname="MyFeature1.Editor.MyFeature1TestParameterized" runstate="Runnable"
+                                       seed="1211309338" result="Failed" start-time="2024-10-27 20:25:09Z"
+                                       end-time="2024-10-27 20:25:09Z" duration="0.001034" asserts="0">
+                                <properties>
+                                    <property name="retryIteration" value="0"/>
+                                    <property name="repeatIteration" value="0"/>
+                                </properties>
+                                <failure>
+                                    <message><![CDATA[  Expected: 9
+  But was:  7
+]]></message>
+                                    <stack-trace><![CDATA[at MyFeature1.Editor.MyFeature1TestParameterized.Parameterized (System.Int32 i, System.Int32 j, System.Int32 expected) [0x00001] in /Users/ko2hase/Documents/NUnitXml/Assets/MyFeature1/Tests/Editor/MyFeature1TestParameterized.cs:16
+]]></stack-trace>
+                                </failure>
+                            </test-case>
+                        </test-suite>
+                    </test-suite>
+                </test-suite>
+            </test-suite>
         </test-suite>
-      </test-suite>
+        <test-suite type="Assembly" id="1023" name="MyFeature2.Editor.Tests.dll"
+                    fullname="/Users/ko2hase/Documents/NUnitXml/Library/ScriptAssemblies/MyFeature2.Editor.Tests.dll"
+                    runstate="Runnable" testcasecount="1" result="Passed" start-time="2024-10-27 20:25:09Z"
+                    end-time="2024-10-27 20:25:09Z" duration="0.005488" total="1" passed="0" failed="0" inconclusive="1"
+                    skipped="0" asserts="0">
+            <properties>
+                <property name="_PID" value="19711"/>
+                <property name="_APPDOMAIN" value="Unity Child Domain"/>
+                <property name="platform" value="EditMode"/>
+                <property name="EditorOnly" value="True"/>
+            </properties>
+            <test-suite type="TestSuite" id="1024" name="MyFeature2" fullname="MyFeature2" runstate="Runnable"
+                        testcasecount="1" result="Passed" start-time="2024-10-27 20:25:09Z"
+                        end-time="2024-10-27 20:25:09Z" duration="0.002666" total="1" passed="0" failed="0"
+                        inconclusive="1" skipped="0" asserts="0">
+                <properties/>
+                <test-suite type="TestSuite" id="1025" name="Editor" fullname="MyFeature2.Editor" runstate="Runnable"
+                            testcasecount="1" result="Passed" start-time="2024-10-27 20:25:09Z"
+                            end-time="2024-10-27 20:25:09Z" duration="0.002034" total="1" passed="0" failed="0"
+                            inconclusive="1" skipped="0" asserts="0">
+                    <properties/>
+                    <test-suite type="TestFixture" id="1021" name="MyFeature2Test"
+                                fullname="MyFeature2.Editor.MyFeature2Test" classname="MyFeature2.Editor.MyFeature2Test"
+                                runstate="Runnable" testcasecount="1" result="Passed" start-time="2024-10-27 20:25:09Z"
+                                end-time="2024-10-27 20:25:09Z" duration="0.001510" total="1" passed="0" failed="0"
+                                inconclusive="1" skipped="0" asserts="0">
+                        <properties/>
+                        <test-case id="1022" name="TestInconclusive"
+                                   fullname="MyFeature2.Editor.MyFeature2Test.TestInconclusive"
+                                   methodname="TestInconclusive" classname="MyFeature2.Editor.MyFeature2Test"
+                                   runstate="Runnable" seed="350965709" result="Inconclusive"
+                                   start-time="2024-10-27 20:25:09Z" end-time="2024-10-27 20:25:09Z" duration="0.000408"
+                                   asserts="0">
+                            <properties>
+                                <property name="retryIteration" value="0"/>
+                                <property name="repeatIteration" value="0"/>
+                            </properties>
+                            <reason>
+                                <message><![CDATA[  inconclusive
+  Expected: False
+  But was:  True
+]]></message>
+                            </reason>
+                        </test-case>
+                    </test-suite>
+                </test-suite>
+            </test-suite>
+        </test-suite>
     </test-suite>
-  </test-suite>
 </test-run>

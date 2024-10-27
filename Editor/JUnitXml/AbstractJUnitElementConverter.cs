@@ -52,7 +52,9 @@ namespace TestHelper.Editor.JUnitXml
         protected double Time => _duration; // seconds
         protected string Timestamp => _starttime;
         protected string Status => _result;
-        protected bool IsTestCaseSkipped => _result == "Skipped"; // Note: test-case has not skipped attribute
+        protected bool IsTestCaseSkipped => _result == "Skipped"; // test-case has not skipped attribute
+        protected bool IsTestCaseFailed => _result == "Failed"; // test-case has not failures attribute
+        protected bool IsTestCaseInconclusive => _result == "Inconclusive"; // test-case has not inconclusive attribute
         protected List<( string, string)> Properties => _properties;
         protected string Reason => _reason;
         protected (string, string) Failure => _failure; // message, stack-trace
@@ -129,17 +131,34 @@ namespace TestHelper.Editor.JUnitXml
 
                         if (child.Name == "reason")
                         {
-                            this._reason = (child.Attributes["message"]);
+                            child.ChildNodes.ForEach(grandchild =>
+                            {
+                                if (grandchild.Name == "message")
+                                {
+                                    this._reason = grandchild.Value.Trim();
+                                }
+                            });
                         }
 
                         if (child.Name == "failure")
                         {
-                            this._failure = (child.Attributes["message"], child.Attributes["stack-trace"]);
+                            child.ChildNodes.ForEach(grandchild =>
+                            {
+                                switch (grandchild.Name)
+                                {
+                                    case "message":
+                                        this._failure.Item1 = grandchild.Value.Trim();
+                                        break;
+                                    case "stack-trace":
+                                        this._failure.Item2 = grandchild.Value.Trim();
+                                        break;
+                                }
+                            });
                         }
 
                         if (child.Name == "output")
                         {
-                            this._output = child.Value;
+                            this._output = child.Value.Trim();
                         }
                     });
                     break;
