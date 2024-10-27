@@ -10,7 +10,8 @@ namespace TestHelper.Comparers
     [TestFixture]
     public class XmlComparerTest
     {
-        private const string BaseXml = @"<root><child>value1</child><child attribute=""attr"">value2</child></root>";
+        private const string BaseXml =
+            @"<root><child>value1</child><child attribute=""attr"" attribute2=""attr2"">value2</child></root>";
 
         private static IEnumerable<TestCaseData> s_TestCaseSource()
         {
@@ -22,31 +23,42 @@ namespace TestHelper.Comparers
 
             // Missing attribute in the left: Different
             yield return new TestCaseData(BaseXml,
+                @"<root><child>value1</child><child attribute2=""attr2"">value2</child></root>", -1);
+
+            // Missing attributes in the left: Different
+            yield return new TestCaseData(BaseXml,
                 @"<root><child>value1</child><child>value2</child></root>", -1);
 
             // Different attribute value: Different
             yield return new TestCaseData(BaseXml,
-                @"<root><child>value1</child><child attribute=""bad attr"">value2</child></root>", -1);
+                @"<root><child>value1</child><child attribute=""bad attr"" attribute2=""attr2"">value2</child></root>",
+                -1);
 
             // Different value: Different
             yield return new TestCaseData(BaseXml,
-                @"<root><child>bad value</child><child attribute=""attr"">value2</child></root>", -1);
+                @"<root><child>bad value</child><child attribute=""attr"" attribute2=""attr2"">value2</child></root>",
+                -1);
         }
 
         private static IEnumerable<TestCaseData> s_TestCaseSourceReversible()
         {
-            // Different order: Same
+            // Different element order: Same
             yield return new TestCaseData(BaseXml,
-                @"<root><child attribute=""attr"">value2</child><child>value1</child></root>", 0);
+                @"<root><child attribute=""attr"" attribute2=""attr2"">value2</child><child>value1</child></root>", 0);
+
+            // Different attribute order: Same
+            yield return new TestCaseData(BaseXml,
+                @"<root><child>value1</child><child attribute2=""attr2"" attribute=""attr"">value2</child></root>", 0);
 
             // Different comments: Same
             yield return new TestCaseData(BaseXml,
-                @"<root><!-- comment --><child>value1</child><child attribute=""attr"">value2</child></root>", 0);
+                @"<root><!-- comment --><child>value1</child><child attribute=""attr"" attribute2=""attr2"">value2</child></root>",
+                0);
 
             // Different XML declaration: Same
             yield return new TestCaseData(BaseXml,
                 @"<?xml version=""1.0"" encoding=""utf-8""?>
-<root><child>value1</child><child attribute=""attr"">value2</child></root>", 0);
+<root><child>value1</child><child attribute=""attr"" attribute2=""attr2"">value2</child></root>", 0);
 
             // Different white space: Same
             yield return new TestCaseData(BaseXml, @"<root>
@@ -54,7 +66,8 @@ namespace TestHelper.Comparers
     value1
 </child>
 <child
-        attribute=""attr"">
+        attribute=""attr""
+        attribute2=""attr2"">
     value2
 </child></root>", 0);
 
@@ -88,6 +101,7 @@ namespace TestHelper.Comparers
 <root>
     <!-- comment -->
     <child
+            attribute2=""attr2""
             attribute=""attr"">
         value2
     </child>
