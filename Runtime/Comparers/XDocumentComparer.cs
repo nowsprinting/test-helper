@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -189,7 +188,7 @@ namespace TestHelper.Comparers
         /// <summary>
         /// Compare two attribute collections.
         /// </summary>
-        private static int Compare([NotNull] IEnumerable<XAttribute> x, [NotNull] IEnumerable<XAttribute> y)
+        private static int Compare(IEnumerable<XAttribute> x, IEnumerable<XAttribute> y)
         {
             var comparisonList = y.ToList();
 
@@ -220,7 +219,7 @@ namespace TestHelper.Comparers
         /// <summary>
         /// Compare two strings.
         /// </summary>
-        private static int Compare([NotNull] string x, [NotNull] string y)
+        private static int Compare(string x, string y)
         {
             return string.Compare(x.Trim(), y.Trim(), StringComparison.CurrentCulture);
         }
