@@ -10,7 +10,7 @@ using UnityEngine;
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Skip this test run on batchmode (headless mode)
+    /// Skip this test run on batchmode (headless mode).
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
     public class IgnoreBatchModeAttribute : NUnitAttribute, IApplyToTest
@@ -18,7 +18,7 @@ namespace TestHelper.Attributes
         private readonly string _reason;
 
         /// <summary>
-        /// Skip this test run on batchmode (headless mode)
+        /// Skip this test run on batchmode (headless mode).
         /// </summary>
         /// <param name="reason">Reason for skip this test</param>
         public IgnoreBatchModeAttribute(string reason) => this._reason = reason;

@@ -14,7 +14,7 @@ namespace TestHelper.Comparers
     public class XDocumentComparerTest
     {
         [Test]
-        public void UsingWithEqualTo_Compare()
+        public void UsingWithEqualTo_CompareLoosely()
         {
             var x = XDocument.Parse(@"<root><child>value1</child><child attribute=""attr"">value2</child></root>");
             var y = XDocument.Parse(@"<?xml version=""1.0"" encoding=""utf-8""?>

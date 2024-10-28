@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Build scene before running test on player.
+    /// Build a scene before running this test on the player.
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class BuildSceneAttribute : NUnitAttribute
@@ -19,7 +19,8 @@ namespace TestHelper.Attributes
         internal string CallerFilePath { get; private set; }
 
         /// <summary>
-        /// Build scene before running test on player.
+        /// Build a scene before running this test on the player.
+        ///
         /// This attribute has the following benefits:
         /// - Can be specified scenes that are **NOT** in "Scenes in Build".
         /// - Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
@@ -34,7 +35,7 @@ namespace TestHelper.Attributes
         /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`)
         /// </param>
         /// <remarks>
-        /// - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
+        /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
         public BuildSceneAttribute(string path = null, [CallerFilePath] string callerFilePath = null)

@@ -12,7 +12,7 @@ using UnityEngine.TestTools;
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Take a screenshot and save it to file after running the test.
+    /// Take a screenshot and save it to file after running this test.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class TakeScreenshotAttribute : NUnitAttribute, IOuterUnityTestAction
@@ -24,7 +24,8 @@ namespace TestHelper.Attributes
         private readonly bool _gizmos;
 
         /// <summary>
-        /// Take a screenshot and save it to file after running the test.
+        /// Take a screenshot and save it to file after running this test.
+        ///
         /// Default save path is $"{Application.persistentDataPath}/TestHelper/Screenshots/{CurrentTest.Name}.png".
         /// If you want to take screenshots at any time, use the <c>TestHelper.RuntimeInternals.ScreenshotHelper</c> class.
         /// </summary>

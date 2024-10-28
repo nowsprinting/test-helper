@@ -10,11 +10,30 @@ using System.Xml.Linq;
 namespace TestHelper.Comparers
 {
     /// <summary>
-    /// Compare XML documents.
+    /// Compare two <c>XDocument</c> loosely.
     ///
     /// It only compares the attributes and values of each element in the document unordered.
     /// XML declarations and comments are ignored.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// [TestFixture]
+    ///     public class MyTestClass
+    ///     {
+    ///         [Test]
+    ///         public void MyTestMethod()
+    ///         {
+    ///             var x = XDocument.Parse(@"<root><child>value1</child><child attribute="attr">value2</child></root>");
+    ///             var y = XDocument.Parse(@"<?xml version="1.0" encoding="utf-8"?>
+    /// <root><!-- comment --><child attribute="attr">value2</child><!-- comment --><child>value1</child></root>");
+    ///             // with XML declaration, comments, and different order
+    ///
+    ///             Assert.That(x, Is.EqualTo(y).Using(new XDocumentComparer()));
+    ///         }
+    ///    }
+    /// 
+    /// </code>
+    /// </example>
     public class XDocumentComparer : IComparer<XDocument>
     {
         /// <inheritdoc/>

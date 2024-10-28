@@ -16,7 +16,7 @@ Required Unity 2019 LTS or later.
 
 #### FocusGameView
 
-`FocusGameViewAttribute` is an NUnit test attribute class to focus `GameView` or `SimulatorWindow` before run test.
+`FocusGameViewAttribute` is an NUnit test attribute class to focus `GameView` or `SimulatorWindow` before running the test.
 
 This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with sync Test, async Test, and UnityTest.
@@ -24,9 +24,6 @@ Can be used with sync Test, async Test, and UnityTest.
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using TestHelper.Attributes;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -45,7 +42,7 @@ public class MyTestClass
 
 #### GameViewResolution
 
-`GameViewResolutionAttribute` is an NUnit test attribute class to set custom resolution to `GameView` before run test.
+`GameViewResolutionAttribute` is an NUnit test attribute class to set custom resolution to `GameView` before running the test.
 
 This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with async Test and UnityTest.
@@ -53,11 +50,6 @@ Can be used with async Test and UnityTest.
 Usage:
 
 ```csharp
-using System.Collections;
-using NUnit.Framework;
-using TestHelper.Attributes;
-using UnityEngine.TestTools;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -90,9 +82,6 @@ Can be used with sync Test, async Test, and UnityTest.
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using TestHelper.Attributes;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -100,7 +89,7 @@ public class MyTestClass
     [GizmosShowOnGameView(true)]
     public void MyTestMethod()
     {
-        // Show Gizmos on GameView.
+        // Show Gizmos on GameView during the test running.
     }
 }
 ```
@@ -111,7 +100,7 @@ public class MyTestClass
 
 #### IgnoreBatchMode
 
-`IgnoreBatchModeAttribute` is an NUnit test attribute class to skip test execution when run tests with `-batchmode` from the commandline.
+`IgnoreBatchModeAttribute` is an NUnit test attribute class to skip the test execution when run tests with `-batchmode` from the commandline.
 
 This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with sync Test, async Test, and UnityTest.
@@ -119,13 +108,6 @@ Can be used with sync Test, async Test, and UnityTest.
 Usage:
 
 ```csharp
-using System.Collections;
-using NUnit.Framework;
-using TestHelper.Attributes;
-using UnityEngine;
-using UnityEngine.TestTools;
-using UnityEngine.TestTools.Graphics;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -144,7 +126,7 @@ public class MyTestClass
 
 #### IgnoreWindowMode
 
-`IgnoreWindowModeAttribute` is an NUnit test attribute class to skip test execution when run tests on Unity editor window.
+`IgnoreWindowModeAttribute` is an NUnit test attribute class to skip the test execution when run tests on Unity editor window.
 
 This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with sync Test, async Test, and UnityTest.
@@ -152,10 +134,6 @@ Can be used with sync Test, async Test, and UnityTest.
 Usage:
 
 ```csharp
-using System;
-using NUnit.Framework;
-using TestHelper.Attributes;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -172,7 +150,7 @@ public class MyTestClass
 
 #### UnityVersion
 
-`UnityVersionAttribute` is an NUnit test attribute class to skip test run if Unity version is older and/or newer than specified.
+`UnityVersionAttribute` is an NUnit test attribute class to skip the test run if Unity version is older and/or newer than specified.
 
 This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 Can be used with sync Test, async Test, and UnityTest.
@@ -180,10 +158,6 @@ Can be used with sync Test, async Test, and UnityTest.
 Usage:
 
 ```csharp
-using System;
-using NUnit.Framework;
-using TestHelper.Attributes;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -206,7 +180,7 @@ public class MyTestClass
 
 #### CreateScene
 
-`CreateSceneAttribute` is an NUnit test attribute class to create new scene before running test.
+`CreateSceneAttribute` is an NUnit test attribute class to create a new scene before running the test.
 
 It has the following benefits:
 
@@ -218,10 +192,6 @@ Can be used with sync Test, async Test, and UnityTest.
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using TestHelper.Attributes;
-using UnityEngine;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -239,13 +209,15 @@ public class MyTestClass
 ```
 
 > [!NOTE]  
-> - Create scene run after `OneTimeSetUp` and before `SetUp`
-> - Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
+> This process runs after `OneTimeSetUp` and before `SetUp`
+
+> [!NOTE]  
+> Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
 
 
 #### LoadScene
 
-`LoadSceneAttribute` is a NUnit test attribute class that loads the scene before running the test.
+`LoadSceneAttribute` is a NUnit test attribute class that loads a scene before running the test.
 
 It has the following benefits:
 
@@ -260,10 +232,6 @@ It can be used with sync Tests, async Tests, and UnityTest.
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using TestHelper.Attributes;
-using UnityEngine;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -292,13 +260,16 @@ public class MyTestClass
 ```
 
 > [!NOTE]  
-> - Load scene run after `OneTimeSetUp` and before `SetUp`. If you want to setup before loading Use [BuildSceneAttribute](#BuildScene) and [SceneManagerHelper](#SceneManagerHelper) method instead.
-> - Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+> This process runs after `OneTimeSetUp` and before `SetUp`.
+> If you want to load during `SetUp` and testing, use [BuildSceneAttribute](#BuildScene) and [SceneManagerHelper](#SceneManagerHelper) method instead.
+
+> [!NOTE]  
+> Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 #### BuildScene
 
-`BuildSceneAttribute` is a NUnit test attribute class that build the scene before running the test on player.
+`BuildSceneAttribute` is a NUnit test attribute class that build a scene before running the test on player.
 
 It has the following benefits:
 
@@ -312,11 +283,6 @@ It can be used with sync Tests, async Tests, and UnityTest.
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using TestHelper.Attributes;
-using TestHelper.RuntimeInternals;
-using UnityEngine;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -335,12 +301,12 @@ public class MyTestClass
 ```
 
 > [!NOTE]  
-> - Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+> Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 #### TakeScreenshot
 
-`TakeScreenshotAttribute` is an NUnit test attribute class to take a screenshot and save it to a file after running test.
+`TakeScreenshotAttribute` is an NUnit test attribute class to take a screenshot and save it to a file after running the test.
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`CurrentTest.Name`.png".
 You can specify the save directory and/or filename by arguments.
@@ -352,9 +318,6 @@ Can be used with sync Test, async Test, and UnityTest.
 Usage:
     
 ```csharp
-using NUnit.Framework;
-using TestHelper.Attributes;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -368,8 +331,10 @@ public class MyTestClass
 ```
 
 > [!WARNING]  
-> - Do not attach to Edit Mode tests.
-> - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
+> Do not attach to Edit Mode tests.
+
+> [!WARNING]  
+> `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
 
 > [!NOTE]  
 > If you want to take screenshots at any time, use the [ScreenshotHelper](#ScreenshotHelper) class.
@@ -385,9 +350,6 @@ Can be used with sync Test, async Test, and UnityTest.
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using TestHelper.Attributes;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -405,20 +367,16 @@ public class MyTestClass
 
 #### GameObjectNameComparer
 
-`GameObjectNameComparer` is a NUnit test comparer class that compares `GameObjects` by name.
+`GameObjectNameComparer` is a NUnit test comparer class that compares two `GameObject` by name.
 
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using TestHelper.Comparers;
-using UnityEngine;
-
 [TestFixture]
-public class GameObjectNameComparerTest
+public class MyTestClass
 {
     [Test]
-    public void UsingGameObjectNameComparer_CompareGameObjectsByName()
+    public void MyTestMethod()
     {
         var actual = GameObject.FindObjectsOfType<GameObject>();
         Assert.That(actual, Does.Contain(new GameObject("test")).Using(new GameObjectNameComparer()));
@@ -437,15 +395,11 @@ XML declarations and comments are ignored.
 Usage:
 
 ```csharp
-using System.Xml.Linq;
-using NUnit.Framework;
-using TestHelper.Comparers;
-
 [TestFixture]
-public class XDocumentComparerTest
+public class MyTestClass
 {
     [Test]
-    public void UsingWithEqualTo_Compare()
+    public void MyTestMethod()
     {
         var x = XDocument.Parse(@"<root><child>value1</child><child attribute=""attr"">value2</child></root>");
         var y = XDocument.Parse(@"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -460,7 +414,7 @@ public class XDocumentComparerTest
 
 #### XmlComparer
 
-`XmlComparer` is a NUnit test comparer class that loosely compares `string` as XML documents.
+`XmlComparer` is a NUnit test comparer class that compares two `string` as an XML document.
 
 It only compares the attributes and values of each element in the document unordered.
 XML declarations and comments are ignored, and white spaces, tabs, and newlines before and after the value are ignored.
@@ -468,15 +422,11 @@ XML declarations and comments are ignored, and white spaces, tabs, and newlines 
 Usage:
 
 ```csharp
-using System.Xml.Linq;
-using NUnit.Framework;
-using TestHelper.Comparers;
-
 [TestFixture]
-public class XDocumentComparerTest
+public class MyTestClass
 {
     [Test]
-    public void UsingWithEqualTo_Compare()
+    public void MyTestMethod()
     {
         var x = @"<root><child>value1</child><child attribute=""attr"">value2</child></root>";
         var y = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -490,7 +440,6 @@ public class XDocumentComparerTest
     value1
   </child>
 </root>";
-        // with new-line, white-space, XML declaration, comments, and different order
 
         Assert.That(x, Is.EqualTo(y).Using(new XmlComparer()));
     }
@@ -507,15 +456,13 @@ public class XDocumentComparerTest
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using UnityEngine;
 using Is = TestHelper.Constraints.Is;
 
 [TestFixture]
 public class MyTestClass
 {
     [Test]
-    public void DestroyImmediate_DestroyedGameObject()
+    public void MyTestMethod()
     {
         var actual = GameObject.Find("Cube");
         GameObject.DestroyImmediate(actual);
@@ -537,6 +484,7 @@ public class MyTestClass
 > The "Define Constraints" is set to `UNITY_INCLUDE_TESTS || COM_NOWSPRINTING_TEST_HELPER_ENABLE` in this assembly definition files, so it is generally excluded from release builds.
 > To use the feature in release builds, add `COM_NOWSPRINTING_TEST_HELPER_ENABLE` to the "Define Symbols" at build time.
 
+
 #### ScreenshotHelper
 
 `ScreenshotHelper` is a utility class to take a screenshot and save it to a file.
@@ -549,11 +497,6 @@ Directory can also be specified by command line arguments `-testHelperScreenshot
 Usage:
 
 ```csharp
-using System.Collections;
-using NUnit.Framework;
-using TestHelper.RuntimeInternals;
-using UnityEngine.TestTools;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -575,11 +518,17 @@ public class MyTestClass
 ```
 
 > [!WARNING]  
-> - Do not call from Edit Mode tests.
-> - Must be called from main thread.
-> - `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
-> - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
-> - UniTask is required to be used from the async method. And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+> Do not attach to Edit Mode tests.
+> And must be called from main thread.
+
+> [!WARNING]  
+> `GameView` must be visible. Use [FocusGameViewAttribute](#FocusGameView) or [GameViewResolutionAttribute](#GameViewResolution) if running on batch mode.
+
+> [!WARNING]  
+> Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
+
+> [!WARNING]  
+> `UniTask` is required to be used from the async method. And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses `WaitForEndOfFrame` inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
 
 #### SceneManagerHelper
@@ -595,10 +544,6 @@ It has the following benefits:
 Usage:
 
 ```csharp
-using NUnit.Framework;
-using TestHelper.RuntimeInternals;
-using UnityEngine;
-
 [TestFixture]
 public class MyTestClass
 {
@@ -616,8 +561,10 @@ public class MyTestClass
 ```
 
 > [!NOTE]  
-> - Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
-> - When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#BuildScene).
+> Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+
+> [!NOTE]  
+> When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#BuildScene).
 
 
 ### Editor Extensions

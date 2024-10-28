@@ -9,13 +9,13 @@ using UnityEngine;
 
 namespace TestHelper.Editor
 {
-    public class TestRunnerCallbacksImpl : ICallbacks
+    public class TestRunnerCallbacks : ICallbacks
     {
         [InitializeOnLoadMethod]
         private static void SetupCallbacks()
         {
             var api = ScriptableObject.CreateInstance<TestRunnerApi>();
-            api.RegisterCallbacks(new TestRunnerCallbacksImpl());
+            api.RegisterCallbacks(new TestRunnerCallbacks());
         }
 
         public void RunStarted(ITestAdaptor testsToRun)
