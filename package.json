@@ -9,7 +9,7 @@
     "com.unity.test-framework": "1.3.4"
   },
   "displayName": "Test Helper",
-  "documentationUrl": "https://github.com/nowsprinting/test-helper/blob/master/README.md",
+  "documentationUrl": "https://nowsprinting.github.io/test-helper/",
   "files": [
     "Documentation~/",
     "Editor/",

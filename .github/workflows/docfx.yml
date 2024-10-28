@@ -1,0 +1,46 @@
+# Copyright (c) 2023-2024 Koji Hasegawa.
+# This software is released under the MIT License.
+
+name: docfx
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  docfx:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: sator-imaging/docfx-pages@v1
+        with:
+          app_name: 'Test Helper'
+          site_title:  'Test Helper : Provides custom attributes, comparers, and constraints useful for testing with Unity Test Framework'
+          site_footer: 'Copyright (c) 2023-2024 Koji Hasegawa'
+          class_members: 'separatePages'
+          site_logo: 'images/unity/made-with-unity.svg'
+          site_favicon: 'images/wikimedia-commons/logo-csharp-recolor.svg'
+        id: deployment
