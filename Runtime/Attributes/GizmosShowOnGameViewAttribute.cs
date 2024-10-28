@@ -11,7 +11,7 @@ using UnityEngine.TestTools;
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Show/ hide Gizmos on <c>GameView</c> during the test running.
+    /// Show/ hide Gizmos on <c>GameView</c> during this test running.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class GizmosShowOnGameViewAttribute : NUnitAttribute, IOuterUnityTestAction
@@ -20,7 +20,7 @@ namespace TestHelper.Attributes
         private readonly bool _beforeShow;
 
         /// <summary>
-        /// Show/ hide Gizmos on <c>GameView</c> during the test running.
+        /// Show/ hide Gizmos on <c>GameView</c> during this test running.
         /// </summary>
         /// <param name="show">True: show Gizmos, False: hide Gizmos.</param>
         public GizmosShowOnGameViewAttribute(bool show = true)

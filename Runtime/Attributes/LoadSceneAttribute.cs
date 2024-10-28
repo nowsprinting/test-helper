@@ -13,13 +13,17 @@ using UnityEngine.TestTools;
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Load scene before running test.
+    /// Load a scene before running this test.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class LoadSceneAttribute : BuildSceneAttribute, IOuterUnityTestAction
     {
         /// <summary>
-        /// Load scene before running test.
+        /// Load a scene before running this test.
+        ///
+        /// This process runs after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
+        /// If you want to load during <c>SetUp</c> and testing, use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneAsync"/> instead.
+        ///
         /// This attribute has the following benefits:
         /// - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
         /// - Can be specified scenes that are **NOT** in "Scenes in Build".
@@ -30,13 +34,12 @@ namespace TestHelper.Attributes
         /// The path starts with `Assets/` or `Packages/` or `.`.
         /// And package name using `name` instead of `displayName`, when scenes in the package.
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
-        /// 
+        ///
         /// If the value is omitted, the scene name will be derived from the test file name.
         /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`)
         /// </param>
         /// <remarks>
-        /// - Load scene run after <c>OneTimeSetUp</c> and before <c>SetUp</c>. If you want to setup before loading Use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneAsync"/> instead.
-        /// - For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
+        /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]

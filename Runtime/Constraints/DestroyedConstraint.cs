@@ -7,18 +7,15 @@ using UnityEngine;
 namespace TestHelper.Constraints
 {
     /// <summary>
-    /// An NUnit test constraint class to destroyed GameObject.
+    /// An NUnit test constraint class to destroyed <c>GameObject</c>.
     /// </summary>
     /// <example>
     /// <code>
-    /// using NUnit.Framework;
-    /// using UnityEngine;
-    /// using Is = TestHelper.Constraints.Is;
-    ///
+    /// [TestFixture]
     /// public class MyTestClass
     /// {
     ///   [Test]
-    ///   public void DestroyGameObject()
+    ///   public void MyTestMethod()
     ///   {
     ///     var actual = GameObject.Find("Cube");
     ///     GameObject.DestroyImmediate(actual);

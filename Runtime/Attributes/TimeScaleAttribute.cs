@@ -11,7 +11,7 @@ using UnityEngine.TestTools;
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Change the <c>Time.timeScale</c> during the test running.
+    /// Change the <c>Time.timeScale</c> during this test running.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class TimeScaleAttribute : NUnitAttribute, IOuterUnityTestAction
@@ -20,7 +20,7 @@ namespace TestHelper.Attributes
         private readonly float _timeScale;
 
         /// <summary>
-        /// Change the <c>Time.timeScale</c> during the test running.
+        /// Change the <c>Time.timeScale</c> during this test running.
         /// </summary>
         /// <param name="timeScale">The scale at which time passes.</param>
         public TimeScaleAttribute(float timeScale)

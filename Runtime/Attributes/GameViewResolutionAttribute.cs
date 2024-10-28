@@ -10,7 +10,7 @@ using TestHelper.RuntimeInternals;
 namespace TestHelper.Attributes
 {
     /// <summary>
-    /// Set <c>GameView</c> resolution before SetUp test.
+    /// Set custom resolution to <c>GameView</c> before running this test.
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
     public class GameViewResolutionAttribute : NUnitAttribute, IApplyToContext
@@ -20,7 +20,9 @@ namespace TestHelper.Attributes
         private readonly string _name;
 
         /// <summary>
-        /// Set <c>GameView</c> resolution before SetUp test.
+        /// Set <c>GameView</c> resolution before running this test.
+        ///
+        /// This process runs after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
         /// </summary>
         /// <param name="width">GameView width [px]</param>
         /// <param name="height">GameView height [px]</param>
