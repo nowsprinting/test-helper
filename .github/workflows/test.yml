@@ -48,7 +48,7 @@ jobs:
         testMode:
           - All # run tests in editor
         include:
-          - unityVersion: 2019.4.40f1
+          - unityVersion: 2022.3.17f1
             octocov: true
           - unityVersion: 2023.2.20f1
             testMode: Standalone  # run tests on player
