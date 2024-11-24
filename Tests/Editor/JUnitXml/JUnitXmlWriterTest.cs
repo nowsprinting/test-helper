@@ -5,6 +5,7 @@ using System.IO;
 using NUnit.Framework;
 using TestHelper.Comparers;
 using TestHelper.Editor.TestDoubles;
+using UnityEngine;
 
 namespace TestHelper.Editor.JUnitXml
 {
@@ -12,20 +13,21 @@ namespace TestHelper.Editor.JUnitXml
     public class JUnitXmlWriterTest
     {
         private const string TestResourcesPath = "Packages/com.nowsprinting.test-helper/Tests/Editor/TestResources";
-        private const string TestOutputDirectoryPath = "Logs/TestHelper/JUnitXmlWriterTest";
-        // Note: relative path from the project root directory.
+
+        private readonly string _testOutputDirectoryPath =
+            Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
 
         [Test, Order(0)]
         public void WriteTo_CreatedJUnitXmlFormatFile()
         {
-            if (Directory.Exists(TestOutputDirectoryPath))
+            if (Directory.Exists(_testOutputDirectoryPath))
             {
-                Directory.Delete(TestOutputDirectoryPath, true);
+                Directory.Delete(_testOutputDirectoryPath, true);
             }
 
             var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
             var result = new FakeTestResultAdaptor(nunitXmlPath);
-            var path = Path.Combine(TestOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
+            var path = Path.Combine(_testOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
             JUnitXmlWriter.WriteTo(result, path);
 
             Assume.That(path, Does.Exist);
@@ -40,7 +42,7 @@ namespace TestHelper.Editor.JUnitXml
         {
             var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
             var result = new FakeTestResultAdaptor(nunitXmlPath);
-            var path = Path.Combine(TestOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
+            var path = Path.Combine(_testOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
 
             // Destroy the output destination file.
             File.Copy(nunitXmlPath, path, true);
