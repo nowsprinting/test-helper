@@ -12,7 +12,7 @@ namespace TestHelper.Editor
     /// </summary>
     public static class OpenPersistentDataPathMenu
     {
-        [MenuItem("Window/Open Persistent Data Directory")]
+        [MenuItem("Window/Test Helper/Open Persistent Data Directory")]
         private static void OpenPersistentDataPathMenuItem()
         {
             EditorUtility.RevealInFinder(Application.persistentDataPath);
