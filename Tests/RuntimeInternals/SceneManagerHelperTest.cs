@@ -1,8 +1,9 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
