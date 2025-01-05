@@ -1,8 +1,7 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -42,7 +41,7 @@ namespace TestHelper.RuntimeInternals
         /// When loading the scene that is not in "Scenes in Build", use <see cref="TestHelper.Attributes.BuildSceneAttribute"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
-        public static IEnumerator LoadSceneAsync(
+        public static AsyncOperation LoadSceneAsync(
             string path,
             LoadSceneMode mode = LoadSceneMode.Single,
             LocalPhysicsMode physicsMode = LocalPhysicsMode.None,
@@ -74,7 +73,7 @@ namespace TestHelper.RuntimeInternals
                     new LoadSceneParameters(mode, physicsMode));
             }
 
-            yield return loadSceneAsync;
+            return loadSceneAsync;
         }
 
         /// <summary>
