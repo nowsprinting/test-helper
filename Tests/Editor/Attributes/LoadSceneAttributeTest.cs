@@ -5,7 +5,7 @@ using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
 
-namespace TestHelper.Editor
+namespace TestHelper.Editor.Attributes
 {
     [TestFixture]
     public class LoadSceneAttributeTest

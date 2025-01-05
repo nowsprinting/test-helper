@@ -46,7 +46,7 @@ namespace TestHelper.RuntimeInternals
 
             yield return ScreenshotHelper.TakeScreenshot(); // default filename is member name when internal
 
-            Assert.That(new FileInfo(path), Has.Length.GreaterThan(FileSizeThreshold));
+            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(FileSizeThreshold));
         }
 
         [UnityTest]

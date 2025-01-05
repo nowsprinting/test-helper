@@ -6,7 +6,7 @@ using TestHelper.Attributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace TestHelper.Editor
+namespace TestHelper.Editor.Attributes
 {
     [TestFixture]
     public class CreateSceneAttributeTest
@@ -17,7 +17,7 @@ namespace TestHelper.Editor
         {
             var scene = SceneManager.GetActiveScene();
             Assert.That(scene.name, Is.EqualTo(
-                "Scene of TestHelper.Editor.CreateSceneAttributeTest.Attach_CreateNewSceneWithCameraAndLight"));
+                "Scene of TestHelper.Editor.Attributes.CreateSceneAttributeTest.Attach_CreateNewSceneWithCameraAndLight"));
 
             var camera = GameObject.Find("Main Camera");
             Assert.That(camera, Is.Not.Null);

@@ -180,7 +180,7 @@ public class MyTestClass
 
 #### CreateScene
 
-`CreateSceneAttribute` is an NUnit test attribute class to create a new scene before running the test.
+`CreateSceneAttribute` is an NUnit test attribute class to create a new scene and activate it before running the test.
 
 It has the following benefits:
 
@@ -207,6 +207,9 @@ public class MyTestClass
     }
 }
 ```
+
+> [!TIP]  
+> If you want to unload other scenes, specify the `unloadOthers` option.
 
 > [!NOTE]  
 > This process runs after `OneTimeSetUp` and before `SetUp`

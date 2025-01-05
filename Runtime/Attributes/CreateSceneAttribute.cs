@@ -1,8 +1,9 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using UnityEngine;
@@ -22,41 +23,47 @@ namespace TestHelper.Attributes
     {
         private readonly bool _camera;
         private readonly bool _light;
-        private string _newSceneName;
+        private readonly bool _unloadOthers;
+        private Scene _beforeActiveScene;
+        private Scene _newScene;
 
         /// <summary>
         /// Create a new scene before running this test.
-        ///
+        /// 
         /// This process runs after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
-        ///
+        /// 
         /// This attribute has the following benefits:
         /// - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
         /// </summary>
         /// <param name="camera">true: create main camera object in new scene</param>
-        /// <param name="light">true:  create directional light object in new scene</param>
-        public CreateSceneAttribute(bool camera = false, bool light = false)
+        /// <param name="light">true: create directional light object in new scene</param>
+        /// <param name="unloadOthers">true: unload other scenes before creating a new scene</param>
+        public CreateSceneAttribute(bool camera = false, bool light = false, bool unloadOthers = false)
         {
             _camera = camera;
             _light = light;
+            _unloadOthers = unloadOthers;
         }
 
         /// <inheritdoc />
         public IEnumerator BeforeTest(ITest test)
         {
-            _newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
+            var newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
+
+            _beforeActiveScene = SceneManager.GetActiveScene();
 
             if (Application.isPlaying)
             {
                 // Play Mode tests
-                var scene = SceneManager.CreateScene(_newSceneName);
-                SceneManager.SetActiveScene(scene);
+                _newScene = SceneManager.CreateScene(newSceneName);
+                SceneManager.SetActiveScene(_newScene);
             }
             else
             {
 #if UNITY_EDITOR
                 // Edit Mode tests
-                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
-                scene.name = _newSceneName;
+                _newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+                _newScene.name = newSceneName;
 #endif
             }
 
@@ -76,15 +83,46 @@ namespace TestHelper.Attributes
                 light.color = new Color(0xff, 0xf4, 0xd6);
             }
 
-            yield return null;
+            if (_unloadOthers)
+            {
+                yield return UnloadOtherScenes();
+            }
+        }
+
+        private IEnumerator UnloadOtherScenes()
+        {
+            var scenes = new List<Scene>();
+
+            for (var i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if (scene != _newScene && !scene.name.StartsWith("InitTestScene"))
+                {
+                    scenes.Add(scene);
+                }
+            }
+
+            foreach (var scene in scenes)
+            {
+                var asyncOperation = SceneManager.UnloadSceneAsync(scene);
+                while (asyncOperation != null && !asyncOperation.isDone)
+                {
+                    yield return null;
+                }
+            }
         }
 
         /// <inheritdoc />
         public IEnumerator AfterTest(ITest test)
         {
-            if (Application.isPlaying && SceneManager.GetActiveScene().name == _newSceneName)
+            if (_beforeActiveScene.isLoaded)
             {
-                yield return SceneManager.UnloadSceneAsync(_newSceneName);
+                SceneManager.SetActiveScene(_beforeActiveScene);
+            }
+
+            if (SceneManager.GetActiveScene() != _newScene)
+            {
+                yield return SceneManager.UnloadSceneAsync(_newScene);
             }
         }
     }
