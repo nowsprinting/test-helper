@@ -23,7 +23,8 @@ namespace TestHelper.Attributes
         private readonly bool _camera;
         private readonly bool _light;
         private readonly bool _unloadOthers;
-        private string _newSceneName;
+        private Scene _beforeActiveScene;
+        private Scene _newScene;
 
         /// <summary>
         /// Create a new scene before running this test.
@@ -46,25 +47,27 @@ namespace TestHelper.Attributes
         /// <inheritdoc />
         public IEnumerator BeforeTest(ITest test)
         {
-            _newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
+            var newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
 
             if (_unloadOthers)
             {
-                UnloadOtherScenes();
+                yield return UnloadOtherScenes();
             }
+
+            _beforeActiveScene = SceneManager.GetActiveScene();
 
             if (Application.isPlaying)
             {
                 // Play Mode tests
-                var scene = SceneManager.CreateScene(_newSceneName);
-                SceneManager.SetActiveScene(scene);
+                _newScene = SceneManager.CreateScene(newSceneName);
+                SceneManager.SetActiveScene(_newScene);
             }
             else
             {
 #if UNITY_EDITOR
                 // Edit Mode tests
-                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
-                scene.name = _newSceneName;
+                _newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+                _newScene.name = newSceneName;
 #endif
             }
 
@@ -87,24 +90,34 @@ namespace TestHelper.Attributes
             yield return null;
         }
 
-        /// <inheritdoc />
-        public IEnumerator AfterTest(ITest test)
-        {
-            if (Application.isPlaying && SceneManager.GetActiveScene().name == _newSceneName)
-            {
-                yield return SceneManager.UnloadSceneAsync(_newSceneName);
-            }
-        }
-
-        private static void UnloadOtherScenes()
+        private static IEnumerator UnloadOtherScenes()
         {
             for (var i = 0; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
                 if (!scene.name.StartsWith("InitTestScene"))
                 {
-                    SceneManager.UnloadSceneAsync(scene);
+                    yield return SceneManager.UnloadSceneAsync(scene);
                 }
+            }
+        }
+
+        /// <inheritdoc />
+        public IEnumerator AfterTest(ITest test)
+        {
+            if (!Application.isPlaying)
+            {
+                yield break;
+            }
+
+            if (_beforeActiveScene.isLoaded)
+            {
+                SceneManager.SetActiveScene(_beforeActiveScene);
+            }
+
+            if (SceneManager.GetActiveScene() != _newScene)
+            {
+                yield return SceneManager.UnloadSceneAsync(_newScene);
             }
         }
     }
