@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using UnityEngine;
@@ -49,11 +50,6 @@ namespace TestHelper.Attributes
         {
             var newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
 
-            if (_unloadOthers)
-            {
-                yield return UnloadOtherScenes();
-            }
-
             _beforeActiveScene = SceneManager.GetActiveScene();
 
             if (Application.isPlaying)
@@ -87,17 +83,31 @@ namespace TestHelper.Attributes
                 light.color = new Color(0xff, 0xf4, 0xd6);
             }
 
-            yield return null;
+            if (_unloadOthers)
+            {
+                yield return UnloadOtherScenes();
+            }
         }
 
-        private static IEnumerator UnloadOtherScenes()
+        private IEnumerator UnloadOtherScenes()
         {
+            var scenes = new List<Scene>();
+
             for (var i = 0; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
-                if (!scene.name.StartsWith("InitTestScene"))
+                if (scene != _newScene && !scene.name.StartsWith("InitTestScene"))
                 {
-                    yield return SceneManager.UnloadSceneAsync(scene);
+                    scenes.Add(scene);
+                }
+            }
+
+            foreach (var scene in scenes)
+            {
+                var asyncOperation = SceneManager.UnloadSceneAsync(scene);
+                while (asyncOperation != null && !asyncOperation.isDone)
+                {
+                    yield return null;
                 }
             }
         }
@@ -105,11 +115,6 @@ namespace TestHelper.Attributes
         /// <inheritdoc />
         public IEnumerator AfterTest(ITest test)
         {
-            if (!Application.isPlaying)
-            {
-                yield break;
-            }
-
             if (_beforeActiveScene.isLoaded)
             {
                 SceneManager.SetActiveScene(_beforeActiveScene);
