@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -22,28 +22,36 @@ namespace TestHelper.Attributes
     {
         private readonly bool _camera;
         private readonly bool _light;
+        private readonly bool _unloadOthers;
         private string _newSceneName;
 
         /// <summary>
         /// Create a new scene before running this test.
-        ///
+        /// 
         /// This process runs after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
-        ///
+        /// 
         /// This attribute has the following benefits:
         /// - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
         /// </summary>
         /// <param name="camera">true: create main camera object in new scene</param>
-        /// <param name="light">true:  create directional light object in new scene</param>
-        public CreateSceneAttribute(bool camera = false, bool light = false)
+        /// <param name="light">true: create directional light object in new scene</param>
+        /// <param name="unloadOthers">true: unload other scenes before creating a new scene</param>
+        public CreateSceneAttribute(bool camera = false, bool light = false, bool unloadOthers = false)
         {
             _camera = camera;
             _light = light;
+            _unloadOthers = unloadOthers;
         }
 
         /// <inheritdoc />
         public IEnumerator BeforeTest(ITest test)
         {
             _newSceneName = $"Scene of {TestContext.CurrentContext.Test.FullName}";
+
+            if (_unloadOthers)
+            {
+                UnloadOtherScenes();
+            }
 
             if (Application.isPlaying)
             {
@@ -85,6 +93,18 @@ namespace TestHelper.Attributes
             if (Application.isPlaying && SceneManager.GetActiveScene().name == _newSceneName)
             {
                 yield return SceneManager.UnloadSceneAsync(_newSceneName);
+            }
+        }
+
+        private static void UnloadOtherScenes()
+        {
+            for (var i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if (!scene.name.StartsWith("InitTestScene"))
+                {
+                    SceneManager.UnloadSceneAsync(scene);
+                }
             }
         }
     }

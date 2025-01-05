@@ -80,5 +80,36 @@ namespace TestHelper.Attributes
 
             yield return null;
         }
+
+        [TestFixture]
+        public class UnloadOthersOptionTest
+        {
+            private const string TestSceneName = "UnloadOthersOptionTestScene";
+
+            [Test]
+            [Order(0)]
+            public void UnloadOthersOption_BeforeTest()
+            {
+                SceneManager.CreateScene(TestSceneName); // create dummy scene, not activate.
+            }
+
+            [Test]
+            [Order(1)]
+            [CreateScene(unloadOthers: false)]
+            public void UnloadOthersOption_False_NotUnloadOtherScenes()
+            {
+                var scene = SceneManager.GetSceneByName(TestSceneName);
+                Assert.That(scene.isLoaded, Is.True);
+            }
+
+            [Test]
+            [Order(2)]
+            [CreateScene(unloadOthers: true)]
+            public void UnloadOthersOption_True_UnloadOtherScenes()
+            {
+                var scene = SceneManager.GetSceneByName(TestSceneName);
+                Assert.That(scene.isLoaded, Is.False);
+            }
+        }
     }
 }
