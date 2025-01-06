@@ -2,7 +2,7 @@
 // This software is released under the MIT License.
 
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
 using NUnit.Framework;
 using TestHelper.RuntimeInternals;
 using UnityEngine;
