@@ -115,6 +115,11 @@ namespace TestHelper.Attributes
         /// <inheritdoc />
         public IEnumerator AfterTest(ITest test)
         {
+            if (!_newScene.isLoaded)
+            {
+                yield break;
+            }
+
             if (_beforeActiveScene.isLoaded)
             {
                 SceneManager.SetActiveScene(_beforeActiveScene);
