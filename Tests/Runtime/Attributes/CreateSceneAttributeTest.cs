@@ -81,6 +81,18 @@ namespace TestHelper.Attributes
             yield return null;
         }
 
+        [UnityTest]
+        [CreateScene]
+        public IEnumerator UnloadCreatedSceneInTest_NoErrorInAfterTest()
+        {
+            var createdScene = SceneManager.GetActiveScene();
+
+            var newScene = SceneManager.CreateScene("New Scene");
+            SceneManager.SetActiveScene(newScene);
+
+            yield return SceneManager.UnloadSceneAsync(createdScene);
+        }
+
         [TestFixture]
         public class UnloadOthersOptionTest
         {
