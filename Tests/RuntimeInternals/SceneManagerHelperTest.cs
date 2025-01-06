@@ -3,7 +3,7 @@
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
