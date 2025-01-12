@@ -366,6 +366,7 @@ public class MyTestClass
 ```
 
 
+
 ### Comparers
 
 #### GameObjectNameComparer
@@ -450,6 +451,7 @@ public class MyTestClass
 ```
 
 
+
 ### Constraints
 
 #### Destroyed
@@ -477,6 +479,59 @@ public class MyTestClass
 
 > [!NOTE]  
 > When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
+
+
+
+### Statistical Testing APIs \[experimental\]
+
+`TestHelper.Statistics` namespace provides utilities for statistical testing, including assertions for pseudo-random number generator (PRNG) and statistical summary tools.
+
+> [!WARNING]  
+> This feature is experimental.
+
+
+#### Experiment
+
+`Experiment` is a class for running experiments of PRNG.
+It outputs statistical summaries and a character-based histogram to the console.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyStatisticalTest
+{
+    [Test]
+    public void Experiment_2D6()
+    {
+        var sampleSpace = Experiment.Run(
+            () => DiceGenerator.Roll(2, 6), // 2D6
+            1 << 20); // 1,048,576 times
+
+        Assert.That(sampleSpace.Max, Is.EqualTo(12));
+        Assert.That(sampleSpace.Min, Is.EqualTo(2));
+    }
+}
+```
+
+Console output example:
+
+```
+Experimental and Statistical Summary:
+  Sample size: 1,048,576
+  Maximum: 12
+  Minimum: 2
+  Peak frequency: 174,554
+  Valley frequency: 29,070
+  Median: 87,490
+  Mean: 95,325.09
+  Histogram: ▁▂▃▅▆█▆▅▃▂▁
+  (Each bar represents the frequency of values in equally spaced bins.)
+```
+
+> [!NOTE]  
+> We plan to add probability distribution and various constraints in the future.
+
 
 
 ### Runtime APIs
@@ -570,15 +625,18 @@ public class MyTestClass
 > When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#BuildScene).
 
 
+
 ### Editor Extensions
 
 #### Open Persistent Data Directory
 
 Select menu item **Window > Test Helper > Open Persistent Data Directory**, which opens the directory pointed to by [Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html) in the Finder/ File Explorer.
 
+
 #### Open Temporary Cache Directory
 
 Select menu item **Window > Test Helper > Open Temporary Cache Directory**, which opens the directory pointed to by [Application.temporaryCachePath](https://docs.unity3d.com/ScriptReference/Application-temporaryCachePath.html) in the Finder/ File Explorer.
+
 
 
 ### JUnit XML format report
