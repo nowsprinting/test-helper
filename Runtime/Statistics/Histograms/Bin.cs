@@ -22,9 +22,9 @@ namespace TestHelper.Statistics.Histograms
         public T Max { get; private set; }
 
         /// <summary>
-        /// Count of this bin.
+        /// Frequency of this bin.
         /// </summary>
-        public uint Count { get; set; }
+        public uint Frequency { get; set; }
 
         /// <summary>
         /// Label of this bin.
@@ -46,7 +46,7 @@ namespace TestHelper.Statistics.Histograms
         {
             Min = minInclusive;
             Max = maxExclusive;
-            Count = 0;
+            Frequency = 0;
         }
 
         /// <summary>

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace TestHelper.Statistics.Histograms
@@ -19,32 +20,36 @@ namespace TestHelper.Statistics.Histograms
         public SortedList<T, Bin<T>> Bins { get; internal set; }
 
         /// <summary>
-        /// Peak value of this histogram.
+        /// Peak frequency of this histogram.
         /// This property is set in the <c>Calculate()</c> method.
         /// </summary>
         public uint Peak { get; private set; }
 
         /// <summary>
-        /// Valley value of this histogram.
+        /// Valley frequency of this histogram.
         /// This property is set in the <c>Calculate()</c> method.
         /// </summary>
         public uint Valley { get; private set; }
 
         /// <summary>
-        /// Median value of this histogram.
+        /// Median frequency of this histogram.
         /// This property is set in the <c>Calculate()</c> method.
         /// </summary>
         public double Median { get; private set; }
 
         /// <summary>
-        /// Mean (average) value of this histogram.
+        /// Mean (average) frequency of this histogram.
         /// This property is set in the <c>Calculate()</c> method.
         /// </summary>
         public double Mean { get; private set; }
 
+        // only used in summary
         private uint _sampleSize;
         private T _sampleMax;
         private T _sampleMin;
+
+        // lower bound for character-based histogram
+        private uint _valleyGraterThanZero;
 
         /// <summary>
         /// Constructor that creates initial bins.
@@ -99,7 +104,7 @@ namespace TestHelper.Statistics.Histograms
                     Bins.Add(current, bin);
                 }
 
-                bin.Count++;
+                bin.Frequency++;
             }
 
             Calculate();
@@ -144,34 +149,40 @@ namespace TestHelper.Statistics.Histograms
 
         internal void Calculate()
         {
-            var counts = new List<uint>();
+            var frequencies = new List<uint>();
             Mean = 0;
 
             foreach (var bin in Bins.Values)
             {
-                counts.Add(bin.Count);
-                Mean += (double)bin.Count / Bins.Count;
+                frequencies.Add(bin.Frequency);
+                Mean += (double)bin.Frequency / Bins.Count;
             }
 
-            counts.Sort();
-            Peak = counts[^1];
-            Valley = counts[0];
-            Median = counts.Count % 2 == 0
-                ? (double)(counts[counts.Count / 2 - 1] + counts[counts.Count / 2]) / 2
-                : counts[counts.Count / 2];
+            frequencies.Sort();
+            Peak = frequencies[^1];
+            Valley = frequencies[0];
+            Median = frequencies.Count % 2 == 0
+                ? (double)(frequencies[frequencies.Count / 2 - 1] + frequencies[frequencies.Count / 2]) / 2
+                : frequencies[frequencies.Count / 2];
+
+            foreach (var frequency in frequencies.Where(frequency => frequency > 0))
+            {
+                _valleyGraterThanZero = frequency;
+                break;
+            }
         }
 
         internal string DrawHistogramAscii()
         {
             var builder = new StringBuilder();
-            var blockHeight = (double)(Peak - Valley) / 7;
+            var blockHeight = (double)(Peak - _valleyGraterThanZero) / 7;
 
             foreach (var bin in Bins.Values)
             {
-                if (bin.Count > 0)
+                if (bin.Frequency > 0)
                 {
                     var block = blockHeight > 0
-                        ? 0x2581 + (int)((bin.Count - Valley) / blockHeight)
+                        ? 0x2581 + (int)((bin.Frequency - _valleyGraterThanZero) / blockHeight)
                         : 0x2588; // full block
                     builder.Append(char.ConvertFromUtf32(block));
                 }

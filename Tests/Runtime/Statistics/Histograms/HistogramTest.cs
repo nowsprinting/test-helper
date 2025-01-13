@@ -56,8 +56,8 @@ namespace TestHelper.Statistics.Histograms
 
             var expected = new List<Bin<Coin>>
             {
-                new Bin<Coin>(Coin.Head) { Count = 1 }, //
-                new Bin<Coin>(Coin.Tail) { Count = 2 }
+                new Bin<Coin>(Coin.Head) { Frequency = 1 }, //
+                new Bin<Coin>(Coin.Tail) { Frequency = 2 }
             };
             Assert.That(sut.Bins.Values, Is.EquivalentTo(expected).Using(new BinCountComparer<Coin>()));
         }
@@ -70,11 +70,11 @@ namespace TestHelper.Statistics.Histograms
 
             var expected = new List<Bin<int>>
             {
-                new Bin<int>(0, 2) { Count = 0 }, //
-                new Bin<int>(2, 4) { Count = 2 }, //
-                new Bin<int>(4, 6) { Count = 4 }, //
-                new Bin<int>(6, 8) { Count = 0 }, //
-                new Bin<int>(8, 10) { Count = 1 }
+                new Bin<int>(0, 2) { Frequency = 0 }, //
+                new Bin<int>(2, 4) { Frequency = 2 }, //
+                new Bin<int>(4, 6) { Frequency = 4 }, //
+                new Bin<int>(6, 8) { Frequency = 0 }, //
+                new Bin<int>(8, 10) { Frequency = 1 }
             };
             Assert.That(sut.Bins.Values, Is.EquivalentTo(expected).Using(new BinCountComparer<int>()));
         }
@@ -86,11 +86,11 @@ namespace TestHelper.Statistics.Histograms
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Count = 4 } }, // Median
-                    { 1, new Bin<int>(1) { Count = 6 } }, //
-                    { 2, new Bin<int>(2) { Count = 2 } }, // 
-                    { 3, new Bin<int>(3) { Count = 10 } }, // Peak
-                    { 4, new Bin<int>(4) { Count = 0 } }, // Valley
+                    { 0, new Bin<int>(0) { Frequency = 4 } }, // Median
+                    { 1, new Bin<int>(1) { Frequency = 6 } }, //
+                    { 2, new Bin<int>(2) { Frequency = 2 } }, // 
+                    { 3, new Bin<int>(3) { Frequency = 10 } }, // Peak
+                    { 4, new Bin<int>(4) { Frequency = 0 } }, // Valley
                 }
             };
             sut.Calculate();
@@ -108,12 +108,12 @@ namespace TestHelper.Statistics.Histograms
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Count = 4 } }, //
-                    { 1, new Bin<int>(1) { Count = 6 } }, //
-                    { 2, new Bin<int>(2) { Count = 2 } }, // 
-                    { 3, new Bin<int>(3) { Count = 10 } }, // Peak
-                    { 4, new Bin<int>(4) { Count = 0 } }, // Valley
-                    { 5, new Bin<int>(5) { Count = 3 } }, // 
+                    { 0, new Bin<int>(0) { Frequency = 4 } }, //
+                    { 1, new Bin<int>(1) { Frequency = 6 } }, //
+                    { 2, new Bin<int>(2) { Frequency = 2 } }, // 
+                    { 3, new Bin<int>(3) { Frequency = 10 } }, // Peak
+                    { 4, new Bin<int>(4) { Frequency = 0 } }, // Valley
+                    { 5, new Bin<int>(5) { Frequency = 3 } }, // 
                 }
             };
             sut.Calculate();
@@ -131,14 +131,14 @@ namespace TestHelper.Statistics.Histograms
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Count = 100 } }, // lower 1:8 block
-                    { 1, new Bin<int>(1) { Count = 110 } }, // lower 1:4 block
-                    { 2, new Bin<int>(2) { Count = 120 } }, // lower 3:8 block
-                    { 3, new Bin<int>(3) { Count = 130 } }, // lower 1:2 block
-                    { 4, new Bin<int>(4) { Count = 140 } }, // lower 5:8 block
-                    { 5, new Bin<int>(5) { Count = 150 } }, // lower 3:4 block
-                    { 6, new Bin<int>(6) { Count = 160 } }, // lower 7:8 block
-                    { 7, new Bin<int>(7) { Count = 170 } }, // full block
+                    { 0, new Bin<int>(0) { Frequency = 100 } }, // lower 1:8 block
+                    { 1, new Bin<int>(1) { Frequency = 110 } }, // lower 1:4 block
+                    { 2, new Bin<int>(2) { Frequency = 120 } }, // lower 3:8 block
+                    { 3, new Bin<int>(3) { Frequency = 130 } }, // lower 1:2 block
+                    { 4, new Bin<int>(4) { Frequency = 140 } }, // lower 5:8 block
+                    { 5, new Bin<int>(5) { Frequency = 150 } }, // lower 3:4 block
+                    { 6, new Bin<int>(6) { Frequency = 160 } }, // lower 7:8 block
+                    { 7, new Bin<int>(7) { Frequency = 170 } }, // full block
                 }
             };
             sut.Calculate();
@@ -154,8 +154,8 @@ namespace TestHelper.Statistics.Histograms
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Count = 100 } }, // full block
-                    { 1, new Bin<int>(1) { Count = 100 } }, // full block
+                    { 0, new Bin<int>(0) { Frequency = 100 } }, // full block
+                    { 1, new Bin<int>(1) { Frequency = 100 } }, // full block
                 }
             };
             sut.Calculate();
@@ -171,9 +171,9 @@ namespace TestHelper.Statistics.Histograms
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Count = 1000 } }, // full block
-                    { 1, new Bin<int>(1) { Count = 0 } }, // space
-                    { 2, new Bin<int>(2) { Count = 1 } }, // lower 1:8 block
+                    { 0, new Bin<int>(0) { Frequency = 1000 } }, // full block
+                    { 1, new Bin<int>(1) { Frequency = 0 } }, // space
+                    { 2, new Bin<int>(2) { Frequency = 1 } }, // lower 1:8 block
                 }
             };
             sut.Calculate();
@@ -200,7 +200,7 @@ Experimental and Statistical Summary:
   Valley frequency: 0
   Median: 1
   Mean: 1.40
-  Histogram:  ▄█ ▂
+  Histogram:  ▃█ ▁
   (Each bar represents the frequency of values in equally spaced bins.)
 "));
         }

@@ -10,7 +10,7 @@ using UnityEngine;
 namespace TestHelper.Statistics.Comparers
 {
     /// <summary>
-    /// Compare two <c>Bin</c> by <c>Min</c>, <c>Max</c>, and <c>Count</c>.
+    /// Compare two <c>Bin</c> by <c>Min</c>, <c>Max</c>, and <c>Frequency</c>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class BinCountComparer<T> : IComparer<Bin<T>> where T : IComparable
@@ -33,13 +33,13 @@ namespace TestHelper.Statistics.Comparers
                 return max;
             }
 
-            var count = x.Count.CompareTo(y.Count);
-            if (count != 0)
+            var frequency = x.Frequency.CompareTo(y.Frequency);
+            if (frequency != 0)
             {
-                Log($"Count={x.Count}", $"Count={y.Count}");
+                Log($"Frequency={x.Frequency}", $"Frequency={y.Frequency}");
             }
 
-            return count;
+            return frequency;
         }
 
         private static void Log(string expected, string actual)
