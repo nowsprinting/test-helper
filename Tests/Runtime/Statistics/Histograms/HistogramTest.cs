@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using TestHelper.Statistics.Comparers;
 using TestHelper.Statistics.RandomGenerators;
+using UnityEngine;
 
 namespace TestHelper.Statistics.Histograms
 {
@@ -179,6 +180,41 @@ namespace TestHelper.Statistics.Histograms
             var actual = sut.DrawHistogramAscii();
 
             Assert.That(actual, Is.EqualTo("\u2588 \u2581"));
+        }
+
+        [Test]
+        public void GetSummary()
+        {
+            var sut = new Histogram<int>(0, 10, 2);
+            sut.Plot(new[] { 2, 3, 4, 4, 5, 5, 9 }, 7, 2, 9);
+
+            var actual = sut.GetSummary();
+            Debug.Log(actual);
+
+            Assert.That(actual, Is.EqualTo(@"---
+Experimental and Statistical Summary:
+  Sample size: 7
+  Maximum: 9
+  Minimum: 2
+  Peak frequency: 4
+  Valley frequency: 0
+  Median: 1
+  Mean: 1.40
+  Histogram:  ▄█ ▂
+  (Each bar represents the frequency of values in equally spaced bins.)
+"));
+        }
+
+        [Test]
+        public void GetSummary_WithSampleSpace()
+        {
+            var sampleSpace = Experiment.Run(
+                () => DiceGenerator.Roll(2, 6), // 2D6
+                1 << 20); // 1,048,576 times
+
+            var histogram = new Histogram<int>();
+            histogram.Plot(sampleSpace);
+            Debug.Log(histogram.GetSummary());
         }
     }
 }

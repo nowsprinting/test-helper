@@ -7,6 +7,10 @@ using System.Text;
 
 namespace TestHelper.Statistics.Histograms
 {
+    /// <summary>
+    /// Plot samples to histogram.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Histogram<T> where T : IComparable
     {
         /// <summary>
@@ -38,9 +42,13 @@ namespace TestHelper.Statistics.Histograms
         /// </summary>
         public double Mean { get; private set; }
 
+        private uint _sampleSize;
+        private T _sampleMax;
+        private T _sampleMin;
+
         /// <summary>
-        /// Constructor.
-        /// Can only be used with numeric types.
+        /// Constructor that creates initial bins.
+        /// Can only be used with numeric type.
         /// </summary>
         /// <param name="min"></param>
         /// <param name="max"></param>
@@ -73,8 +81,15 @@ namespace TestHelper.Statistics.Histograms
         /// Plot samples into bins.
         /// </summary>
         /// <param name="samples">Input samples</param>
-        public void Plot(IEnumerable<T> samples)
+        /// <param name="size">Sample size; only used in summary</param>
+        /// <param name="min">Minimum value in samples; only used in summary</param>
+        /// <param name="max">Maximum value in samples; only used in summary</param>
+        public void Plot(IEnumerable<T> samples, uint size = 0, T min = default, T max = default)
         {
+            _sampleSize = size;
+            _sampleMax = max;
+            _sampleMin = min;
+
             foreach (var current in samples)
             {
                 var bin = FindBin(current);
@@ -88,6 +103,15 @@ namespace TestHelper.Statistics.Histograms
             }
 
             Calculate();
+        }
+
+        /// <summary>
+        /// Plot samples into bins.
+        /// </summary>
+        /// <param name="sampleSpace">Input sample space</param>
+        public void Plot(SampleSpace<T> sampleSpace)
+        {
+            Plot(sampleSpace.Samples, (uint)sampleSpace.Samples.Length, sampleSpace.Min, sampleSpace.Max);
         }
 
         private Bin<T> FindBin(T value)
@@ -118,12 +142,6 @@ namespace TestHelper.Statistics.Histograms
             return null;
         }
 
-        /// <summary>
-        /// Calculate Peak, Valley, Median, and Mean.
-        /// </summary>
-        /// <remarks>
-        /// Called in <c>Plot()</c> method.
-        /// </remarks>
         internal void Calculate()
         {
             var counts = new List<uint>();
@@ -143,11 +161,7 @@ namespace TestHelper.Statistics.Histograms
                 : counts[counts.Count / 2];
         }
 
-        /// <summary>
-        /// Draw character-based histogram.
-        /// </summary>
-        /// <returns></returns>
-        public string DrawHistogramAscii()
+        internal string DrawHistogramAscii()
         {
             var builder = new StringBuilder();
             var blockHeight = (double)(Peak - Valley) / 7;
@@ -167,6 +181,25 @@ namespace TestHelper.Statistics.Histograms
                 }
             }
 
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Returns statistical summaries and a character-based histogram.
+        /// </summary>
+        /// <returns></returns>
+        public string GetSummary()
+        {
+            var builder = new StringBuilder("---\nExperimental and Statistical Summary:\n");
+            builder.AppendLine($"  Sample size: {_sampleSize:N0}");
+            builder.AppendLine($"  Maximum: {_sampleMax}"); // No format, may not be a numeric type.
+            builder.AppendLine($"  Minimum: {_sampleMin}"); // No format, may not be a numeric type.
+            builder.AppendLine($"  Peak frequency: {Peak:N0}");
+            builder.AppendLine($"  Valley frequency: {Valley:N0}");
+            builder.AppendLine($"  Median: {Median:N0}");
+            builder.AppendLine($"  Mean: {Mean:N2}");
+            builder.AppendLine($"  Histogram: {DrawHistogramAscii()}");
+            builder.AppendLine("  (Each bar represents the frequency of values in equally spaced bins.)");
             return builder.ToString();
         }
 

@@ -482,18 +482,23 @@ public class MyTestClass
 
 
 
-### Statistical Testing APIs \[experimental\]
+### Statistics APIs \[experimental\]
 
 `TestHelper.Statistics` namespace provides utilities for statistical testing, including assertions for pseudo-random number generator (PRNG) and statistical summary tools.
 
 > [!WARNING]  
 > This feature is experimental.
 
+> [!IMPORTANT]  
+> This feature is **NOT** statistical hypothesis testing tool.
+
+> [!NOTE]  
+> We plan to add probability distribution and various constraints in the future.
+
 
 #### Experiment
 
 `Experiment` is a class for running experiments of PRNG.
-It outputs statistical summaries and a character-based histogram to the console.
 
 Usage:
 
@@ -514,6 +519,31 @@ public class MyStatisticalTest
 }
 ```
 
+
+#### Histogram
+
+`Histogram` is a class for plotting a histogram and calculating statistical summaries.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyStatisticalTest
+{
+    [Test]
+    public void Histogram_2D6()
+    {
+        var sampleSpace = Experiment.Run(
+            () => DiceGenerator.Roll(2, 6), // 2D6
+            1 << 20); // 1,048,576 times
+
+        var histogram = new Histogram<int>();
+        histogram.Plot(sampleSpace);
+        Debug.Log(histogram.GetSummary()); // Write to console
+    }
+}
+```
+
 Console output example:
 
 ```
@@ -528,9 +558,6 @@ Experimental and Statistical Summary:
   Histogram: ▁▂▃▅▆█▆▅▃▂▁
   (Each bar represents the frequency of values in equally spaced bins.)
 ```
-
-> [!NOTE]  
-> We plan to add probability distribution and various constraints in the future.
 
 
 
