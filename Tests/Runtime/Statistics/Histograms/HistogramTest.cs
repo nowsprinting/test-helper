@@ -130,14 +130,14 @@ namespace TestHelper.Statistics.Histograms
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Count = 100 } }, //
-                    { 1, new Bin<int>(1) { Count = 110 } }, //
-                    { 2, new Bin<int>(2) { Count = 120 } }, // 
-                    { 3, new Bin<int>(3) { Count = 130 } }, //
-                    { 4, new Bin<int>(4) { Count = 140 } }, //
-                    { 5, new Bin<int>(5) { Count = 150 } }, // 
-                    { 6, new Bin<int>(6) { Count = 160 } }, // 
-                    { 7, new Bin<int>(7) { Count = 170 } }, // 
+                    { 0, new Bin<int>(0) { Count = 100 } }, // lower 1:8 block
+                    { 1, new Bin<int>(1) { Count = 110 } }, // lower 1:4 block
+                    { 2, new Bin<int>(2) { Count = 120 } }, // lower 3:8 block
+                    { 3, new Bin<int>(3) { Count = 130 } }, // lower 1:2 block
+                    { 4, new Bin<int>(4) { Count = 140 } }, // lower 5:8 block
+                    { 5, new Bin<int>(5) { Count = 150 } }, // lower 3:4 block
+                    { 6, new Bin<int>(6) { Count = 160 } }, // lower 7:8 block
+                    { 7, new Bin<int>(7) { Count = 170 } }, // full block
                 }
             };
             sut.Calculate();
@@ -153,14 +153,32 @@ namespace TestHelper.Statistics.Histograms
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Count = 100 } }, //
-                    { 1, new Bin<int>(1) { Count = 100 } }, //
+                    { 0, new Bin<int>(0) { Count = 100 } }, // full block
+                    { 1, new Bin<int>(1) { Count = 100 } }, // full block
                 }
             };
             sut.Calculate();
             var actual = sut.DrawHistogramAscii();
 
             Assert.That(actual, Is.EqualTo("\u2588\u2588"));
+        }
+
+        [Test]
+        public void DrawHistogramAscii_ZeroValue_DrawSpace()
+        {
+            var sut = new Histogram<int>
+            {
+                Bins = new SortedList<int, Bin<int>>
+                {
+                    { 0, new Bin<int>(0) { Count = 1000 } }, // full block
+                    { 1, new Bin<int>(1) { Count = 0 } }, // space
+                    { 2, new Bin<int>(2) { Count = 1 } }, // lower 1:8 block
+                }
+            };
+            sut.Calculate();
+            var actual = sut.DrawHistogramAscii();
+
+            Assert.That(actual, Is.EqualTo("\u2588 \u2581"));
         }
     }
 }

@@ -154,10 +154,17 @@ namespace TestHelper.Statistics.Histograms
 
             foreach (var bin in Bins.Values)
             {
-                var block = blockHeight > 0
-                    ? 0x2581 + (int)((bin.Count - Valley) / blockHeight)
-                    : 0x2588; // full block
-                builder.Append(char.ConvertFromUtf32(block));
+                if (bin.Count > 0)
+                {
+                    var block = blockHeight > 0
+                        ? 0x2581 + (int)((bin.Count - Valley) / blockHeight)
+                        : 0x2588; // full block
+                    builder.Append(char.ConvertFromUtf32(block));
+                }
+                else
+                {
+                    builder.Append((char)0x20); // space
+                }
             }
 
             return builder.ToString();
