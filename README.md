@@ -484,7 +484,7 @@ public class MyTestClass
 
 ### Statistics APIs \[experimental\]
 
-`TestHelper.Statistics` namespace provides utilities for statistical testing, including assertions for pseudo-random number generator (PRNG) and statistical summary tools.
+`TestHelper.Statistics` namespace provides utilities for statistical testing, including assertions for pseudo-random number generators (PRNG) and statistical summary tools.
 
 > [!WARNING]  
 > This feature is experimental.

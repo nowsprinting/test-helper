@@ -159,7 +159,7 @@ namespace TestHelper.Statistics.Histograms
             }
 
             frequencies.Sort();
-            Peak = frequencies[^1];
+            Peak = frequencies[frequencies.Count - 1];
             Valley = frequencies[0];
             Median = frequencies.Count % 2 == 0
                 ? (double)(frequencies[frequencies.Count / 2 - 1] + frequencies[frequencies.Count / 2]) / 2
