@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.IO;
 using NUnit.Framework;
 using TestHelper.RuntimeInternals;
@@ -160,15 +161,82 @@ namespace TestHelper.Statistics
                 File.Delete(path);
             }
 
-            var sampleSpace = Experiment.Run(
-                () => DiceGenerator.Roll(2, 6), // 2D6
-                1 << 20); // 1,048,576 times
-
-            var pixelPlot = new PixelPlot<int>();
-            pixelPlot.Plot(sampleSpace);
-            pixelPlot.WriteToFile(directory: directory, filename: filename);
+            var sut = new PixelPlot<int>();
+            sut.Plot(new int[] { 0, 1, 2, 3 }, size: 4, min: 0, max: 3);
+            sut.WriteToFile(directory: directory, filename: filename);
 
             Assert.That(new FileInfo(path), Does.Exist);
+        }
+
+        [TestFixture]
+        public class Sampling
+        {
+            [Test]
+            public void SystemRandom()
+            {
+                var random = new System.Random();
+                var sampleSpace = Experiment.Run(
+                    () => random.Next(),
+                    1 << 16); // 256x256
+
+                var pixelPlot = new PixelPlot<int>();
+                pixelPlot.Plot(sampleSpace);
+                pixelPlot.WriteToFile();
+            }
+
+            [Test]
+            public void UnityEngineRandom()
+            {
+                var sampleSpace = Experiment.Run(
+                    () => UnityEngine.Random.value,
+                    1 << 16); // 256x256
+
+                var pixelPlot = new PixelPlot<float>();
+                pixelPlot.Plot(sampleSpace);
+                pixelPlot.WriteToFile();
+            }
+
+            [Test]
+            public void Lcg()
+            {
+                var lcg = new Lcg(Environment.TickCount);
+
+                var sampleSpace = Experiment.Run(
+                    () => lcg.Next(),
+                    1 << 16); // 256x256
+
+                var pixelPlot = new PixelPlot<int>();
+                pixelPlot.Plot(sampleSpace);
+                pixelPlot.WriteToFile();
+            }
+
+            [Test]
+            public void Lcg_Period24()
+            {
+                var lcg = new Lcg(Environment.TickCount, 13, 5, 24);
+
+                var sampleSpace = Experiment.Run(
+                    () => lcg.Next(),
+                    1 << 16); // 256x256
+
+                var pixelPlot = new PixelPlot<int>();
+                pixelPlot.Plot(sampleSpace);
+                pixelPlot.WriteToFile();
+            }
+
+            [Test]
+            public void Xorshift()
+            {
+                var lcg = new Xorshift((uint)Environment.TickCount);
+
+                var sampleSpace = Experiment.Run(
+                    () => lcg.Next(),
+                    1 << 16); // 256x256
+
+                var pixelPlot = new PixelPlot<uint>();
+                pixelPlot.Plot(sampleSpace);
+                pixelPlot.WriteToFile();
+            }
         }
     }
 }
