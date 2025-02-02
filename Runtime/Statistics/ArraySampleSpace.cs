@@ -2,19 +2,26 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace TestHelper.Statistics
 {
     /// <summary>
-    /// Sample space; return of <c>Experiment.Run()</c>.
+    /// Sample space by Array; return of <c>Experiment.Run(int)</c>.
     /// </summary>
-    public struct SampleSpace<T> where T : IComparable
+    public struct ArraySampleSpace<T> : ISampleSpace<T> where T : IComparable
     {
         /// <summary>
         /// Samples.
         /// </summary>
-        public T[] Samples { get; }
+        public IEnumerable<T> Samples
+        {
+            get
+            {
+                return _samples;
+            }
+        }
 
         /// <summary>
         /// Returns min value of the samples.
@@ -26,23 +33,24 @@ namespace TestHelper.Statistics
         /// </summary>
         public T Max { get; private set; }
 
+        private readonly T[] _samples;
         private int _trailIndex;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="trailCount"></param>
-        public SampleSpace(uint trailCount)
+        public ArraySampleSpace(int trailCount)
         {
-            Samples = new T[trailCount];
+            _samples = new T[trailCount];
+            _trailIndex = 0;
             Min = default;
             Max = default;
-            _trailIndex = 0;
         }
 
         internal void Add(T value)
         {
-            Samples[_trailIndex++] = value;
+            _samples[_trailIndex++] = value;
 
             if (_trailIndex == 1)
             {
@@ -71,11 +79,11 @@ namespace TestHelper.Statistics
             }
 
             var builder = new StringBuilder("{");
-            builder.Append(Samples[0]);
+            builder.Append(_samples[0]);
             for (var i = 1; i < _trailIndex; i++)
             {
                 builder.Append(",");
-                builder.Append(Samples[i]);
+                builder.Append(_samples[i]);
             }
 
             return builder.Append("}").ToString();

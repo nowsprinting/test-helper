@@ -72,8 +72,7 @@ namespace TestHelper.Statistics
                             value = max;
                         }
 
-                        var alpha = (float)((Convert.ToDouble(value) - minValue) * multiplier);
-                        pixel.a = (float)alpha;
+                        pixel.a = (float)((Convert.ToDouble(value) - minValue) * multiplier);
                         _pixelPlot.SetPixel(x, y, pixel);
                     }
                 }
@@ -86,9 +85,9 @@ namespace TestHelper.Statistics
         /// Plot samples into PixelPlot.
         /// </summary>
         /// <param name="sampleSpace">Input sample space</param>
-        public void Plot(SampleSpace<T> sampleSpace)
+        public void Plot(ISampleSpace<T> sampleSpace)
         {
-            Plot(sampleSpace.Samples, (ulong)sampleSpace.Samples.Length, sampleSpace.Min, sampleSpace.Max);
+            Plot(sampleSpace.Samples, (ulong)sampleSpace.Samples.Count(), sampleSpace.Min, sampleSpace.Max);
         }
 
         /// <summary>

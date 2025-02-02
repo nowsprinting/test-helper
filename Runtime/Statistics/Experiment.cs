@@ -14,10 +14,10 @@ namespace TestHelper.Statistics
         /// <param name="trailCount">Trail count</param>
         /// <typeparam name="T">Type of random value</typeparam>
         /// <returns>Sample space</returns>
-        public static SampleSpace<T> Run<T>(Func<T> method, uint trailCount)
+        public static ArraySampleSpace<T> Run<T>(Func<T> method, int trailCount)
             where T : IComparable
         {
-            var sampleSpace = new SampleSpace<T>(trailCount);
+            var sampleSpace = new ArraySampleSpace<T>(trailCount);
             for (var i = 0; i < trailCount; i++)
             {
                 sampleSpace.Add(method.Invoke());

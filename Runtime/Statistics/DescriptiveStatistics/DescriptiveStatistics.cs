@@ -44,7 +44,7 @@ namespace TestHelper.Statistics.DescriptiveStatistics
         public double Mean { get; private set; }
 
         // only used in summary
-        private uint _sampleSize;
+        private ulong _sampleSize;
         private T _sampleMax;
         private T _sampleMin;
 
@@ -89,7 +89,7 @@ namespace TestHelper.Statistics.DescriptiveStatistics
         /// <param name="size">Sample size; only used in summary</param>
         /// <param name="min">Minimum value in samples; only used in summary</param>
         /// <param name="max">Maximum value in samples; only used in summary</param>
-        public void Calculate(IEnumerable<T> samples, uint size = 0, T min = default, T max = default)
+        public void Calculate(IEnumerable<T> samples, ulong size = 0, T min = default, T max = default)
         {
             _sampleSize = size;
             _sampleMax = max;
@@ -114,9 +114,9 @@ namespace TestHelper.Statistics.DescriptiveStatistics
         /// Plot samples into bins.
         /// </summary>
         /// <param name="sampleSpace">Input sample space</param>
-        public void Calculate(SampleSpace<T> sampleSpace)
+        public void Calculate(ISampleSpace<T> sampleSpace)
         {
-            Calculate(sampleSpace.Samples, (uint)sampleSpace.Samples.Length, sampleSpace.Min, sampleSpace.Max);
+            Calculate(sampleSpace.Samples, (ulong)sampleSpace.Samples.Count(), sampleSpace.Min, sampleSpace.Max);
         }
 
         private Bin<T> FindBin(T value)
