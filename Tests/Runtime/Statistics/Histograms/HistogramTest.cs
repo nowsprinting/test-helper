@@ -214,7 +214,7 @@ Experimental and Statistical Summary:
 
             var histogram = new Histogram<int>();
             histogram.Plot(sampleSpace);
-            Debug.Log(histogram.GetSummary());
+            Debug.Log(histogram.GetSummary()); // Write to console
         }
     }
 }

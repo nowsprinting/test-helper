@@ -504,7 +504,7 @@ Usage:
 
 ```csharp
 [TestFixture]
-public class MyStatisticalTest
+public class MyStatisticsTest
 {
     [Test]
     public void Experiment_2D6()
@@ -520,6 +520,34 @@ public class MyStatisticalTest
 ```
 
 
+#### PixelPlot
+
+`PixelPlot` is class that outputs a pixel plot image file from samples.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyStatisticsTest
+{
+    [Test]
+    public void PixelPlot_2D6()
+    {
+        var sampleSpace = Experiment.Run(
+            () => DiceGenerator.Roll(2, 6), // 2D6
+            1 << 20); // 1,048,576 times
+
+        var pixelPlot = new PixelPlot();
+        pixelPlot.Plot(sampleSpace);
+        pixelPlot.WriteToFile("Path/To/Directory", "PixelPlot.png");
+    }
+}
+```
+
+> [!IMPORTANT]  
+> Can plot only for samples with value type.
+
+
 #### Histogram
 
 `Histogram` is a class for plotting a histogram and calculating statistical summaries.
@@ -528,7 +556,7 @@ Usage:
 
 ```csharp
 [TestFixture]
-public class MyStatisticalTest
+public class MyStatisticsTest
 {
     [Test]
     public void Histogram_2D6()

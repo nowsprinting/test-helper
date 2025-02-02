@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -52,6 +52,26 @@ namespace TestHelper.RuntimeInternals
             catch (KeyNotFoundException)
             {
                 return Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots");
+            }
+        }
+
+        /// <summary>
+        /// Statistics output directory.
+        /// Returns <c>Application.persistentDataPath</c> + "/TestHelper/Statistics/" if not specified.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetStatisticsDirectory(string[] args = null)
+        {
+            const string StatisticsDirectoryKey = "-testHelperStatisticsDirectory";
+
+            try
+            {
+                args = args ?? Environment.GetCommandLineArgs();
+                return DictionaryFromCommandLineArgs(args)[StatisticsDirectoryKey];
+            }
+            catch (KeyNotFoundException)
+            {
+                return Path.Combine(Application.persistentDataPath, "TestHelper", "Statistics");
             }
         }
 
