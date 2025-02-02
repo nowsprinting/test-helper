@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using NUnit.Framework;
 using TestHelper.RuntimeInternals;
@@ -11,6 +12,8 @@ using UnityEngine;
 namespace TestHelper.Statistics
 {
     [TestFixture]
+    [SuppressMessage("Assertion", "NUnit2045:Use Assert.Multiple")]
+    [SuppressMessage("ReSharper", "RedundantExplicitArrayCreation")]
     public class PixelPlotTest
     {
         [Test]
@@ -175,6 +178,7 @@ namespace TestHelper.Statistics
             public void SystemRandom()
             {
                 var random = new System.Random();
+
                 var sampleSpace = Experiment.Run(
                     () => random.Next(),
                     1 << 16); // 256x256
@@ -227,10 +231,10 @@ namespace TestHelper.Statistics
             [Test]
             public void Xorshift()
             {
-                var lcg = new Xorshift((uint)Environment.TickCount);
+                var xorshift = new Xorshift((uint)Environment.TickCount);
 
                 var sampleSpace = Experiment.Run(
-                    () => lcg.Next(),
+                    () => xorshift.Next(),
                     1 << 16); // 256x256
 
                 var pixelPlot = new PixelPlot<uint>();

@@ -8,16 +8,16 @@ using TestHelper.Statistics.Comparers;
 using TestHelper.Statistics.RandomGenerators;
 using UnityEngine;
 
-namespace TestHelper.Statistics.Histograms
+namespace TestHelper.Statistics.DescriptiveStatistics
 {
     [TestFixture]
     [SuppressMessage("Assertion", "NUnit2045:Use Assert.Multiple")]
-    public class HistogramTest
+    public class DescriptiveStatisticsTest
     {
         [Test]
         public void Constructor_Double()
         {
-            var actual = new Histogram<double>(0.0d, 1.0d, 0.5d);
+            var actual = new DescriptiveStatistics<double>(0.0d, 1.0d, 0.5d);
             var expected = new SortedList<double, Bin<double>>
             {
                 { 0.0d, new Bin<double>(0.0d, 0.5d) }, //
@@ -29,7 +29,7 @@ namespace TestHelper.Statistics.Histograms
         [Test]
         public void Constructor_Int()
         {
-            var actual = new Histogram<int>(0, 10, 2);
+            var actual = new DescriptiveStatistics<int>(0, 10, 2);
             var expected = new SortedList<int, Bin<int>>
             {
                 { 0, new Bin<int>(0, 2) }, //
@@ -44,15 +44,15 @@ namespace TestHelper.Statistics.Histograms
         [Test]
         public void Constructor_WithoutInitialBins()
         {
-            var actual = new Histogram<Coin>();
+            var actual = new DescriptiveStatistics<Coin>();
             Assert.That(actual.Bins, Is.Empty);
         }
 
         [Test]
-        public void Plot_WithoutRange()
+        public void Calculate_WithoutRange()
         {
-            var sut = new Histogram<Coin>();
-            sut.Plot(new[] { Coin.Head, Coin.Tail, Coin.Tail });
+            var sut = new DescriptiveStatistics<Coin>();
+            sut.Calculate(new[] { Coin.Head, Coin.Tail, Coin.Tail });
 
             var expected = new List<Bin<Coin>>
             {
@@ -63,10 +63,10 @@ namespace TestHelper.Statistics.Histograms
         }
 
         [Test]
-        public void Plot_WithRange()
+        public void Calculate_WithRange()
         {
-            var sut = new Histogram<int>(0, 10, 2);
-            sut.Plot(new[] { 2, 3, 4, 4, 5, 5, 9 });
+            var sut = new DescriptiveStatistics<int>(0, 10, 2);
+            sut.Calculate(new[] { 2, 3, 4, 4, 5, 5, 9 });
 
             var expected = new List<Bin<int>>
             {
@@ -82,7 +82,7 @@ namespace TestHelper.Statistics.Histograms
         [Test]
         public void Calculate_Odd_CalculatedFeaturesSetToProperties()
         {
-            var sut = new Histogram<int>
+            var sut = new DescriptiveStatistics<int>
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
@@ -104,7 +104,7 @@ namespace TestHelper.Statistics.Histograms
         [Test]
         public void Calculate_Even_CalculatedFeaturesSetToProperties()
         {
-            var sut = new Histogram<int>
+            var sut = new DescriptiveStatistics<int>
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
@@ -127,7 +127,7 @@ namespace TestHelper.Statistics.Histograms
         [Test]
         public void DrawHistogramAscii()
         {
-            var sut = new Histogram<int>
+            var sut = new DescriptiveStatistics<int>
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
@@ -150,7 +150,7 @@ namespace TestHelper.Statistics.Histograms
         [Test]
         public void DrawHistogramAscii_OneValue_DrawFullBlock()
         {
-            var sut = new Histogram<int>
+            var sut = new DescriptiveStatistics<int>
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
@@ -167,7 +167,7 @@ namespace TestHelper.Statistics.Histograms
         [Test]
         public void DrawHistogramAscii_ZeroValue_DrawSpace()
         {
-            var sut = new Histogram<int>
+            var sut = new DescriptiveStatistics<int>
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
@@ -185,8 +185,8 @@ namespace TestHelper.Statistics.Histograms
         [Test]
         public void GetSummary()
         {
-            var sut = new Histogram<int>(0, 10, 2);
-            sut.Plot(new[] { 2, 3, 4, 4, 5, 5, 9 }, 7, 2, 9);
+            var sut = new DescriptiveStatistics<int>(0, 10, 2);
+            sut.Calculate(new[] { 2, 3, 4, 4, 5, 5, 9 }, 7, 2, 9);
 
             var actual = sut.GetSummary();
             Debug.Log(actual);
@@ -212,9 +212,14 @@ Experimental and Statistical Summary:
                 () => DiceGenerator.Roll(2, 6), // 2D6
                 1 << 20); // 1,048,576 times
 
-            var histogram = new Histogram<int>();
-            histogram.Plot(sampleSpace);
-            Debug.Log(histogram.GetSummary()); // Write to console
+            var statistics = new DescriptiveStatistics<int>();
+            statistics.Calculate(sampleSpace);
+            Debug.Log(statistics.GetSummary()); // Write to console
+
+            Assert.That(statistics.Peak, Is.EqualTo(175000).Within(1000));
+            Assert.That(statistics.Valley, Is.EqualTo(29000).Within(1000));
+            Assert.That(statistics.Median, Is.EqualTo(87000).Within(1000));
+            Assert.That(statistics.Mean, Is.EqualTo(95000).Within(1000));
         }
     }
 }

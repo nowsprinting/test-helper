@@ -1,12 +1,14 @@
 // Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using TestHelper.Statistics.RandomGenerators;
 
 namespace TestHelper.Statistics
 {
     [TestFixture]
+    [SuppressMessage("Assertion", "NUnit2045:Use Assert.Multiple")]
     public class ExperimentTest
     {
         [Test]

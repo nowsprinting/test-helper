@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using TestHelper.Statistics.Histograms;
+using TestHelper.Statistics.DescriptiveStatistics;
 using UnityEngine;
 
 namespace TestHelper.Statistics.Comparers

@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TestHelper.Statistics.Histograms
+namespace TestHelper.Statistics.DescriptiveStatistics
 {
     /// <summary>
-    /// Plot samples to histogram.
+    /// Calculate statistical summaries and plotting a histogram.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Histogram<T> where T : IComparable
+    public class DescriptiveStatistics<T> where T : IComparable
     {
         /// <summary>
         /// Bins of this histogram.
@@ -58,18 +58,18 @@ namespace TestHelper.Statistics.Histograms
         /// <param name="min"></param>
         /// <param name="max"></param>
         /// <param name="binSize"></param>
-        public Histogram(T min, T max, double binSize = 1d)
+        public DescriptiveStatistics(T min, T max, double binSize = 1d)
         {
-            var minValue = ToDouble(min);
-            var maxValue = ToDouble(max);
+            var minValue = Convert.ToDouble(min);
+            var maxValue = Convert.ToDouble(max);
             var distance = maxValue - minValue;
             var binCount = (int)Math.Ceiling(distance / binSize);
 
             Bins = new SortedList<T, Bin<T>>(binCount);
             for (var i = 0; i < binCount; i++)
             {
-                var bin = new Bin<T>(ToT(minValue), ToT(minValue + binSize));
-                Bins.Add(ToT(minValue), bin);
+                var bin = new Bin<T>(ConvertToT(minValue), ConvertToT(minValue + binSize));
+                Bins.Add(ConvertToT(minValue), bin);
                 minValue += binSize;
             }
         }
@@ -77,7 +77,7 @@ namespace TestHelper.Statistics.Histograms
         /// <summary>
         /// Constructor without initial bins.
         /// </summary>
-        public Histogram()
+        public DescriptiveStatistics()
         {
             Bins = new SortedList<T, Bin<T>>();
         }
@@ -89,7 +89,7 @@ namespace TestHelper.Statistics.Histograms
         /// <param name="size">Sample size; only used in summary</param>
         /// <param name="min">Minimum value in samples; only used in summary</param>
         /// <param name="max">Maximum value in samples; only used in summary</param>
-        public void Plot(IEnumerable<T> samples, uint size = 0, T min = default, T max = default)
+        public void Calculate(IEnumerable<T> samples, uint size = 0, T min = default, T max = default)
         {
             _sampleSize = size;
             _sampleMax = max;
@@ -114,9 +114,9 @@ namespace TestHelper.Statistics.Histograms
         /// Plot samples into bins.
         /// </summary>
         /// <param name="sampleSpace">Input sample space</param>
-        public void Plot(SampleSpace<T> sampleSpace)
+        public void Calculate(SampleSpace<T> sampleSpace)
         {
-            Plot(sampleSpace.Samples, (uint)sampleSpace.Samples.Length, sampleSpace.Min, sampleSpace.Max);
+            Calculate(sampleSpace.Samples, (uint)sampleSpace.Samples.Length, sampleSpace.Min, sampleSpace.Max);
         }
 
         private Bin<T> FindBin(T value)
@@ -214,12 +214,7 @@ namespace TestHelper.Statistics.Histograms
             return builder.ToString();
         }
 
-        private static double ToDouble(T value)
-        {
-            return (double)Convert.ChangeType(value, typeof(double));
-        }
-
-        private static T ToT(double value)
+        private static T ConvertToT(double value)
         {
             return (T)Convert.ChangeType(value, typeof(T));
         }
