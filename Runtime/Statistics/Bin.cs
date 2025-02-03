@@ -3,7 +3,7 @@
 
 using System;
 
-namespace TestHelper.Statistics.DescriptiveStatistics
+namespace TestHelper.Statistics
 {
     /// <summary>
     /// Bin of histogram.

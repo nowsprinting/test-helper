@@ -8,7 +8,7 @@ using TestHelper.Statistics.Comparers;
 using TestHelper.Statistics.RandomGenerators;
 using UnityEngine;
 
-namespace TestHelper.Statistics.DescriptiveStatistics
+namespace TestHelper.Statistics
 {
     [TestFixture]
     [SuppressMessage("Assertion", "NUnit2045:Use Assert.Multiple")]

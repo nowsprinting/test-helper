@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TestHelper.Statistics.DescriptiveStatistics
+namespace TestHelper.Statistics
 {
     /// <summary>
     /// Calculate statistical summaries and plotting a histogram.

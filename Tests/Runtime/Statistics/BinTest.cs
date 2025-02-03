@@ -4,7 +4,7 @@
 using NUnit.Framework;
 using TestHelper.Statistics.RandomGenerators;
 
-namespace TestHelper.Statistics.DescriptiveStatistics
+namespace TestHelper.Statistics
 {
     [TestFixture]
     public class BinTest

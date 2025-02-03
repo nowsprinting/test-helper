@@ -4,7 +4,7 @@
 using NUnit.Framework;
 using TestHelper.Statistics.Comparers;
 
-namespace TestHelper.Statistics.DescriptiveStatistics
+namespace TestHelper.Statistics
 {
     [TestFixture]
     public class BinCountComparerTest
