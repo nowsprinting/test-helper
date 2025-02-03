@@ -4,6 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using TestHelper.Statistics.RandomGenerators;
+using UnityEngine;
 
 namespace TestHelper.Statistics
 {
@@ -31,6 +32,17 @@ namespace TestHelper.Statistics
 
             Assert.That(actual.Min, Is.EqualTo(2));
             Assert.That(actual.Max, Is.EqualTo(12));
+        }
+
+        [Test]
+        public void Run_Float_ReturnsSampleSpace()
+        {
+            var sampleSpace = Experiment.Run(
+                () => Random.value, // 0.0f to 1.0f
+                1 << 20); // 1,048,576 times
+
+            var range = sampleSpace.Max - sampleSpace.Min;
+            Assert.That(range, Is.EqualTo(1.0f).Within(0.01f));
         }
     }
 }

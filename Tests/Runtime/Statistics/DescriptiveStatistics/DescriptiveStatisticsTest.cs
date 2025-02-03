@@ -206,7 +206,7 @@ Experimental and Statistical Summary:
         }
 
         [Test]
-        public void GetSummary_WithSampleSpace()
+        public void GetSummary_WithIntSampleSpace()
         {
             var sampleSpace = Experiment.Run(
                 () => DiceGenerator.Roll(2, 6), // 2D6
@@ -216,10 +216,48 @@ Experimental and Statistical Summary:
             statistics.Calculate(sampleSpace);
             Debug.Log(statistics.GetSummary()); // Write to console
 
-            Assert.That(statistics.Peak, Is.EqualTo(175000).Within(1000));
-            Assert.That(statistics.Valley, Is.EqualTo(29000).Within(1000));
-            Assert.That(statistics.Median, Is.EqualTo(87000).Within(1000));
-            Assert.That(statistics.Mean, Is.EqualTo(95000).Within(1000));
+            const double Tolerance = 1000.0d;
+            Assert.That(statistics.Peak, Is.EqualTo(175000).Within(Tolerance));
+            Assert.That(statistics.Valley, Is.EqualTo(29000).Within(Tolerance));
+            Assert.That(statistics.Median, Is.EqualTo(87000).Within(Tolerance));
+            Assert.That(statistics.Mean, Is.EqualTo(95000).Within(Tolerance));
+        }
+
+        [Test]
+        public void GetSummary_WithFloatSampleSpace()
+        {
+            var sampleSpace = Experiment.Run(
+                () => UnityEngine.Random.value, // 0.0f to 1.0f
+                1 << 20); // 1,048,576 times
+
+            var statistics = new DescriptiveStatistics<float>(0.0f, 1.0f, 0.1f);
+            statistics.Calculate(sampleSpace);
+            Debug.Log(statistics.GetSummary()); // Write to console
+
+            const double Expected = (1 << 20) / 10.0d;
+            const double Tolerance = 1000.0d;
+            Assert.That(statistics.Peak, Is.EqualTo(Expected).Within(Tolerance));
+            Assert.That(statistics.Valley, Is.EqualTo(Expected).Within(Tolerance));
+            Assert.That(statistics.Median, Is.EqualTo(Expected).Within(Tolerance));
+            Assert.That(statistics.Mean, Is.EqualTo(Expected).Within(Tolerance));
+        }
+
+        [Test]
+        [Retry(2)]
+        public void GetSummary_WithStringSampleSpace()
+        {
+            var sampleSpace = Experiment.Run(
+                () => StringGenerator.Generate(),
+                1 << 6); // 64 times
+
+            var statistics = new DescriptiveStatistics<string>();
+            statistics.Calculate(sampleSpace);
+            Debug.Log(statistics.GetSummary());
+
+            Assert.That(statistics.Peak, Is.EqualTo(1));
+            Assert.That(statistics.Valley, Is.EqualTo(1));
+            Assert.That(statistics.Median, Is.EqualTo(1.0d));
+            Assert.That(statistics.Mean, Is.EqualTo(1.0d));
         }
     }
 }

@@ -172,7 +172,8 @@ namespace TestHelper.Statistics
         }
 
         [TestFixture]
-        public class Sampling
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        public class PRNGsSampling
         {
             [Test]
             public void SystemRandom()
