@@ -11,16 +11,16 @@ namespace TestHelper.Statistics
         /// <summary>
         /// Samples.
         /// </summary>
-        public IEnumerable<T> Samples { get; }
+        IEnumerable<T> Samples { get; }
 
         /// <summary>
         /// Returns min value of the samples.
         /// </summary>
-        public T Min { get; }
+        T Min { get; }
 
         /// <summary>
         /// Returns max value of the samples.
         /// </summary>
-        public T Max { get; }
+        T Max { get; }
     }
 }
