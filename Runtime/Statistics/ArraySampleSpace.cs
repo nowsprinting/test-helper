@@ -34,25 +34,25 @@ namespace TestHelper.Statistics
         public T Max { get; private set; }
 
         private readonly T[] _samples;
-        private int _trailIndex;
+        private int _trialIndex;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="trailCount"></param>
-        public ArraySampleSpace(int trailCount)
+        /// <param name="trialCount"></param>
+        public ArraySampleSpace(int trialCount)
         {
-            _samples = new T[trailCount];
-            _trailIndex = 0;
+            _samples = new T[trialCount];
+            _trialIndex = 0;
             Min = default;
             Max = default;
         }
 
         internal void Add(T value)
         {
-            _samples[_trailIndex++] = value;
+            _samples[_trialIndex++] = value;
 
-            if (_trailIndex == 1)
+            if (_trialIndex == 1)
             {
                 Min = value;
                 Max = value;
@@ -73,14 +73,14 @@ namespace TestHelper.Statistics
         /// <inheritdoc/>
         public override string ToString()
         {
-            if (_trailIndex == 0)
+            if (_trialIndex == 0)
             {
                 return "{}";
             }
 
             var builder = new StringBuilder("{");
             builder.Append(_samples[0]);
-            for (var i = 1; i < _trailIndex; i++)
+            for (var i = 1; i < _trialIndex; i++)
             {
                 builder.Append(",");
                 builder.Append(_samples[i]);

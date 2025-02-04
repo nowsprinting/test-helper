@@ -11,14 +11,14 @@ namespace TestHelper.Statistics
         /// Running experiments of pseudo-random number generator (PRNG).
         /// </summary>
         /// <param name="method">Method returns random value</param>
-        /// <param name="trailCount">Trail count</param>
+        /// <param name="trialCount">Trial count</param>
         /// <typeparam name="T">Type of random value</typeparam>
         /// <returns>Sample space</returns>
-        public static ArraySampleSpace<T> Run<T>(Func<T> method, int trailCount)
+        public static ArraySampleSpace<T> Run<T>(Func<T> method, int trialCount)
             where T : IComparable
         {
-            var sampleSpace = new ArraySampleSpace<T>(trailCount);
-            for (var i = 0; i < trailCount; i++)
+            var sampleSpace = new ArraySampleSpace<T>(trialCount);
+            for (var i = 0; i < trialCount; i++)
             {
                 sampleSpace.Add(method.Invoke());
             }
