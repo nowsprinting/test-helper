@@ -216,9 +216,9 @@ namespace TestHelper.Statistics
             }
 
             [Test]
-            public void Lcg_Period24()
+            public void Lcg_ShortPeriod()
             {
-                var lcg = new Lcg(Environment.TickCount, 13, 5, 24);
+                var lcg = new Lcg(Environment.TickCount, 75, 74, 1 << 8);
 
                 var sampleSpace = Experiment.Run(
                     () => lcg.Next(),

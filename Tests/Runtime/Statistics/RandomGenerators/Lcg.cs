@@ -12,25 +12,25 @@ namespace TestHelper.Statistics.RandomGenerators
     {
         private int _seed;
         private readonly int _a;
-        private readonly int _b;
+        private readonly int _c;
         private readonly long _m;
 
-        public Lcg(int seed, int a = 1103515245, int b = 12345, long m = 4294967296)
+        public Lcg(int seed, int a = 1103515245, int c = 12345, long m = 1L << 32)
         {
             Assert.IsTrue(m > a);
-            Assert.IsTrue(m > b);
+            Assert.IsTrue(m > c);
             Assert.IsTrue(a > 0);
-            Assert.IsTrue(b >= 0);
+            Assert.IsTrue(c >= 0);
 
             this._seed = seed;
             this._a = a;
-            this._b = b;
+            this._c = c;
             this._m = m;
         }
 
         public int Next()
         {
-            _seed = (int)((_a * _seed + _b) % _m);
+            _seed = (int)((_a * _seed + _c) % _m);
             return _seed;
         }
     }
