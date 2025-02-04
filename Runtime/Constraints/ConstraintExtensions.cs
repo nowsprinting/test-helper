@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 Koji Hasegawa.
+﻿// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using NUnit.Framework.Constraints;
@@ -16,6 +16,20 @@ namespace TestHelper.Constraints
         public static DestroyedConstraint Destroyed(this ConstraintExpression expression)
         {
             var constraint = new DestroyedConstraint();
+            expression.Append(constraint);
+            return constraint;
+        }
+
+        /// <summary>
+        /// Create constraint to check if a collection contains a repeating sequence.
+        /// When used with operators, use it in method style. e.g., `Is.Not.ContainsRepeatingSequence()`
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static CollectionContainsRepeatingSequenceConstraint ContainsRepeatingSequence(
+            this ConstraintExpression expression)
+        {
+            var constraint = new CollectionContainsRepeatingSequenceConstraint();
             expression.Append(constraint);
             return constraint;
         }

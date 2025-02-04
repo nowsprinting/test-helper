@@ -11,18 +11,14 @@ namespace TestHelper.Constraints
     /// </summary>
     /// <example>
     /// <code>
-    /// [TestFixture]
-    /// public class MyTestClass
+    /// [Test]
+    /// public void MyTestMethod()
     /// {
-    ///   [Test]
-    ///   public void MyTestMethod()
-    ///   {
-    ///     var actual = GameObject.Find("Cube");
-    ///     GameObject.DestroyImmediate(actual);
+    ///   var actual = GameObject.Find("Cube");
+    ///   GameObject.DestroyImmediate(actual);
     ///
-    ///     Assert.That(actual, Is.Destroyed);
-    ///     // Note: When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
-    ///   }
+    ///   Assert.That(actual, Is.Destroyed);
+    ///   // Note: When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
     /// }
     /// </code>
     /// </example>
