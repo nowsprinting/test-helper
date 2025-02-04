@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -38,6 +38,20 @@ namespace TestHelper.RuntimeInternals
         {
             var actual = CommandLineArgs.GetScreenshotDirectory(Array.Empty<string>());
             Assert.That(actual, Is.EqualTo(Path.Combine(Application.persistentDataPath, "TestHelper", "Screenshots")));
+        }
+
+        [Test]
+        public void GetStatisticsDirectory_WithArgument_GotSpecifiedDirectory()
+        {
+            var actual = CommandLineArgs.GetStatisticsDirectory(new[] { "-testHelperStatisticsDirectory", "Test" });
+            Assert.That(actual, Is.EqualTo("Test"));
+        }
+
+        [Test]
+        public void GetStatisticsDirectory_WithoutArgument_GotDefaultDirectory()
+        {
+            var actual = CommandLineArgs.GetStatisticsDirectory(Array.Empty<string>());
+            Assert.That(actual, Is.EqualTo(Path.Combine(Application.persistentDataPath, "TestHelper", "Statistics")));
         }
 
         [Test]
