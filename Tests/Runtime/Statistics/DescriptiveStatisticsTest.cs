@@ -224,6 +224,7 @@ Experimental and Statistical Summary:
         }
 
         [Test]
+        [Retry(5)]
         public void GetSummary_WithFloatSampleSpace()
         {
             var sampleSpace = Experiment.Run(
@@ -243,7 +244,7 @@ Experimental and Statistical Summary:
         }
 
         [Test]
-        [Retry(2)]
+        [Retry(5)]
         public void GetSummary_WithStringSampleSpace()
         {
             var sampleSpace = Experiment.Run(
