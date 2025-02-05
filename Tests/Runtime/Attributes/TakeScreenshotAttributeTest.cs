@@ -152,22 +152,19 @@ namespace TestHelper.Attributes
             Assert.That(path, Does.Exist);
         }
 
-        private const string SpecifyRelativeDirectory = "Logs/TestHelper/Screenshots";
+        private const string SpecifyRelativeDirectory = "Logs/TestHelper.Tests/" + nameof(TakeScreenshotAttributeTest);
 
         [Test, Order(0)]
         [LoadScene(TestScene)]
         [TakeScreenshot(directory: SpecifyRelativeDirectory)]
         public void AttachWithDirectory_SaveScreenshotToSpecifyPath()
         {
-            var path = Path.Combine(
-                Path.GetFullPath(SpecifyRelativeDirectory),
-                $"{nameof(AttachWithDirectory_SaveScreenshotToSpecifyPath)}.png");
-            if (File.Exists(path))
+            if (Directory.Exists(SpecifyRelativeDirectory))
             {
-                File.Delete(path);
+                Directory.Delete(SpecifyRelativeDirectory, true);
             }
 
-            Assume.That(path, Does.Not.Exist);
+            Assume.That(SpecifyRelativeDirectory, Does.Not.Exist);
 
             // Take screenshot after running the test.
         }
