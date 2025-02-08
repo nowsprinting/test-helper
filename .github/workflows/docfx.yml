@@ -44,6 +44,11 @@ jobs:
           sed -i '/#gh-dark-mode-only/d' README.md
           sed -i 's/Documentation~\//images\//g' README.md
 
+      - name: Remove badges
+        run: |
+          sed -i '/badge\.svg/d' README.md
+          sed -i '/shields\.io/d' README.md
+
       - name: Remove undocumented files
         run: |
           rm -f .github/*.md
@@ -55,6 +60,11 @@ jobs:
           DISPLAY_NAME=$(jq -r '.displayName' package.json)
           echo "PACKAGE_NAME=${DISPLAY_NAME}" >> "$GITHUB_ENV"
 
+      - name: Get package version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "PACKAGE_VERSION=${VERSION}" >> "$GITHUB_ENV"
+
       - name: Get copyright
         run: |
           COPYRIGHT_LINE=$(grep '^Copyright' LICENSE.md)
@@ -63,8 +73,8 @@ jobs:
       - uses: sator-imaging/docfx-pages@v1
         id: deployment
         with:
-          app_name: ${{ env.PACKAGE_NAME }}
-          site_title: ${{ env.PACKAGE_NAME }}
+          app_name: ${{ env.PACKAGE_NAME }} ${{ env.PACKAGE_VERSION }}
+          site_title: ${{ env.PACKAGE_NAME }} | ${{ env.PACKAGE_VERSION }}
           site_footer: ${{ env.COPYRIGHT }}
           class_members: 'samePage'
           define_symbols: ''
