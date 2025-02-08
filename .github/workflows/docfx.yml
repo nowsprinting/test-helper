@@ -1,12 +1,14 @@
-# Copyright (c) 2023-2024 Koji Hasegawa.
+# Copyright (c) 2023-2025 Koji Hasegawa.
 # This software is released under the MIT License.
 
 name: docfx
 
 on:
-  push:
-    branches:
-      - master
+  workflow_run:
+    workflows:
+      - Release if bump version number
+    types:
+      - completed
   workflow_dispatch:
 
 concurrency:
@@ -22,25 +24,62 @@ defaults:
 jobs:
   docfx:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Copy images
+        run: |
+          mkdir images
+          cp Documentation~/*.png images/
+          sed -i '/#gh-dark-mode-only/d' README.md
+          sed -i 's/Documentation~\//images\//g' README.md
+
+      - name: Remove undocumented files
+        run: |
+          rm -f .github/*.md
+          rm -f Documentation~/*.md
+          rm -rf Tests
+
+      - name: Get package name
+        run: |
+          DISPLAY_NAME=$(jq -r '.displayName' package.json)
+          echo "PACKAGE_NAME=${DISPLAY_NAME}" >> "$GITHUB_ENV"
+
+      - name: Get copyright
+        run: |
+          COPYRIGHT_LINE=$(grep '^Copyright' LICENSE.md)
+          echo "COPYRIGHT=${COPYRIGHT_LINE}" >> "$GITHUB_ENV"
+
       - uses: sator-imaging/docfx-pages@v1
-        with:
-          app_name: 'Test Helper'
-          site_title:  'Test Helper : Provides custom attributes, comparers, and constraints useful for testing with Unity Test Framework'
-          site_footer: 'Copyright (c) 2023-2024 Koji Hasegawa'
-          class_members: 'separatePages'
-          site_logo: 'images/unity/made-with-unity.svg'
-          site_favicon: 'images/wikimedia-commons/logo-csharp-recolor.svg'
         id: deployment
+        with:
+          app_name: ${{ env.PACKAGE_NAME }}
+          site_title: ${{ env.PACKAGE_NAME }}
+          site_footer: ${{ env.COPYRIGHT }}
+          class_members: 'samePage'
+          define_symbols: ''
+          site_logo: ''
+          site_favicon: ''
+          main_js: |
+            export default {
+                defaultTheme: 'light',
+                showLightbox: (img) => true,
+                iconLinks: [
+                    {
+                        icon: 'github',
+                        href: '${{ github.server_url }}/${{ github.repository }}',
+                        title: 'GitHub'
+                    },
+                ],
+            }
+          main_css: |
