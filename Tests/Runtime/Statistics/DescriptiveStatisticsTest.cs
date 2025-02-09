@@ -93,12 +93,12 @@ namespace TestHelper.Statistics
                     { 4, new Bin<int>(4) { Frequency = 0 } }, // Valley
                 }
             };
-            sut.Calculate();
+            sut.CalculateInternal();
 
-            Assert.That(sut.Peak, Is.EqualTo(10));
-            Assert.That(sut.Valley, Is.EqualTo(0));
-            Assert.That(sut.Median, Is.EqualTo(4));
-            Assert.That(sut.Mean, Is.EqualTo(4.4)); // 22 / 5
+            Assert.That(sut.PeakFrequency, Is.EqualTo(10));
+            Assert.That(sut.ValleyFrequency, Is.EqualTo(0));
+            Assert.That(sut.MedianFrequency, Is.EqualTo(4));
+            Assert.That(sut.MeanFrequency, Is.EqualTo(4.4)); // 22 / 5
         }
 
         [Test]
@@ -116,12 +116,12 @@ namespace TestHelper.Statistics
                     { 5, new Bin<int>(5) { Frequency = 3 } }, // 
                 }
             };
-            sut.Calculate();
+            sut.CalculateInternal();
 
-            Assert.That(sut.Peak, Is.EqualTo(10));
-            Assert.That(sut.Valley, Is.EqualTo(0));
-            Assert.That(sut.Median, Is.EqualTo(3.5)); // (3 + 4) / 2
-            Assert.That(sut.Mean, Is.EqualTo(4.17).Within(0.01)); // 25 / 6
+            Assert.That(sut.PeakFrequency, Is.EqualTo(10));
+            Assert.That(sut.ValleyFrequency, Is.EqualTo(0));
+            Assert.That(sut.MedianFrequency, Is.EqualTo(3.5)); // (3 + 4) / 2
+            Assert.That(sut.MeanFrequency, Is.EqualTo(4.17).Within(0.01)); // 25 / 6
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace TestHelper.Statistics
                     { 7, new Bin<int>(7) { Frequency = 170 } }, // full block
                 }
             };
-            sut.Calculate();
+            sut.CalculateInternal();
             var actual = sut.DrawHistogramAscii();
 
             Assert.That(actual, Is.EqualTo("\u2581\u2582\u2583\u2584\u2585\u2586\u2587\u2588"));
@@ -158,7 +158,7 @@ namespace TestHelper.Statistics
                     { 1, new Bin<int>(1) { Frequency = 100 } }, // full block
                 }
             };
-            sut.Calculate();
+            sut.CalculateInternal();
             var actual = sut.DrawHistogramAscii();
 
             Assert.That(actual, Is.EqualTo("\u2588\u2588"));
@@ -176,7 +176,7 @@ namespace TestHelper.Statistics
                     { 2, new Bin<int>(2) { Frequency = 1 } }, // lower 1:8 block
                 }
             };
-            sut.Calculate();
+            sut.CalculateInternal();
             var actual = sut.DrawHistogramAscii();
 
             Assert.That(actual, Is.EqualTo("\u2588 \u2581"));
@@ -198,8 +198,8 @@ Experimental and Statistical Summary:
   Minimum: 2
   Peak frequency: 4
   Valley frequency: 0
-  Median: 1
-  Mean: 1.40
+  Median frequency: 1
+  Mean frequency: 1.40
   Histogram:  ▃█ ▁
   (Each bar represents the frequency of values in equally spaced bins.)
 "));
@@ -220,10 +220,10 @@ Experimental and Statistical Summary:
             statistics.Calculate(sampleSpace);
             Debug.Log(statistics.GetSummary()); // Write to console
 
-            Assert.That(statistics.Peak, Is.EqualTo(TrialCount / 6).Within(Tolerance));
-            Assert.That(statistics.Valley, Is.EqualTo(TrialCount / 36).Within(Tolerance));
-            Assert.That(statistics.Median, Is.EqualTo(TrialCount / 12).Within(Tolerance));
-            Assert.That(statistics.Mean, Is.EqualTo(TrialCount / 11).Within(Tolerance));
+            Assert.That(statistics.PeakFrequency, Is.EqualTo(TrialCount / 6).Within(Tolerance));
+            Assert.That(statistics.ValleyFrequency, Is.EqualTo(TrialCount / 36).Within(Tolerance));
+            Assert.That(statistics.MedianFrequency, Is.EqualTo(TrialCount / 12).Within(Tolerance));
+            Assert.That(statistics.MeanFrequency, Is.EqualTo(TrialCount / 11).Within(Tolerance));
         }
 
         [Test]
@@ -243,10 +243,10 @@ Experimental and Statistical Summary:
             statistics.Calculate(sampleSpace);
             Debug.Log(statistics.GetSummary()); // Write to console
 
-            Assert.That(statistics.Peak, Is.EqualTo(Expected).Within(Tolerance));
-            Assert.That(statistics.Valley, Is.EqualTo(Expected).Within(Tolerance));
-            Assert.That(statistics.Median, Is.EqualTo(Expected).Within(Tolerance));
-            Assert.That(statistics.Mean, Is.EqualTo(Expected).Within(Tolerance));
+            Assert.That(statistics.PeakFrequency, Is.EqualTo(Expected).Within(Tolerance));
+            Assert.That(statistics.ValleyFrequency, Is.EqualTo(Expected).Within(Tolerance));
+            Assert.That(statistics.MedianFrequency, Is.EqualTo(Expected).Within(Tolerance));
+            Assert.That(statistics.MeanFrequency, Is.EqualTo(Expected).Within(Tolerance));
         }
 
         [Test]
@@ -261,10 +261,10 @@ Experimental and Statistical Summary:
             statistics.Calculate(sampleSpace);
             Debug.Log(statistics.GetSummary());
 
-            Assert.That(statistics.Peak, Is.EqualTo(1));
-            Assert.That(statistics.Valley, Is.EqualTo(1));
-            Assert.That(statistics.Median, Is.EqualTo(1.0d));
-            Assert.That(statistics.Mean, Is.EqualTo(1.0d));
+            Assert.That(statistics.PeakFrequency, Is.EqualTo(1));
+            Assert.That(statistics.ValleyFrequency, Is.EqualTo(1));
+            Assert.That(statistics.MedianFrequency, Is.EqualTo(1.0d));
+            Assert.That(statistics.MeanFrequency, Is.EqualTo(1.0d));
         }
     }
 }

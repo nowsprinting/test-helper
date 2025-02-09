@@ -23,25 +23,25 @@ namespace TestHelper.Statistics
         /// Peak frequency of this histogram.
         /// This property is set in the <c>Calculate()</c> method.
         /// </summary>
-        public uint Peak { get; private set; }
+        public uint PeakFrequency { get; private set; }
 
         /// <summary>
         /// Valley frequency of this histogram.
         /// This property is set in the <c>Calculate()</c> method.
         /// </summary>
-        public uint Valley { get; private set; }
+        public uint ValleyFrequency { get; private set; }
 
         /// <summary>
         /// Median frequency of this histogram.
         /// This property is set in the <c>Calculate()</c> method.
         /// </summary>
-        public double Median { get; private set; }
+        public double MedianFrequency { get; private set; }
 
         /// <summary>
         /// Mean (average) frequency of this histogram.
         /// This property is set in the <c>Calculate()</c> method.
         /// </summary>
-        public double Mean { get; private set; }
+        public double MeanFrequency { get; private set; }
 
         // only used in summary
         private ulong _sampleSize;
@@ -69,7 +69,7 @@ namespace TestHelper.Statistics
             for (var i = 0; i < binCount; i++)
             {
                 var isLast = i == binCount - 1; // include max value in the last bin
-                var bin = new Bin<T>(ConvertToT(minValue), ConvertToT(minValue + binSize),isLast);
+                var bin = new Bin<T>(ConvertToT(minValue), ConvertToT(minValue + binSize), isLast);
                 Bins.Add(ConvertToT(minValue), bin);
                 minValue += binSize;
             }
@@ -108,7 +108,7 @@ namespace TestHelper.Statistics
                 bin.Frequency++;
             }
 
-            Calculate();
+            CalculateInternal();
         }
 
         /// <summary>
@@ -148,21 +148,21 @@ namespace TestHelper.Statistics
             return null;
         }
 
-        internal void Calculate()
+        internal void CalculateInternal()
         {
             var frequencies = new List<uint>();
-            Mean = 0;
+            MeanFrequency = 0;
 
             foreach (var bin in Bins.Values)
             {
                 frequencies.Add(bin.Frequency);
-                Mean += (double)bin.Frequency / Bins.Count;
+                MeanFrequency += (double)bin.Frequency / Bins.Count;
             }
 
             frequencies.Sort();
-            Peak = frequencies[frequencies.Count - 1];
-            Valley = frequencies[0];
-            Median = frequencies.Count % 2 == 0
+            PeakFrequency = frequencies[frequencies.Count - 1];
+            ValleyFrequency = frequencies[0];
+            MedianFrequency = frequencies.Count % 2 == 0
                 ? (double)(frequencies[frequencies.Count / 2 - 1] + frequencies[frequencies.Count / 2]) / 2
                 : frequencies[frequencies.Count / 2];
 
@@ -176,7 +176,7 @@ namespace TestHelper.Statistics
         internal string DrawHistogramAscii()
         {
             var builder = new StringBuilder();
-            var blockHeight = (double)(Peak - _valleyGraterThanZero) / 7;
+            var blockHeight = (double)(PeakFrequency - _valleyGraterThanZero) / 7;
 
             foreach (var bin in Bins.Values)
             {
@@ -206,10 +206,10 @@ namespace TestHelper.Statistics
             builder.AppendLine($"  Sample size: {_sampleSize:N0}");
             builder.AppendLine($"  Maximum: {_sampleMax}"); // No format, may not be a numeric type.
             builder.AppendLine($"  Minimum: {_sampleMin}"); // No format, may not be a numeric type.
-            builder.AppendLine($"  Peak frequency: {Peak:N0}");
-            builder.AppendLine($"  Valley frequency: {Valley:N0}");
-            builder.AppendLine($"  Median: {Median:N0}");
-            builder.AppendLine($"  Mean: {Mean:N2}");
+            builder.AppendLine($"  Peak frequency: {PeakFrequency:N0}");
+            builder.AppendLine($"  Valley frequency: {ValleyFrequency:N0}");
+            builder.AppendLine($"  Median frequency: {MedianFrequency:N0}");
+            builder.AppendLine($"  Mean frequency: {MeanFrequency:N2}");
             builder.AppendLine($"  Histogram: {DrawHistogramAscii()}");
             builder.AppendLine("  (Each bar represents the frequency of values in equally spaced bins.)");
             return builder.ToString();

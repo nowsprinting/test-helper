@@ -542,10 +542,10 @@ public class MyStatisticsTest
         statistics.Calculate(sampleSpace);
         Debug.Log(statistics.GetSummary()); // Write to console
 
-        Assert.That(statistics.Peak, Is.EqualTo(TrialCount / 6).Within(Tolerance));
-        Assert.That(statistics.Valley, Is.EqualTo(TrialCount / 36).Within(Tolerance));
-        Assert.That(statistics.Median, Is.EqualTo(TrialCount / 12).Within(Tolerance));
-        Assert.That(statistics.Mean, Is.EqualTo(TrialCount / 11).Within(Tolerance));
+        Assert.That(statistics.PeakFrequency, Is.EqualTo(TrialCount / 6).Within(Tolerance));
+        Assert.That(statistics.ValleyFrequency, Is.EqualTo(TrialCount / 36).Within(Tolerance));
+        Assert.That(statistics.MedianFrequency, Is.EqualTo(TrialCount / 12).Within(Tolerance));
+        Assert.That(statistics.MeanFrequency, Is.EqualTo(TrialCount / 11).Within(Tolerance));
     }
 }
 ```
@@ -559,8 +559,8 @@ Experimental and Statistical Summary:
   Minimum: 2
   Peak frequency: 174,554
   Valley frequency: 29,070
-  Median: 87,490
-  Mean: 95,325.09
+  Median frequency: 87,490
+  Mean frequency: 95,325.09
   Histogram: ▁▂▃▅▆█▆▅▃▂▁
   (Each bar represents the frequency of values in equally spaced bins.)
 ```
