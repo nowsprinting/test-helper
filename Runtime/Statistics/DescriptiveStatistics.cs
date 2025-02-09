@@ -49,7 +49,7 @@ namespace TestHelper.Statistics
         private T _sampleMin;
 
         // lower bound for character-based histogram
-        private uint _valleyGraterThanZero;
+        private uint _valleyGreaterThanZero;
 
         /// <summary>
         /// Constructor that creates initial bins.
@@ -168,7 +168,7 @@ namespace TestHelper.Statistics
 
             foreach (var frequency in frequencies.Where(frequency => frequency > 0))
             {
-                _valleyGraterThanZero = frequency;
+                _valleyGreaterThanZero = frequency;
                 break;
             }
         }
@@ -176,14 +176,14 @@ namespace TestHelper.Statistics
         internal string DrawHistogramAscii()
         {
             var builder = new StringBuilder();
-            var blockHeight = (double)(PeakFrequency - _valleyGraterThanZero) / 7;
+            var blockHeight = (double)(PeakFrequency - _valleyGreaterThanZero) / 7;
 
             foreach (var bin in Bins.Values)
             {
                 if (bin.Frequency > 0)
                 {
                     var block = blockHeight > 0
-                        ? 0x2581 + (int)((bin.Frequency - _valleyGraterThanZero) / blockHeight)
+                        ? 0x2581 + (int)((bin.Frequency - _valleyGreaterThanZero) / blockHeight)
                         : 0x2588; // full block
                     builder.Append(char.ConvertFromUtf32(block));
                 }
