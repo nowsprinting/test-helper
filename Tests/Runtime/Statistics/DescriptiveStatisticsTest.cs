@@ -222,7 +222,7 @@ Experimental and Statistical Summary:
 
             Assert.That(statistics.Peak, Is.EqualTo(TrialCount / 6).Within(Tolerance));
             Assert.That(statistics.Valley, Is.EqualTo(TrialCount / 36).Within(Tolerance));
-            Assert.That(statistics.Median, Is.EqualTo(87000).Within(Tolerance)); // TODO: to `TrialCount / 6`
+            Assert.That(statistics.Median, Is.EqualTo(TrialCount / 12).Within(Tolerance));
             Assert.That(statistics.Mean, Is.EqualTo(TrialCount / 11).Within(Tolerance));
         }
 
