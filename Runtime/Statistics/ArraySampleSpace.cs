@@ -10,7 +10,7 @@ namespace TestHelper.Statistics
     /// <summary>
     /// Sample space by Array; return of <c>Experiment.Run(int)</c>.
     /// </summary>
-    public struct ArraySampleSpace<T> : ISampleSpace<T> where T : IComparable
+    public class ArraySampleSpace<T> : ISampleSpace<T> where T : IComparable
     {
         /// <summary>
         /// Samples.
