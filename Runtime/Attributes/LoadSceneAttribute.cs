@@ -34,7 +34,6 @@ namespace TestHelper.Attributes
         /// The path starts with `Assets/` or `Packages/` or `.`.
         /// And package name using `name` instead of `displayName`, when scenes in the package.
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
-        ///
         /// If the value is omitted, the scene name will be derived from the test file name.
         /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`)
         /// </param>
@@ -43,7 +42,7 @@ namespace TestHelper.Attributes
         /// </remarks>
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
-        public LoadSceneAttribute(string path=null, [CallerFilePath] string callerFilePath = null)
+        public LoadSceneAttribute(string path = null, [CallerFilePath] string callerFilePath = null)
             : base(path, callerFilePath)
         {
         }
