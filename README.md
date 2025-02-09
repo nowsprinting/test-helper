@@ -531,13 +531,20 @@ public class MyStatisticsTest
     [Test]
     public void DescriptiveStatistics_2D6()
     {
+        const int TrialCount = 1 << 20; // 1,048,576 times
+        const double Tolerance = TrialCount * 0.001d;
+
         var sampleSpace = Experiment.Run(
             () => DiceGenerator.Roll(2, 6), // 2D6
-            1 << 20); // 1,048,576 times
+            TrialCount);
 
         var statistics = new DescriptiveStatistics<int>();
         statistics.Calculate(sampleSpace);
         Debug.Log(statistics.GetSummary()); // Write to console
+
+        Assert.That(statistics.Peak, Is.EqualTo(TrialCount / 6).Within(Tolerance));
+        Assert.That(statistics.Valley, Is.EqualTo(TrialCount / 36).Within(Tolerance));
+        Assert.That(statistics.Mean, Is.EqualTo(TrialCount / 11).Within(Tolerance));
     }
 }
 ```
