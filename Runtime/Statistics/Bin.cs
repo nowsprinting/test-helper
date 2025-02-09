@@ -14,12 +14,18 @@ namespace TestHelper.Statistics
         /// <summary>
         /// Minimum value of this bin range.
         /// </summary>
-        public T Min { get; private set; }
+        public T Min { get; }
 
         /// <summary>
         /// Maximum value (exclusive) of this bin range.
+        /// By default, the maximum value is excluded.
         /// </summary>
-        public T Max { get; private set; }
+        public T Max { get; }
+
+        /// <summary>
+        /// Includes the maximum value if true
+        /// </summary>
+        private bool IsMaxInclusive { get; }
 
         /// <summary>
         /// Frequency of this bin.
@@ -40,12 +46,14 @@ namespace TestHelper.Statistics
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="minInclusive">Minimum value of this bin range</param>
-        /// <param name="maxExclusive">Maximum value (exclusive) of this bin range</param>
-        public Bin(T minInclusive, T maxExclusive)
+        /// <param name="min">Minimum value of this bin range, it always inclusive.</param>
+        /// <param name="max">Maximum value of this bin range</param>
+        /// <param name="maxInclusive">Includes the maximum value if true</param>
+        public Bin(T min, T max, bool maxInclusive = false)
         {
-            Min = minInclusive;
-            Max = maxExclusive;
+            Min = min;
+            Max = max;
+            IsMaxInclusive = maxInclusive;
             Frequency = 0;
         }
 
@@ -67,7 +75,14 @@ namespace TestHelper.Statistics
                 return Min.CompareTo(value) == 0;
             }
 
-            return Min.CompareTo(value) <= 0 && Max.CompareTo(value) > 0;
+            if (IsMaxInclusive)
+            {
+                return Min.CompareTo(value) <= 0 && Max.CompareTo(value) >= 0;
+            }
+            else
+            {
+                return Min.CompareTo(value) <= 0 && Max.CompareTo(value) > 0;
+            }
         }
     }
 }

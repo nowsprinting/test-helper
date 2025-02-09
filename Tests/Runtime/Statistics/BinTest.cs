@@ -64,5 +64,16 @@ namespace TestHelper.Statistics
             var sut = new Bin<int>(1, 3);
             Assert.That(sut.IsInRange(value), Is.EqualTo(expected));
         }
+
+        [TestCase(0, false)]
+        [TestCase(1, true)]
+        [TestCase(2, true)]
+        [TestCase(3, true)] // Max is inclusive
+        [TestCase(4, false)]
+        public void IsInRange_HasRangeAndMaxInclusive(int value, bool expected)
+        {
+            var sut = new Bin<int>(1, 3, true);
+            Assert.That(sut.IsInRange(value), Is.EqualTo(expected));
+        }
     }
 }
