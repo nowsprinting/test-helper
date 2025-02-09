@@ -55,9 +55,9 @@ namespace TestHelper.Statistics
         /// Constructor that creates initial bins.
         /// Can only be used with numeric type.
         /// </summary>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
-        /// <param name="binSize"></param>
+        /// <param name="min">Minimum value of minimum bin</param>
+        /// <param name="max">Maximum value of maximum bin</param>
+        /// <param name="binSize">Bin value range</param>
         public DescriptiveStatistics(T min, T max, double binSize = 1d)
         {
             var minValue = Convert.ToDouble(min);
@@ -68,7 +68,8 @@ namespace TestHelper.Statistics
             Bins = new SortedList<T, Bin<T>>(binCount);
             for (var i = 0; i < binCount; i++)
             {
-                var bin = new Bin<T>(ConvertToT(minValue), ConvertToT(minValue + binSize));
+                var isLast = i == binCount - 1; // include max value in the last bin
+                var bin = new Bin<T>(ConvertToT(minValue), ConvertToT(minValue + binSize),isLast);
                 Bins.Add(ConvertToT(minValue), bin);
                 minValue += binSize;
             }
