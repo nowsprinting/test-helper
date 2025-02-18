@@ -26,10 +26,10 @@ namespace TestHelper.Attributes
         ///
         /// This attribute has the following benefits:
         /// <list type="bullet">
-        ///     <item>Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.</item>
-        ///     <item>Can be specified scenes that are **NOT** in "Scenes in Build".</item>
-        ///     <item>Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.</item>
-        ///     <item>Can be specified scene path by relative path from the test class file.</item>
+        ///     <item>The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.</item>
+        ///     <item>Scenes that are **NOT** in "Scenes in Build" can be specified.</item>
+        ///     <item>The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.</item>
+        ///     <item>The scene path can be specified as a relative path from the test class file.</item>
         /// </list>
         /// </summary>
         /// <param name="path">Scene file path (optional).

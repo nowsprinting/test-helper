@@ -224,10 +224,10 @@ public class MyTestClass
 
 It has the following benefits:
 
-- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
-- Can be specified scenes that are **NOT** in "Scenes in Build".
-- Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
-- Can be specified scene path by relative path from the test class file.
+- The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
+- Scenes that are **NOT** in "Scenes in Build" can be specified.
+- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- The scene path can be specified as a relative path from the test class file.
 
 This attribute can attach to the test method only.
 It can be used with sync Tests, async Tests, and UnityTest.
@@ -267,7 +267,7 @@ public class MyTestClass
 > If you want to load during `SetUp` and testing, use [BuildSceneAttribute](#buildscene) and [SceneManagerHelper](#scenemanagerhelper) method instead.
 
 > [!NOTE]  
-> Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+> The scene file path starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 #### BuildScene
@@ -276,9 +276,9 @@ public class MyTestClass
 
 It has the following benefits:
 
-- Can be specified scenes that are **NOT** in "Scenes in Build".
-- Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
-- Can be specified scene path by relative path from the test class file.
+- Scenes that are **NOT** in "Scenes in Build" can be specified.
+- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- The scene path can be specified as a relative path from the test class file.
 
 This attribute can attach to test method, test class (`TestFixture`), and test assembly.
 It can be used with sync Tests, async Tests, and UnityTest.
@@ -304,7 +304,7 @@ public class MyTestClass
 ```
 
 > [!NOTE]  
-> Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+> The scene file path starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 #### TakeScreenshot
@@ -625,9 +625,9 @@ The classes in the `TestHelper.RuntimeInternals` assembly can be used from the r
 
 It has the following benefits:
 
-- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
-- Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
-- Can be specified scene path by relative path from the test class file.
+- The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
+- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- The scene path can be specified as a relative path from the test class file.
 
 Usage:
 
@@ -648,11 +648,11 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]  
-> Scene file path is starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+> [!TIP]  
+> When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#buildscene).
 
 > [!NOTE]  
-> When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#buildscene).
+> The scene file path starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 #### ScreenshotHelper
