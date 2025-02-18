@@ -9,6 +9,9 @@ using UnityEngine;
 
 namespace TestHelper.Editor
 {
+    /// <summary>
+    /// Output the test results in JUnit XML format in <c>RunFinished</c>.
+    /// </summary>
     public class TestRunnerCallbacks : ICallbacks
     {
         [InitializeOnLoadMethod]
@@ -18,10 +21,14 @@ namespace TestHelper.Editor
             api.RegisterCallbacks(new TestRunnerCallbacks());
         }
 
+        /// <summary>
+        /// Not implemented.
+        /// </summary>
         public void RunStarted(ITestAdaptor testsToRun)
         {
         }
 
+        /// <inheritdoc />
         public void RunFinished(ITestResultAdaptor result)
         {
             var path = CommandLineArgs.GetJUnitResultsPath();
@@ -31,10 +38,16 @@ namespace TestHelper.Editor
             }
         }
 
+        /// <summary>
+        /// Not implemented.
+        /// </summary>
         public void TestStarted(ITestAdaptor test)
         {
         }
 
+        /// <summary>
+        /// Not implemented.
+        /// </summary>
         public void TestFinished(ITestResultAdaptor result)
         {
         }

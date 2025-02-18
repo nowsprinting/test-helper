@@ -31,9 +31,10 @@ namespace TestHelper.Attributes
         /// </summary>
         /// <remarks>
         /// Limitations:
-        ///  - Do not attach to Edit Mode tests.
-        ///  - <c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.
-        /// <br/>
+        /// <list type="bullet">
+        ///     <item>Do not attach to Edit Mode tests.</item>
+        ///     <item><c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
+        /// </list>
         /// Using <c>ScreenCapture.CaptureScreenshotAsTexture</c> internally.
         /// </remarks>
         /// <param name="directory">Directory to save screenshots.
@@ -44,7 +45,7 @@ namespace TestHelper.Attributes
         /// Using caller method name when run in runtime context.</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
-        /// <param name="gizmos">True: show Gizmos on GameView</param>
+        /// <param name="gizmos">True: show Gizmos on <c>GameView</c>.</param>
         public TakeScreenshotAttribute(
             string directory = null,
             string filename = null,

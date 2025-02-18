@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace TestHelper.Statistics
 {
+    /// <summary>
+    /// Sample space interface; return of <c>Experiment.Run</c>.
+    /// </summary>
     public interface ISampleSpace<T> where T : IComparable
     {
         /// <summary>

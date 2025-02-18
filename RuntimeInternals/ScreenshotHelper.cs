@@ -41,11 +41,13 @@ namespace TestHelper.RuntimeInternals
         /// </summary>
         /// <remarks>
         /// Limitations:
-        ///  - Do not call from Edit Mode tests.
-        ///  - Must be called from main thread.
-        ///  - <c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.
-        ///  - Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
-        ///  - UniTask is required to be used from the async method. And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+        /// <list type="bullet">
+        ///     <item>Do not attach to Edit Mode tests.</item>
+        ///     <item>Must be called from main thread.</item>
+        ///     <item><c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
+        ///     <item>Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.</item>
+        ///     <item><c>UniTask</c> is required to be used from the async method. And also needs coroutineRunner (any <c>MonoBehaviour</c>) because <c>TakeScreenshot</c> method uses <c>WaitForEndOfFrame</c> inside. See more information: <see href="https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation"/></item>
+        /// </list>
         /// <br/>
         /// Using <c>ScreenCapture.CaptureScreenshotAsTexture</c> internally.
         /// </remarks>
