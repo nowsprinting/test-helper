@@ -22,17 +22,18 @@ namespace TestHelper.Attributes
         /// Build a scene before running this test on the player.
         ///
         /// This attribute has the following benefits:
-        /// - Can be specified scenes that are **NOT** in "Scenes in Build".
-        /// - Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
-        /// - Can be specified scene path by relative path from the test class file.
+        /// <list type="bullet">
+        ///     <item>Scenes that are **NOT** in "Scenes in Build" can be specified.</item>
+        ///     <item>The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.</item>
+        ///     <item>The scene path can be specified as a relative path from the test class file.</item>
+        /// </list>
         /// </summary>
-        /// <param name="path">Scene file path. (Optional)
+        /// <param name="path">Scene file path (optional).
         /// The path starts with `Assets/` or `Packages/` or `.`.
-        /// And package name using `name` instead of `displayName`, when scenes in the package.
-        /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
-        /// If the value is omitted, the scene name will be derived from the test file name .
-        /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`)
-        /// </param>
+        /// And package name using `name` instead of `displayName`, when scenes in the package
+        /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
+        /// If the value is omitted, the scene name will be derived from the test file name
+        /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`).</param>
         /// <remarks>
         /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
         /// </remarks>
@@ -44,11 +45,11 @@ namespace TestHelper.Attributes
         }
 
         /// <summary>
-        /// Get matching scene of the callerFilePath
+        /// Get matching scene of the callerFilePath.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="callerFilePath"></param>
-        static string ResolveScenePath(string path, string callerFilePath)
+        private static string ResolveScenePath(string path, string callerFilePath)
         {
             if (!string.IsNullOrEmpty(path))
                 return path;

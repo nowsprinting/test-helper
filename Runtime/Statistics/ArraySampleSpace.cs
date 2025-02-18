@@ -8,13 +8,11 @@ using System.Text;
 namespace TestHelper.Statistics
 {
     /// <summary>
-    /// Sample space by Array; return of <c>Experiment.Run(int)</c>.
+    /// Sample space by Array; return of <c>Experiment.Run</c>.
     /// </summary>
     public class ArraySampleSpace<T> : ISampleSpace<T> where T : IComparable
     {
-        /// <summary>
-        /// Samples.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<T> Samples
         {
             get
@@ -23,14 +21,10 @@ namespace TestHelper.Statistics
             }
         }
 
-        /// <summary>
-        /// Returns min value of the samples.
-        /// </summary>
+        /// <inheritdoc/>
         public T Min { get; private set; }
 
-        /// <summary>
-        /// Returns max value of the samples.
-        /// </summary>
+        /// <inheritdoc/>
         public T Max { get; private set; }
 
         private readonly T[] _samples;

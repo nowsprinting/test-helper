@@ -23,7 +23,7 @@ namespace TestHelper.Statistics
         public T Max { get; }
 
         /// <summary>
-        /// Includes the maximum value if true
+        /// Includes the maximum value if true.
         /// </summary>
         private bool IsMaxInclusive { get; }
 
@@ -47,8 +47,8 @@ namespace TestHelper.Statistics
         /// Constructor.
         /// </summary>
         /// <param name="min">Minimum value of this bin range, it always inclusive.</param>
-        /// <param name="max">Maximum value of this bin range</param>
-        /// <param name="maxInclusive">Includes the maximum value if true</param>
+        /// <param name="max">Maximum value of this bin range.</param>
+        /// <param name="maxInclusive">Includes the maximum value if true.</param>
         public Bin(T min, T max, bool maxInclusive = false)
         {
             Min = min;

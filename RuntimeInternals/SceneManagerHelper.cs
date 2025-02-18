@@ -25,14 +25,16 @@ namespace TestHelper.RuntimeInternals
         /// <summary>
         /// Loading scene file.
         /// This attribute has the following benefits:
-        /// - Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.
-        /// - Can be specified scene path by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
-        /// - Can be specified scene path by relative path from the test class file.
+        /// <list type="bullet">
+        ///     <item>The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.</item>
+        ///     <item>The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.</item>
+        ///     <item>The scene path can be specified as a relative path from the test class file.</item>
+        /// </list>
         /// </summary>
         /// <param name="path">Scene file path.
         /// The path starts with `Assets/` or `Packages/` or `.`.
-        /// And package name using `name` instead of `displayName`, when scenes in the package.
-        /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
+        /// And package name using `name` instead of `displayName`, when scenes in the package
+        /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
         /// </param>
         /// <param name="mode">See LoadSceneMode. Not used when called from Edit Mode tests</param>
         /// <param name="physicsMode">See SceneManagement.LocalPhysicsMode. Not used when called from Edit Mode tests</param>
