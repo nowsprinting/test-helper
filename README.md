@@ -4,8 +4,7 @@
 [![Test](https://github.com/nowsprinting/test-helper/actions/workflows/test.yml/badge.svg)](https://github.com/nowsprinting/test-helper/actions/workflows/test.yml)
 [![openupm](https://img.shields.io/npm/v/com.nowsprinting.test-helper?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.nowsprinting.test-helper/)
 
-Provides custom attributes, comparers, and constraints useful for testing with Unity Test Framework.
-
+Custom attributes, comparers, and constraints useful for testing with [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest).  
 Required Unity 2019 LTS or later.
 
 
@@ -828,3 +827,6 @@ After tagging, [OpenUPM](https://openupm.com/) retrieves the tag and updates it.
 
 > [!CAUTION]  
 > You must modify the package name to publish a forked package.
+
+> [!TIP]  
+> If you want to specify the version number to be released, change the version number of the draft release before running the "Create release pull request" workflow.

@@ -1,6 +1,6 @@
 {
   "name": "com.nowsprinting.test-helper",
-  "description": "Provides custom attributes, comparers, and constraints useful for testing with Unity Test Framework.",
+  "description": "Custom attributes, comparers, and constraints useful for testing with Unity Test Framework.",
   "version": "1.2.1",
   "author": "Koji Hasegawa <hasegawa@hubsys.co.jp> (https://github.com/nowsprinting)",
   "category": "Unity Test Framework",
@@ -25,10 +25,11 @@
     "README.md*"
   ],
   "keywords": [
+    "Unity",
     "TestFramework",
-    "integration testing",
-    "test",
-    "unit testing"
+    "testing",
+    "unit tests",
+    "integration tests"
   ],
   "license": "MIT",
   "licensesUrl": "https://github.com/nowsprinting/test-helper/blob/master/LICENSE.md",
