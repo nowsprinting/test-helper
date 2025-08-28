@@ -57,7 +57,7 @@ public class MyTestClass
 
 It has the following benefits:
 
-- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
+- Can use the same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
 
 This attribute can be placed on the test method only.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
