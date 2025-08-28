@@ -3,6 +3,7 @@
 [![Meta file check](https://github.com/nowsprinting/test-helper/actions/workflows/metacheck.yml/badge.svg)](https://github.com/nowsprinting/test-helper/actions/workflows/metacheck.yml)
 [![Test](https://github.com/nowsprinting/test-helper/actions/workflows/test.yml/badge.svg)](https://github.com/nowsprinting/test-helper/actions/workflows/test.yml)
 [![openupm](https://img.shields.io/npm/v/com.nowsprinting.test-helper?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.nowsprinting.test-helper/)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nowsprinting/test-helper)
 
 Custom attributes, comparers, and constraints useful for testing with [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest).  
 Required Unity 2019 LTS or later.
@@ -13,12 +14,18 @@ Required Unity 2019 LTS or later.
 
 ### Attributes
 
-#### FocusGameView
+#### BuildScene
 
-`FocusGameViewAttribute` is an NUnit test attribute class to focus `GameView` or `SimulatorWindow` before running the test.
+`BuildSceneAttribute` is a NUnit test attribute class that build a scene before running the test on player.
 
-This attribute can attach to test method, test class (`TestFixture`), and test assembly.
-Can be used with sync Test, async Test, and UnityTest.
+It has the following benefits:
+
+- Scenes that are **NOT** in "Scenes in Build" can be specified.
+- The scene path can be specified as a relative path from the test class file.
+- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+
+This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
 
 Usage:
 
@@ -27,154 +34,21 @@ Usage:
 public class MyTestClass
 {
     [Test]
-    [FocusGameView]
+    [BuildScene("../../Scenes/SampleScene.unity")]
     public void MyTestMethod()
     {
-        // e.g., Test using InputEventTrace of Input System package.
+        // Setup before load scene
+
+        // Load scene
+        await SceneManagerHelper.LoadSceneAsync("../../Scenes/SampleScene.unity");
+
+        // Excercise the test
     }
 }
 ```
 
 > [!NOTE]  
-> In batchmode, open `GameView` window.
-
-
-#### GameViewResolution
-
-`GameViewResolutionAttribute` is an NUnit test attribute class to set custom resolution to `GameView` before running the test.
-
-This attribute can attach to test method, test class (`TestFixture`), and test assembly.
-Can be used with async Test and UnityTest.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [UnityTest]
-    [GameViewResolution(640, 480, "VGA")]
-    public IEnumerator MyTestMethod()
-    {
-        yield return null; // Wait for one frame to apply resolution.
-
-        // e.g., Test using GraphicRaycaster.
-    }
-}
-```
-
-> [!WARNING]  
-> Wait for one frame to apply resolution.
-> However, if used with [CreateSceneAttribute](#createscene) or [LoadSceneAttribute](#loadscene), wait is not necessary.
-
-> [!NOTE]  
-> In batchmode, open `GameView` window.
-
-
-#### GizmosShowOnGameView
-
-`GizmosShowOnGameViewAttribute` is an NUnit test attribute class to show/hide Gizmos on `GameView` during the test running.
-
-This attribute can attach to test method only.
-Can be used with sync Test, async Test, and UnityTest.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    [GizmosShowOnGameView(true)]
-    public void MyTestMethod()
-    {
-        // Show Gizmos on GameView during the test running.
-    }
-}
-```
-
-> [!NOTE]  
-> In batchmode, open `GameView` window.
-
-
-#### IgnoreBatchMode
-
-`IgnoreBatchModeAttribute` is an NUnit test attribute class to skip the test execution when run tests with `-batchmode` from the commandline.
-
-This attribute can attach to test method, test class (`TestFixture`), and test assembly.
-Can be used with sync Test, async Test, and UnityTest.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [UnityTest]
-    [IgnoreBatchMode("Using WaitForEndOfFrame.")]
-    public IEnumerator MyTestMethod()
-    {
-        // e.g., Test needs to take a screenshot.
-
-        yield return new WaitForEndOfFrame();
-        ImageAssert.AreEqual(expectedTexture, Camera.main, settings);
-    }
-}
-```
-
-
-#### IgnoreWindowMode
-
-`IgnoreWindowModeAttribute` is an NUnit test attribute class to skip the test execution when run tests on Unity editor window.
-
-This attribute can attach to test method, test class (`TestFixture`), and test assembly.
-Can be used with sync Test, async Test, and UnityTest.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    [IgnoreWindowMode("Requires command line arguments")]
-    public void MyTestMethod()
-    {
-        var args = Environment.GetCommandLineArgs();
-        Assert.That(args, Does.Contain("-arg1"));
-    }
-}
-```
-
-
-#### UnityVersion
-
-`UnityVersionAttribute` is an NUnit test attribute class to skip the test run if Unity version is older and/or newer than specified.
-
-This attribute can attach to test method, test class (`TestFixture`), and test assembly.
-Can be used with sync Test, async Test, and UnityTest.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    [UnityVersion(newerThanOrEqual: "2022")]
-    public void MyTestMethod()
-    {
-        // Test run only for Unity 2022.1.0f1 or later.
-    }
-
-    [Test]
-    [UnityVersion(olderThan: "2019.4.0f1")]
-    public void MyTestMethod()
-    {
-        // Test run only for Unity older than 2019.4.0f1.
-    }
-}
-```
+> If you want to load the scene before the test, use [LoadSceneAttribute](#loadscene) instead.
 
 
 #### CreateScene
@@ -183,10 +57,10 @@ public class MyTestClass
 
 It has the following benefits:
 
-- Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
+- Can use the same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
 
-This attribute can attach to test method only.
-Can be used with sync Test, async Test, and UnityTest.
+This attribute can be placed on the test method only.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
 
 Usage:
 
@@ -217,6 +91,140 @@ public class MyTestClass
 > Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
 
 
+#### FocusGameView
+
+`FocusGameViewAttribute` is an NUnit test attribute class to focus `GameView` or `SimulatorWindow` before running the test.
+
+This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [FocusGameView]
+    public void MyTestMethod()
+    {
+        // e.g., Test using InputEventTrace of Input System package.
+    }
+}
+```
+
+> [!NOTE]  
+> In batchmode, open `GameView` window.
+
+
+#### GameViewResolution
+
+`GameViewResolutionAttribute` is an NUnit test attribute class to set custom resolution to `GameView` before running the test.
+
+This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
+Can be used with async `Test` and `UnityTest`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [UnityTest]
+    [GameViewResolution(640, 480, "VGA")]
+    public IEnumerator MyTestMethod()
+    {
+        yield return null; // Wait for one frame to apply resolution.
+
+        // e.g., Test using GraphicRaycaster.
+    }
+}
+```
+
+> [!WARNING]  
+> Wait for one frame to apply resolution.
+> However, if used with [CreateSceneAttribute](#createscene) or [LoadSceneAttribute](#loadscene), wait is not necessary.
+
+> [!NOTE]  
+> In batchmode, open `GameView` window.
+
+
+#### GizmosShowOnGameView
+
+`GizmosShowOnGameViewAttribute` is an NUnit test attribute class to show/hide Gizmos on `GameView` during the test running.
+
+This attribute can be placed on the test method only.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [GizmosShowOnGameView(true)]
+    public void MyTestMethod()
+    {
+        // Show Gizmos on GameView during the test running.
+    }
+}
+```
+
+> [!NOTE]  
+> In batchmode, open `GameView` window.
+
+
+#### IgnoreBatchMode
+
+`IgnoreBatchModeAttribute` is an NUnit test attribute class to skip the test execution when run tests with `-batchmode` from the commandline.
+
+This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [UnityTest]
+    [IgnoreBatchMode("Using WaitForEndOfFrame.")]
+    public IEnumerator MyTestMethod()
+    {
+        // e.g., Test needs to take a screenshot.
+
+        yield return new WaitForEndOfFrame();
+        ImageAssert.AreEqual(expectedTexture, Camera.main, settings);
+    }
+}
+```
+
+
+#### IgnoreWindowMode
+
+`IgnoreWindowModeAttribute` is an NUnit test attribute class to skip the test execution when run tests on Unity editor window.
+
+This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [IgnoreWindowMode("Requires command line arguments")]
+    public void MyTestMethod()
+    {
+        var args = Environment.GetCommandLineArgs();
+        Assert.That(args, Does.Contain("-arg1"));
+    }
+}
+```
+
+
 #### LoadScene
 
 `LoadSceneAttribute` is a NUnit test attribute class that loads a scene before running the test.
@@ -228,8 +236,8 @@ It has the following benefits:
 - The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
 - The scene path can be specified as a relative path from the test class file.
 
-This attribute can attach to the test method only.
-It can be used with sync Tests, async Tests, and UnityTest.
+This attribute can be placed on the test method only.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
 
 Usage:
 
@@ -265,46 +273,6 @@ public class MyTestClass
 > This process runs after `OneTimeSetUp` and before `SetUp`.
 > If you want to load during `SetUp` and testing, use [BuildSceneAttribute](#buildscene) and [SceneManagerHelper](#scenemanagerhelper) method instead.
 
-> [!NOTE]  
-> The scene file path starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
-
-
-#### BuildScene
-
-`BuildSceneAttribute` is a NUnit test attribute class that build a scene before running the test on player.
-
-It has the following benefits:
-
-- Scenes that are **NOT** in "Scenes in Build" can be specified.
-- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
-- The scene path can be specified as a relative path from the test class file.
-
-This attribute can attach to test method, test class (`TestFixture`), and test assembly.
-It can be used with sync Tests, async Tests, and UnityTest.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    [BuildScene("../../Scenes/SampleScene.unity")]
-    public void MyTestMethod()
-    {
-        // Setup before load scene
-
-        // Load scene
-        await SceneManagerHelper.LoadSceneAsync("../../Scenes/SampleScene.unity");
-
-        // Excercise the test
-    }
-}
-```
-
-> [!NOTE]  
-> The scene file path starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
-
 
 #### TakeScreenshot
 
@@ -314,8 +282,8 @@ Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`T
 You can specify the save directory and/or filename by arguments.
 Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
 
-This attribute can attach to test method only.
-Can be used with sync Test, async Test, and UnityTest.
+This attribute can be placed on the test method only.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
 
 Usage:
     
@@ -333,7 +301,7 @@ public class MyTestClass
 ```
 
 > [!WARNING]  
-> Do not attach to Edit Mode tests.
+> Do not place on Edit Mode tests.
 
 > [!WARNING]  
 > `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
@@ -346,8 +314,8 @@ public class MyTestClass
 
 `TimeScaleAttribute` is an NUnit test attribute class to change the [Time.timeScale](https://docs.unity3d.com/ScriptReference/Time-timeScale.html) during the test running.
 
-This attribute can attach to test method only.
-Can be used with sync Test, async Test, and UnityTest.
+This attribute can be placed on the test method only.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
 
 Usage:
 
@@ -360,6 +328,36 @@ public class MyTestClass
     public void MyTestMethod()
     {
         // Running at 2x speed.
+    }
+}
+```
+
+
+#### UnityVersion
+
+`UnityVersionAttribute` is an NUnit test attribute class to skip the test run if Unity version is older and/or newer than specified.
+
+This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [UnityVersion(newerThanOrEqual: "2022")]
+    public void MyTestMethod()
+    {
+        // Test run only for Unity 2022.1.0f1 or later.
+    }
+
+    [Test]
+    [UnityVersion(olderThan: "2019.4.0f1")]
+    public void MyTestMethod()
+    {
+        // Test run only for Unity older than 2019.4.0f1.
     }
 }
 ```
@@ -609,7 +607,7 @@ Right: generated by weak (short period) PRNG:
 
 ### Runtime APIs
 
-The classes in the `TestHelper.RuntimeInternals` assembly can be used from the runtime code because it does not depend on test-framework.
+The classes in the `TestHelper.RuntimeInternals` assembly can be used from the runtime code because it does not depend on `com.unity.test-framework`.
 
 > [!TIP]  
 > The "Define Constraints" is set to `UNITY_INCLUDE_TESTS || COM_NOWSPRINTING_TEST_HELPER_ENABLE` in this assembly definition files, so it is generally excluded from release builds.
@@ -625,8 +623,8 @@ The classes in the `TestHelper.RuntimeInternals` assembly can be used from the r
 It has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
-- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
 - The scene path can be specified as a relative path from the test class file.
+- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
 
 Usage:
 
@@ -649,9 +647,6 @@ public class MyTestClass
 
 > [!TIP]  
 > When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#buildscene).
-
-> [!NOTE]  
-> The scene file path starts with `Assets/` or `Packages/` or `.`. And package name using `name` instead of `displayName`, when scenes in the package. (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`)
 
 
 #### ScreenshotHelper
@@ -687,7 +682,7 @@ public class MyTestClass
 ```
 
 > [!WARNING]  
-> Do not attach to Edit Mode tests.
+> Do not place on Edit Mode tests.
 > And must be called from main thread.
 
 > [!WARNING]  
@@ -714,7 +709,9 @@ Select menu item **Window > Test Helper > Open Temporary Cache Directory**, whic
 
 
 
-### JUnit XML format report
+### Commandline Arguments
+
+#### JUnit XML format report
 
 If you specify path with `-testHelperJUnitResults` command line option, the test result will be written in JUnit XML format when the tests are finished.
 
@@ -725,41 +722,30 @@ If you specify path with `-testHelperJUnitResults` command line option, the test
 
 ## Installation
 
-You can choose from two typical installation methods.
+### 1. Install via Package Manager window
 
-### Install via Package Manager window
-
-1. Open the **Package Manager** tab in Project Settings window (**Editor > Project Settings**)
-2. Click **+** button under the **Scoped Registries** and enter the following settings (figure 1.):
+1. Open the Project Settings window (**Editor > Project Settings**) and select **Package Manager** tab (figure 1.)
+2. Click **+** button under the **Scoped Registries** and enter the following settings:
     1. **Name:** `package.openupm.com`
     2. **URL:** `https://package.openupm.com`
     3. **Scope(s):** `com.nowsprinting`
-3. Open the Package Manager window (**Window > Package Manager**) and select **My Registries** in registries drop-down list (figure 2.)
-4. Click **Install** button on the `com.nowsprinting.test-helper` package
+3. Open the Package Manager window (**Window > Package Manager**) and select **My Registries** tab (figure 2.)
+4. Select **Test Helper** and click the **Install** button
 
-**Figure 1.** Package Manager tab in Project Settings window.
+**Figure 1.** Scoped Registries setting in Project Settings window
 
-![](Documentation~/ProjectSettings_Dark.png#gh-dark-mode-only)
-![](Documentation~/ProjectSettings_Light.png#gh-light-mode-only)
+![](Documentation~/ScopedRegistries_Dark.png#gh-dark-mode-only)
+![](Documentation~/ScopedRegistries_Light.png#gh-light-mode-only)
 
-**Figure 2.** Select registries drop-down list in Package Manager window.
+**Figure 2.** My Registries in Package Manager window
 
 ![](Documentation~/PackageManager_Dark.png#gh-dark-mode-only)
 ![](Documentation~/PackageManager_Light.png#gh-light-mode-only)
 
 
-### Install via OpenUPM-CLI
+### 2. Add assembly reference
 
-If you installed [openupm-cli](https://github.com/openupm/openupm-cli), run the command below:
-
-```bash
-openupm add com.nowsprinting.test-helper
-```
-
-
-### Add assembly reference
-
-1. Open your test assembly definition file (.asmdef) in **Inspector** window
+1. Open your test assembly definition file (.asmdef) in the Inspector window
 2. Add **TestHelper** into **Assembly Definition References**
 
 > [!NOTE]  
