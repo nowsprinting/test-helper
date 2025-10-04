@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Diagnostics.CodeAnalysis;
@@ -12,12 +12,15 @@ namespace TestHelper.Attributes
     [SuppressMessage("ReSharper", "MissingXmlDoc")]
     public enum GameViewResolution
     {
-        VGA,
-        XGA,
-        WXGA,
-        FullHD,
-        QHD,
-        FourK_UHD
+        QVGA = 6,
+        WQVGA = 7,
+        VGA = 0,
+        WVGA = 8,
+        XGA = 1,
+        WXGA = 2,
+        FullHD = 3,
+        QHD = 4,
+        FourK_UHD = 5,
     }
 
     /// <summary>
@@ -34,8 +37,14 @@ namespace TestHelper.Attributes
         {
             switch (resolution)
             {
+                case GameViewResolution.QVGA:
+                    return (320, 240, "QVGA");
+                case GameViewResolution.WQVGA:
+                    return (400, 240, "WQVGA");
                 case GameViewResolution.VGA:
                     return (640, 480, "VGA");
+                case GameViewResolution.WVGA:
+                    return (800, 480, "WVGA");
                 case GameViewResolution.XGA:
                     return (1024, 768, "XGA");
                 case GameViewResolution.WXGA:
