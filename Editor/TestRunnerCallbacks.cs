@@ -26,6 +26,7 @@ namespace TestHelper.Editor
         /// </summary>
         public void RunStarted(ITestAdaptor testsToRun)
         {
+            GameViewResolutionSwitcher.ParseArgumentsAndSwitchIfNeeded();
         }
 
         /// <inheritdoc />
