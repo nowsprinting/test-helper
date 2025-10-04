@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using NUnit.Framework;
+using UnityEngine;
 
 namespace TestHelper.Attributes
 {
@@ -71,16 +72,24 @@ namespace TestHelper.Attributes
         }
 
         [Test]
-        [UnityVersion("2019")]
-        public void Attach_newerThanOrEqual2019_NotSkip()
+        [UnityVersion(olderThan: "2022")]
+        public void Attach_olderThan2022_RunOnUnderTheUnity2022()
         {
+            Debug.Log(Application.unityVersion);
         }
 
         [Test]
-        [UnityVersion(olderThan: "2019.4.0f1")]
-        public void Attach_olderThan2019_4_0f1_Skip()
+        [UnityVersion("2022")]
+        public void Attach_newerThanOrEqual2022_RunOnUnity2022orNewer()
         {
-            Assert.Fail("This test should be skipped.");
+            Debug.Log(Application.unityVersion);
+        }
+
+        [Test]
+        [UnityVersion("6000", olderThan: "6000.2.6f1")]
+        public void Attach_newerThanOrEqual6000_RunOnUnity6orNewer()
+        {
+            Debug.Log(Application.unityVersion);
         }
     }
 }
