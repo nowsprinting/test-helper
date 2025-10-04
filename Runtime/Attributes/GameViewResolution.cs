@@ -12,15 +12,15 @@ namespace TestHelper.Attributes
     [SuppressMessage("ReSharper", "MissingXmlDoc")]
     public enum GameViewResolution
     {
-        QVGA = 6,
-        WQVGA = 7,
-        VGA = 0,
-        WVGA = 8,
-        XGA = 1,
-        WXGA = 2,
-        FullHD = 3,
-        QHD = 4,
-        FourK_UHD = 5,
+        VGA,
+        XGA,
+        WXGA,
+        FullHD,
+        QHD,
+        FourK_UHD,
+        QVGA,
+        WQVGA,
+        WVGA,
     }
 
     /// <summary>
