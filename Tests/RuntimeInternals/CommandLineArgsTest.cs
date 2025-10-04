@@ -69,12 +69,12 @@ namespace TestHelper.RuntimeInternals
             Assert.That(actual, Is.Null);
         }
 
-        [Test]
-        public void GetGameViewResolutionName_WithArgument_GotResolutionName()
+        [TestCase("QVGA")]
+        [TestCase("\"Full HD\"")]
+        public void GetGameViewResolutionName_WithArgument_GotResolutionName(string name)
         {
-            var actual =
-                CommandLineArgs.GetGameViewResolutionName(new[] { "-testHelperGameViewResolution", "QVGA" });
-            Assert.That(actual, Is.EqualTo("QVGA"));
+            var actual = CommandLineArgs.GetGameViewResolutionName(new[] { "-testHelperGameViewResolution", name });
+            Assert.That(actual, Is.EqualTo(name));
         }
 
         [Test]

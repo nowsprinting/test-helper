@@ -15,7 +15,7 @@ namespace TestHelper.Editor
             var resolutionName = CommandLineArgs.GetGameViewResolutionName();
             if (!string.IsNullOrEmpty(resolutionName))
             {
-                resolutionName = resolutionName.ToLower();
+                resolutionName = resolutionName.Replace("\"", "").ToLower();
                 foreach (GameViewResolution resolution in Enum.GetValues(typeof(GameViewResolution)))
                 {
                     var (width, height, name) = resolution.GetParameter();
