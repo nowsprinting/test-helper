@@ -56,13 +56,41 @@ namespace TestHelper.Attributes
 
         private static bool IsNewerThanEqual(string unityVersion, string newerThanEqual)
         {
-            return string.Compare(unityVersion, newerThanEqual, StringComparison.Ordinal) >= 0;
+            var v1 = ParseUnityVersion(unityVersion);
+            var v2 = ParseUnityVersion(newerThanEqual);
+            for (var i = 0; i < v2.Length; i++) // Compare only up to the length of specified version
+            {
+                if (v1[i] > v2[i]) return true;
+                if (v1[i] < v2[i]) return false;
+            }
+
+            return true;
         }
 
         private static bool IsOlderThan(string unityVersion, string olderThan)
         {
-            var digits = olderThan.Length; // Evaluate only up to olderThan`s digits
-            return string.Compare(unityVersion.Substring(0, digits), olderThan, StringComparison.Ordinal) < 0;
+            var v1 = ParseUnityVersion(unityVersion);
+            var v2 = ParseUnityVersion(olderThan);
+            for (var i = 0; i < v2.Length; i++) // Compare only up to the length of specified version
+            {
+                if (v1[i] < v2[i]) return true;
+                if (v1[i] > v2[i]) return false;
+            }
+
+            return false;
+        }
+
+        private static int[] ParseUnityVersion(string version)
+        {
+            var parts = version.Split(new[] { '.', 'f', 'b', 'p' }, StringSplitOptions.RemoveEmptyEntries);
+            var result = new int[parts.Length];
+            for (var i = 0; i < parts.Length; i++)
+            {
+                if (!int.TryParse(parts[i], out result[i]))
+                    result[i] = 0;
+            }
+
+            return result;
         }
     }
 }

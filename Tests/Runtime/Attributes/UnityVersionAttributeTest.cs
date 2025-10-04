@@ -8,10 +8,10 @@ namespace TestHelper.Attributes
     [TestFixture]
     public class UnityVersionAttributeTest
     {
-        private const string UnityVersion = "2023.2.16f1";
+        private const string UnityVersion = "2023.2.6f1";
 
-        [TestCase("2023.2.16f1")] // include equal version
-        [TestCase("2023.2.15f1")]
+        [TestCase("2023.2.6f1")] // include equal version
+        [TestCase("2023.2.5f1")]
         [TestCase("2023.2")]
         [TestCase("2023")]
         [TestCase("2022")]
@@ -22,7 +22,8 @@ namespace TestHelper.Attributes
             Assert.That(actual, Is.False);
         }
 
-        [TestCase("2023.2.17f1")]
+        [TestCase("2023.2.7f1")]
+        [TestCase("2023.2.10f1")]
         [TestCase("2023.3")]
         [TestCase("6000")]
         public void IsSkip_newerThanOrEqual_Skip(string newerThanOrEqual)
@@ -32,7 +33,8 @@ namespace TestHelper.Attributes
             Assert.That(actual, Is.True);
         }
 
-        [TestCase("2023.2.17f1")]
+        [TestCase("2023.2.7f1")]
+        [TestCase("2023.2.10f1")]
         [TestCase("6000")]
         public void IsSkip_olderThan_NotSkip(string olderThan)
         {
@@ -41,8 +43,8 @@ namespace TestHelper.Attributes
             Assert.That(actual, Is.False);
         }
 
-        [TestCase("2023.2.16f1")] // exclude equal version
-        [TestCase("2023.2.15f1")]
+        [TestCase("2023.2.6f1")] // exclude equal version
+        [TestCase("2023.2.5f1")]
         [TestCase("2023.2")]
         [TestCase("2023")]
         [TestCase("2021")]
@@ -53,7 +55,7 @@ namespace TestHelper.Attributes
             Assert.That(actual, Is.True);
         }
 
-        [TestCase("2023.2.16f1", "2023.2.17f1")]
+        [TestCase("2023.2.6f1", "2023.2.7f1")]
         public void IsSkip_Both_NotSkip(string newerThanOrEqual, string olderThan)
         {
             var sut = new UnityVersionAttribute(newerThanOrEqual, olderThan);
@@ -61,8 +63,8 @@ namespace TestHelper.Attributes
             Assert.That(actual, Is.False);
         }
 
-        [TestCase("2023.2.16f1", "2023.2.16f1")]
-        [TestCase("2023.2.17f1", "2023.2.17f1")]
+        [TestCase("2023.2.6f1", "2023.2.6f1")]
+        [TestCase("2023.2.7f1", "2023.2.7f1")]
         public void IsSkip_Both_Skip(string newerThanOrEqual, string olderThan)
         {
             var sut = new UnityVersionAttribute(newerThanOrEqual, olderThan);
