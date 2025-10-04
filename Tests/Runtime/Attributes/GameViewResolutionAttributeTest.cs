@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections;
@@ -31,6 +31,20 @@ namespace TestHelper.Attributes
 
             Assert.That(Screen.width, Is.EqualTo(640));
             Assert.That(Screen.height, Is.EqualTo(480));
+        }
+
+        [Test]
+        public void Constructor_WithoutName_Defined_ReturnsDefinedNameAndSize()
+        {
+            var actual = new GameViewResolutionAttribute(400, 240);
+            Assert.That(actual._name, Is.EqualTo("WQVGA (400x240)"));
+        }
+
+        [Test]
+        public void Constructor_WithoutName_NotDefined_ReturnsSizeOnly()
+        {
+            var actual = new GameViewResolutionAttribute(23, 57);
+            Assert.That(actual._name, Is.EqualTo("23x57"));
         }
     }
 }
