@@ -350,14 +350,14 @@ public class MyTestClass
     [UnityVersion(newerThanOrEqual: "2022")]
     public void MyTestMethod()
     {
-        // Test run only for Unity 2022.1.0f1 or later.
+        // Test run only for Unity 2022.1.0f1 or newer (include specified version).
     }
 
     [Test]
     [UnityVersion(olderThan: "2019.4.0f1")]
     public void MyTestMethod()
     {
-        // Test run only for Unity older than 2019.4.0f1.
+        // Test run only for Unity older than 2019.4.0f1 (exclude specified version).
     }
 }
 ```

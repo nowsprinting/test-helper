@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -62,7 +62,7 @@ namespace TestHelper.Attributes
         private static bool IsOlderThan(string unityVersion, string olderThan)
         {
             var digits = olderThan.Length; // Evaluate only up to olderThan`s digits
-            return string.Compare(unityVersion.Substring(0, digits), olderThan, StringComparison.Ordinal) <= 0;
+            return string.Compare(unityVersion.Substring(0, digits), olderThan, StringComparison.Ordinal) < 0;
         }
     }
 }
