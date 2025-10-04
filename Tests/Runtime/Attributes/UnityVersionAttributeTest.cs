@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using NUnit.Framework;
@@ -10,7 +10,7 @@ namespace TestHelper.Attributes
     {
         private const string UnityVersion = "2023.2.16f1";
 
-        [TestCase("2023.2.16f1")] // equal version is not skip
+        [TestCase("2023.2.16f1")] // include equal version
         [TestCase("2023.2.15f1")]
         [TestCase("2023.2")]
         [TestCase("2023")]
@@ -33,9 +33,6 @@ namespace TestHelper.Attributes
         }
 
         [TestCase("2023.2.17f1")]
-        [TestCase("2023.2.16f1")] // equal version is not skip
-        [TestCase("2023.2")]
-        [TestCase("2023")]
         [TestCase("6000")]
         public void IsSkip_olderThan_NotSkip(string olderThan)
         {
@@ -44,13 +41,31 @@ namespace TestHelper.Attributes
             Assert.That(actual, Is.False);
         }
 
+        [TestCase("2023.2.16f1")] // exclude equal version
         [TestCase("2023.2.15f1")]
-        [TestCase("2023.1")]
-        [TestCase("2022")]
+        [TestCase("2023.2")]
+        [TestCase("2023")]
         [TestCase("2021")]
         public void IsSkip_olderThan_Skip(string olderThan)
         {
             var sut = new UnityVersionAttribute(olderThan: olderThan);
+            var actual = sut.IsSkip(UnityVersion);
+            Assert.That(actual, Is.True);
+        }
+
+        [TestCase("2023.2.16f1", "2023.2.17f1")]
+        public void IsSkip_Both_NotSkip(string newerThanOrEqual, string olderThan)
+        {
+            var sut = new UnityVersionAttribute(newerThanOrEqual, olderThan);
+            var actual = sut.IsSkip(UnityVersion);
+            Assert.That(actual, Is.False);
+        }
+
+        [TestCase("2023.2.16f1", "2023.2.16f1")]
+        [TestCase("2023.2.17f1", "2023.2.17f1")]
+        public void IsSkip_Both_Skip(string newerThanOrEqual, string olderThan)
+        {
+            var sut = new UnityVersionAttribute(newerThanOrEqual, olderThan);
             var actual = sut.IsSkip(UnityVersion);
             Assert.That(actual, Is.True);
         }
