@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -17,7 +17,7 @@ namespace TestHelper.Attributes
     {
         private readonly uint _width;
         private readonly uint _height;
-        private readonly string _name;
+        internal readonly string _name;
 
         /// <summary>
         /// Set <c>GameView</c> resolution before running this test.
@@ -27,11 +27,25 @@ namespace TestHelper.Attributes
         /// <param name="width">GameView width [px]</param>
         /// <param name="height">GameView height [px]</param>
         /// <param name="name">GameViewSize name</param>
-        public GameViewResolutionAttribute(uint width, uint height, string name)
+        public GameViewResolutionAttribute(uint width, uint height, string name = null)
         {
             _width = width;
             _height = height;
-            _name = name;
+            _name = name ?? GetDefaultName(width, height);
+        }
+
+        private static string GetDefaultName(uint width, uint height)
+        {
+            foreach (GameViewResolution resolution in Enum.GetValues(typeof(GameViewResolution)))
+            {
+                var (w, h, name) = resolution.GetParameter();
+                if (w == width && h == height)
+                {
+                    return $"{name} ({width}x{height})";
+                }
+            }
+
+            return $"{width}x{height}";
         }
 
         /// <summary>

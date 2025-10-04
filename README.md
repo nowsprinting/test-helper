@@ -718,6 +718,12 @@ If you specify path with `-testHelperJUnitResults` command line option, the test
 > [!NOTE]  
 > The JUnit XML format is the so-called "Legacy." It does not support the "Open Test Reporting format" introduced in JUnit 5.
 
+#### GameView resolution
+
+If you specify display resolution standards (e.g., `VGA`) with the `-testHelperGameViewResolution` command line option, the GameView resolution is set to the specified size when starting the tests.
+
+Or, you can specify width and height with `-testHelperGameViewWidth` and `-testHelperGameViewHeight` command line options.
+
 
 
 ## Installation

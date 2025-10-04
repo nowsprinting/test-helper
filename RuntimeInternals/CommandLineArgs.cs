@@ -93,5 +93,47 @@ namespace TestHelper.RuntimeInternals
                 return null;
             }
         }
+
+        /// <summary>
+        /// <c>GameView</c> resolution name.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetGameViewResolutionName(string[] args = null)
+        {
+            const string ResolutionNameKey = "-testHelperGameViewResolution";
+
+            try
+            {
+                args = args ?? Environment.GetCommandLineArgs();
+                return DictionaryFromCommandLineArgs(args)[ResolutionNameKey];
+            }
+            catch (KeyNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// <c>GameView</c> width and height.
+        /// </summary>
+        /// <returns></returns>
+        public static (uint width, uint height) GetGameViewResolutionSize(string[] args = null)
+        {
+            const string WidthKey = "-testHelperGameViewWidth";
+            const string HeightKey = "-testHelperGameViewHeight";
+
+            args = args ?? Environment.GetCommandLineArgs();
+
+            var dict = DictionaryFromCommandLineArgs(args);
+            if (dict.TryGetValue(WidthKey, out var widthStr) && dict.TryGetValue(HeightKey, out var heightStr))
+            {
+                if (uint.TryParse(widthStr, out var width) && uint.TryParse(heightStr, out var height))
+                {
+                    return (width, height);
+                }
+            }
+
+            return (0, 0);
+        }
     }
 }
