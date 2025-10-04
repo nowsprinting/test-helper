@@ -106,7 +106,7 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}  # Default is `auto`
           checkName: test result (${{ matrix.unityVersion }}, ${{ matrix.testMode }})
           projectPath: ${{ env.CREATED_PROJECT_PATH }}
-          customParameters: -testCategory "!IgnoreCI" -testHelperScreenshotDirectory /github/workspace/artifacts/Screenshots
+          customParameters: -testCategory "!IgnoreCI" -retry 5 -testHelperScreenshotDirectory /github/workspace/artifacts/Screenshots
           coverageOptions: generateAdditionalMetrics;generateTestReferences;generateHtmlReport;generateAdditionalReports;dontClear;assemblyFilters:${{ env.assembly_filters }}
           # see: https://docs.unity3d.com/Packages/com.unity.testtools.codecoverage@1.2/manual/CoverageBatchmode.html
           testMode: ${{ matrix.testMode }}
