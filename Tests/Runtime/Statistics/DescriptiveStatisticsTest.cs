@@ -206,7 +206,6 @@ Experimental and Statistical Summary:
         }
 
         [Test]
-        [Retry(2)]
         public void GetSummary_WithIntSampleSpace()
         {
             const int TrialCount = 1 << 20; // 1,048,576 times
@@ -218,6 +217,7 @@ Experimental and Statistical Summary:
 
             var statistics = new DescriptiveStatistics<int>();
             statistics.Calculate(sampleSpace);
+
             Debug.Log(statistics.GetSummary()); // Write to console
 
             Assert.That(statistics.PeakFrequency, Is.EqualTo(TrialCount / 6).Within(Tolerance));
@@ -227,7 +227,6 @@ Experimental and Statistical Summary:
         }
 
         [Test]
-        [Retry(2)]
         [SuppressMessage("ReSharper", "RedundantNameQualifier")]
         public void GetSummary_WithFloatSampleSpace()
         {
@@ -241,6 +240,7 @@ Experimental and Statistical Summary:
 
             var statistics = new DescriptiveStatistics<float>(0.0f, 1.0f, 0.1f);
             statistics.Calculate(sampleSpace);
+
             Debug.Log(statistics.GetSummary()); // Write to console
 
             Assert.That(statistics.PeakFrequency, Is.EqualTo(Expected).Within(Tolerance));
@@ -250,7 +250,6 @@ Experimental and Statistical Summary:
         }
 
         [Test]
-        [Retry(2)]
         public void GetSummary_WithStringSampleSpace()
         {
             var sampleSpace = Experiment.Run(
@@ -259,7 +258,8 @@ Experimental and Statistical Summary:
 
             var statistics = new DescriptiveStatistics<string>();
             statistics.Calculate(sampleSpace);
-            Debug.Log(statistics.GetSummary());
+
+            Debug.Log(statistics.GetSummary()); // Write to console
 
             Assert.That(statistics.PeakFrequency, Is.EqualTo(1));
             Assert.That(statistics.ValleyFrequency, Is.EqualTo(1));
