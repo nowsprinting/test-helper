@@ -15,6 +15,10 @@ namespace TestHelper.RuntimeInternals
     {
         /// <summary>
         /// Creates a temporary file path.
+        /// By default, the path is named by the test name in the directory pointed to by <see cref="Application.temporaryCachePath"/>.
+        /// <p/>
+        /// Replace included special characters in parameterized tests.
+        /// Adds repeat counts by command-line arguments to the filename (required test-framework v1.3.5 or newer).
         /// </summary>
         /// <param name="baseDirectory">If omitted, use <see cref="Application.temporaryCachePath"/>.</param>
         /// <param name="extension">File extension if necessary.</param>
@@ -22,7 +26,7 @@ namespace TestHelper.RuntimeInternals
         /// <param name="createDirectory">Create directory if true.</param>
         /// <param name="deleteIfExists">Delete existing file if true.</param>
         /// <param name="callerMemberName">The name of the calling method to use when called outside a test context.</param>
-        /// <returns></returns>
+        /// <returns>Temporary file path in running tests.</returns>
         public static string CreatePath(
             string baseDirectory = null,
             string extension = null,
@@ -33,10 +37,12 @@ namespace TestHelper.RuntimeInternals
         {
             var directory = baseDirectory != null ? Path.GetFullPath(baseDirectory) : Application.temporaryCachePath;
 
+#if UNITY_INCLUDE_TESTS
             if (namespaceToDirectory)
             {
                 directory = Path.Combine(directory, GetSubdirectoryFromNamespace());
             }
+#endif
 
             if (createDirectory)
             {
@@ -44,7 +50,11 @@ namespace TestHelper.RuntimeInternals
             }
 
             extension = extension != null ? $".{extension.TrimStart('.')}" : string.Empty;
+#if UNITY_INCLUDE_TESTS
             var path = Path.Combine(directory, GetFilename(callerMemberName) + extension);
+#else
+            var path = Path.Combine(directory, callerMemberName + extension);
+#endif
 
             if (deleteIfExists)
             {
@@ -57,9 +67,9 @@ namespace TestHelper.RuntimeInternals
             return path;
         }
 
+#if UNITY_INCLUDE_TESTS
         private static string GetSubdirectoryFromNamespace()
         {
-#if UNITY_INCLUDE_TESTS
             if (TestContext.CurrentContext != null)
             {
                 var fullName = TestContext.CurrentContext.Test.FullName;
@@ -67,25 +77,46 @@ namespace TestHelper.RuntimeInternals
                 var testNameIndex = fullName.LastIndexOf(testName, StringComparison.Ordinal);
                 return fullName.Substring(0, testNameIndex).Replace('.', Path.DirectorySeparatorChar);
             }
-#endif
+
             return string.Empty;
         }
 
         private static string GetFilename(string callerMemberName)
         {
-#if UNITY_INCLUDE_TESTS
             if (TestContext.CurrentContext != null)
             {
-                return TestContext.CurrentContext.Test.Name
+                var name = TestContext.CurrentContext.Test.Name
                     .Replace('(', '_')
                     .Replace(')', '_')
                     .Replace(',', '-')
                     .Replace('.', '-')
                     .Replace("\"", "");
                 // Note: Similar to the file name created under ActualImages in the Graphics Test Framework package, but also replace the period.
+
+                var iteration = GetIntProperty("repeatIteration") + GetIntProperty("retryIteration");
+                // Note: "retryIteration" is not incremented during execution, so it is always 0 (in test-framework v1.5.1)
+                if (iteration > 0)
+                {
+                    return $"{name.TrimEnd('_')}_{iteration}";
+                }
+
+                return name;
             }
-#endif
+
             return callerMemberName;
         }
+
+        private static int GetIntProperty(string key)
+        {
+            var properties = TestContext.CurrentContext.Test.Properties;
+            var value = properties.Get(key);
+            if (value != null && value is int i)
+            {
+                return i;
+            }
+
+            return 0;
+        }
+#endif
     }
 }
