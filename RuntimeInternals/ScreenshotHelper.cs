@@ -5,6 +5,9 @@ using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+#if UNITY_INCLUDE_TESTS
+using NUnit.Framework;
+#endif
 
 namespace TestHelper.RuntimeInternals
 {
@@ -96,6 +99,14 @@ namespace TestHelper.RuntimeInternals
             {
                 Debug.Log($"Save screenshot to {path}");
             }
+
+#if UNITY_INCLUDE_TESTS
+            if (TestContext.CurrentContext != null)
+            {
+                var properties = TestContext.CurrentContext.Test.Properties;
+                properties.Add("Screenshot", path);
+            }
+#endif
         }
     }
 }

@@ -80,7 +80,7 @@ namespace TestHelper.Attributes
                 GameViewControlHelper.SetGizmos(true);
             }
 
-            yield return ScreenshotHelper.TakeScreenshot(_directory, _filename, _superSize, _stereoCaptureMode,
+            yield return ScreenshotHelper.TakeScreenshot(_directory, _filename, _superSize, _stereoCaptureMode, false,
                 namespaceToDirectory: _namespaceToDirectory);
 
             if (_gizmos)
