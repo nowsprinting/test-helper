@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -34,7 +35,7 @@ namespace TestHelper.RuntimeInternals
 
             if (namespaceToDirectory)
             {
-                directory = Path.Join(directory, GetSubdirectoryFromNamespace());
+                directory = Path.Combine(directory, GetSubdirectoryFromNamespace());
             }
 
             if (createDirectory)
@@ -43,7 +44,7 @@ namespace TestHelper.RuntimeInternals
             }
 
             extension = extension != null ? $".{extension.TrimStart('.')}" : string.Empty;
-            var path = Path.Join(directory, GetFilename(callerMemberName) + extension);
+            var path = Path.Combine(directory, GetFilename(callerMemberName) + extension);
 
             if (deleteIfExists)
             {
@@ -59,11 +60,12 @@ namespace TestHelper.RuntimeInternals
         private static string GetSubdirectoryFromNamespace()
         {
 #if UNITY_INCLUDE_TESTS
-            if (TestContext.CurrentTestExecutionContext != null)
+            if (TestContext.CurrentContext != null)
             {
-                return TestContext.CurrentTestExecutionContext.CurrentTest.FullName
-                    .Replace(TestContext.CurrentTestExecutionContext.CurrentTest.Name, "")
-                    .Replace('.', Path.DirectorySeparatorChar);
+                var fullName = TestContext.CurrentContext.Test.FullName;
+                var testName = TestContext.CurrentContext.Test.Name;
+                var testNameIndex = fullName.LastIndexOf(testName, StringComparison.Ordinal);
+                return fullName.Substring(0, testNameIndex).Replace('.', Path.DirectorySeparatorChar);
             }
 #endif
             return string.Empty;
@@ -72,9 +74,9 @@ namespace TestHelper.RuntimeInternals
         private static string GetFilename(string callerMemberName)
         {
 #if UNITY_INCLUDE_TESTS
-            if (TestContext.CurrentTestExecutionContext != null)
+            if (TestContext.CurrentContext != null)
             {
-                return TestContext.CurrentTestExecutionContext.CurrentTest.Name
+                return TestContext.CurrentContext.Test.Name
                     .Replace('(', '_')
                     .Replace(')', '_')
                     .Replace(',', '-')

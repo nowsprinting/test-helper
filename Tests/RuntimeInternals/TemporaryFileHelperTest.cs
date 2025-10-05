@@ -11,10 +11,10 @@ namespace TestHelper.RuntimeInternals
     [TestFixture]
     public class TemporaryFileHelperTest
     {
-        private static string SubdirectoryFromNamespace => Path.Join(
-            nameof(TestHelper),
-            nameof(RuntimeInternals),
-            nameof(TemporaryFileHelperTest));
+        private static string SubdirectoryFromNamespace =>
+            nameof(TestHelper) + Path.DirectorySeparatorChar +
+            nameof(RuntimeInternals) + Path.DirectorySeparatorChar +
+            nameof(TemporaryFileHelperTest);
 
         [Test]
         public void CreateTemporaryFilePath_WithoutBaseDirectory_UseTemporaryCachePath()
@@ -69,7 +69,7 @@ namespace TestHelper.RuntimeInternals
             var baseDirectory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
             if (Directory.Exists(baseDirectory))
             {
-                Directory.Delete(baseDirectory);
+                Directory.Delete(baseDirectory, recursive: true);
             }
 
             Assume.That(baseDirectory, Does.Not.Exist);
@@ -84,7 +84,7 @@ namespace TestHelper.RuntimeInternals
             var baseDirectory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
             if (Directory.Exists(baseDirectory))
             {
-                Directory.Delete(baseDirectory);
+                Directory.Delete(baseDirectory, recursive: true);
             }
 
             Assume.That(baseDirectory, Does.Not.Exist);
