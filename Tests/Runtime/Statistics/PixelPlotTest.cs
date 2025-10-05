@@ -8,6 +8,7 @@ using NUnit.Framework;
 using TestHelper.RuntimeInternals;
 using TestHelper.Statistics.RandomGenerators;
 using UnityEngine;
+using Random = System.Random;
 
 namespace TestHelper.Statistics
 {
@@ -105,12 +106,9 @@ namespace TestHelper.Statistics
         [Test]
         public void WriteToFile_NoArguments_WrittenToDefaultFilePath()
         {
-            var path = Path.Combine(CommandLineArgs.GetStatisticsDirectory(),
-                $"{TestContext.CurrentContext.Test.Name}.png");
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
+            var path = TemporaryFileHelper.CreateTemporaryFilePath(
+                baseDirectory: CommandLineArgs.GetStatisticsDirectory(),
+                extension: "png");
 
             var sut = new PixelPlot<int>();
             sut.Plot(new int[] { 0, 1, 2, 3 }, size: 4, min: 0, max: 3);
@@ -122,16 +120,11 @@ namespace TestHelper.Statistics
         [Test]
         public void WriteToFile_WithDirectory_WrittenToSpecifiedPath()
         {
-            var directory = Application.temporaryCachePath;
-            var path = Path.Combine(directory, $"{TestContext.CurrentContext.Test.Name}.png");
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
+            var path = TemporaryFileHelper.CreateTemporaryFilePath(extension: "png");
 
             var sut = new PixelPlot<int>();
             sut.Plot(new int[] { 0, 1, 2, 3 }, size: 4, min: 0, max: 3);
-            sut.WriteToFile(directory: directory);
+            sut.WriteToFile(directory: Path.GetDirectoryName(path));
 
             Assert.That(new FileInfo(path), Does.Exist);
         }
@@ -178,7 +171,7 @@ namespace TestHelper.Statistics
             [Test]
             public void SystemRandom()
             {
-                var random = new System.Random();
+                var random = new Random();
 
                 var sampleSpace = Experiment.Run(
                     () => random.Next(),
