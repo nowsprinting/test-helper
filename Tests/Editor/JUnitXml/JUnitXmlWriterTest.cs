@@ -5,7 +5,7 @@ using System.IO;
 using NUnit.Framework;
 using TestHelper.Comparers;
 using TestHelper.Editor.TestDoubles;
-using UnityEngine;
+using TestHelper.RuntimeInternals;
 
 namespace TestHelper.Editor.JUnitXml
 {
@@ -14,20 +14,12 @@ namespace TestHelper.Editor.JUnitXml
     {
         private const string TestResourcesPath = "Packages/com.nowsprinting.test-helper/Tests/Editor/TestResources";
 
-        private readonly string _testOutputDirectoryPath =
-            Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
-
         [Test, Order(0)]
         public void WriteTo_CreatedJUnitXmlFormatFile()
         {
-            if (Directory.Exists(_testOutputDirectoryPath))
-            {
-                Directory.Delete(_testOutputDirectoryPath, true);
-            }
-
             var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
             var result = new FakeTestResultAdaptor(nunitXmlPath);
-            var path = Path.Combine(_testOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
+            var path = TemporaryFileHelper.CreateTemporaryFilePath(extension: "xml", namespaceToDirectory: true);
             JUnitXmlWriter.WriteTo(result, path);
 
             Assume.That(path, Does.Exist);
@@ -42,7 +34,7 @@ namespace TestHelper.Editor.JUnitXml
         {
             var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
             var result = new FakeTestResultAdaptor(nunitXmlPath);
-            var path = Path.Combine(_testOutputDirectoryPath, TestContext.CurrentContext.Test.Name + ".xml");
+            var path = TemporaryFileHelper.CreateTemporaryFilePath(extension: "xml", namespaceToDirectory: true);
 
             // Destroy the output destination file.
             File.Copy(nunitXmlPath, path, true);

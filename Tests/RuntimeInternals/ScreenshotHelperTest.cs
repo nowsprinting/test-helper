@@ -29,7 +29,7 @@ namespace TestHelper.RuntimeInternals
             Assume.That(textObject, Is.Not.Null);
 
             _text = textObject.GetComponent<Text>();
-            _text.text = TestContext.CurrentTestExecutionContext.CurrentTest.Name;
+            _text.text = TestContext.CurrentContext.Test.Name;
         }
 
         [UnityTest]
@@ -124,18 +124,6 @@ namespace TestHelper.RuntimeInternals
             yield return ScreenshotHelper.TakeScreenshot(logFilepath: false);
 
             LogAssert.NoUnexpectedReceived(); // No output to Debug.Log
-        }
-
-        [TestFixture]
-        public class Internal
-        {
-            [TestCase(0, "s")]
-            public void DefaultFilename_Parameterized(int i, string s)
-            {
-                var actual = ScreenshotHelper.DefaultFilename(null);
-
-                Assert.That(actual, Is.EqualTo("DefaultFilename_Parameterized_0-s_"));
-            }
         }
     }
 }

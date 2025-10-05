@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "TestHelper.Editor",
-        "TestHelper"
+        "TestHelper",
+        "TestHelper.RuntimeInternals"
     ],
     "includePlatforms": [
         "Editor"

@@ -31,7 +31,7 @@ namespace TestHelper.Attributes
             Assume.That(textObject, Is.Not.Null);
 
             _text = textObject.GetComponent<Text>();
-            _text.text = TestContext.CurrentTestExecutionContext.CurrentTest.Name;
+            _text.text = TestContext.CurrentContext.Test.Name;
         }
 
         [Test, Order(0)]
