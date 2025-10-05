@@ -39,12 +39,14 @@ namespace TestHelper.RuntimeInternals
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
         /// <param name="logFilepath">Output filename to Debug.Log</param>
+        /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true.</param>
         public static IEnumerator TakeScreenshot(
             string directory = null,
             string filename = null,
             int superSize = 1,
             ScreenCapture.StereoScreenCaptureMode stereoCaptureMode = ScreenCapture.StereoScreenCaptureMode.LeftEye,
             bool logFilepath = true,
+            bool namespaceToDirectory = false,
             // ReSharper disable once InvalidXmlDocComment
             [CallerMemberName] string callerMemberName = null)
         {
@@ -69,6 +71,7 @@ namespace TestHelper.RuntimeInternals
                 path = TemporaryFileHelper.CreatePath(
                     baseDirectory: directory,
                     extension: "png",
+                    namespaceToDirectory: namespaceToDirectory,
                     callerMemberName: callerMemberName);
             }
             else

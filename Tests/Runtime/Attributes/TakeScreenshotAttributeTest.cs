@@ -18,9 +18,14 @@ namespace TestHelper.Attributes
     public class TakeScreenshotAttributeTest
     {
         private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
-        private const int FileSizeThreshold = 5441; // VGA size solid color file size
+        private const int FileSizeThreshold = 5441;         // VGA size solid color file size
         private const int FileSizeThreshold2X = 100 * 1024; // Normal size is 80 to 90KB
         private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
+
+        private static string SubdirectoryFromNamespace =>
+            nameof(TestHelper) + Path.DirectorySeparatorChar +
+            nameof(Attributes) + Path.DirectorySeparatorChar +
+            nameof(TakeScreenshotAttributeTest);
 
         private Text _text;
 
@@ -298,6 +303,35 @@ namespace TestHelper.Attributes
                 _defaultOutputDirectory,
                 $"{nameof(AttachWithGizmos_TakeScreenshotWithGizmos)}.png");
             Assert.That(path, Does.Exist);
+        }
+
+        [Test, Order(0)]
+        [LoadScene(TestScene)]
+        [TakeScreenshot(namespaceToDirectory: true)]
+        public void Attach_WithNamespaceToDirectory_SaveScreenshotToSubdirectory()
+        {
+            var path = Path.Combine(
+                _defaultOutputDirectory,
+                SubdirectoryFromNamespace,
+                $"{nameof(Attach_WithNamespaceToDirectory_SaveScreenshotToSubdirectory)}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            Assume.That(path, Does.Not.Exist);
+
+            // Take screenshot after running the test.
+        }
+
+        [Test, Order(1)]
+        public void Attach_WithNamespaceToDirectory_SaveScreenshotToSubdirectory_ExistFile()
+        {
+            var path = Path.Combine(
+                _defaultOutputDirectory,
+                SubdirectoryFromNamespace,
+                $"{nameof(Attach_WithNamespaceToDirectory_SaveScreenshotToSubdirectory)}.png");
+            Assert.That(new FileInfo(path), Has.Length.GreaterThan(FileSizeThreshold));
         }
     }
 }
