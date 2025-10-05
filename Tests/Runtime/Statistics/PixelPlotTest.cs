@@ -106,7 +106,7 @@ namespace TestHelper.Statistics
         [Test]
         public void WriteToFile_NoArguments_WrittenToDefaultFilePath()
         {
-            var path = TemporaryFileHelper.CreateTemporaryFilePath(
+            var path = TemporaryFileHelper.CreatePath(
                 baseDirectory: CommandLineArgs.GetStatisticsDirectory(),
                 extension: "png");
 
@@ -120,7 +120,7 @@ namespace TestHelper.Statistics
         [Test]
         public void WriteToFile_WithDirectory_WrittenToSpecifiedPath()
         {
-            var path = TemporaryFileHelper.CreateTemporaryFilePath(extension: "png");
+            var path = TemporaryFileHelper.CreatePath(extension: "png");
 
             var sut = new PixelPlot<int>();
             sut.Plot(new int[] { 0, 1, 2, 3 }, size: 4, min: 0, max: 3);

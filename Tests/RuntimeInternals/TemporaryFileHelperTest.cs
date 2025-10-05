@@ -17,54 +17,54 @@ namespace TestHelper.RuntimeInternals
             nameof(TemporaryFileHelperTest);
 
         [Test]
-        public void CreateTemporaryFilePath_WithoutBaseDirectory_UseTemporaryCachePath()
+        public void CreatePath_WithoutBaseDirectory_UseTemporaryCachePath()
         {
-            var actual = TemporaryFileHelper.CreateTemporaryFilePath();
+            var actual = TemporaryFileHelper.CreatePath();
             var expected = Path.Combine(
                 Application.temporaryCachePath,
-                nameof(CreateTemporaryFilePath_WithoutBaseDirectory_UseTemporaryCachePath));
+                nameof(CreatePath_WithoutBaseDirectory_UseTemporaryCachePath));
             Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
-        public void CreateTemporaryFilePath_WithBaseDirectory_UseSpecifyDirectory()
+        public void CreatePath_WithBaseDirectory_UseSpecifyDirectory()
         {
             var baseDirectory = Path.Combine(Application.temporaryCachePath, nameof(TemporaryFileHelperTest));
 
-            var actual = TemporaryFileHelper.CreateTemporaryFilePath(baseDirectory: baseDirectory);
+            var actual = TemporaryFileHelper.CreatePath(baseDirectory: baseDirectory);
             var expected = Path.Combine(
                 baseDirectory,
-                nameof(CreateTemporaryFilePath_WithBaseDirectory_UseSpecifyDirectory));
+                nameof(CreatePath_WithBaseDirectory_UseSpecifyDirectory));
             Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
-        public void CreateTemporaryFilePath_WithExtension_UseExtension()
+        public void CreatePath_WithExtension_UseExtension()
         {
-            var actual = TemporaryFileHelper.CreateTemporaryFilePath(extension: "txt");
+            var actual = TemporaryFileHelper.CreatePath(extension: "txt");
             Assert.That(actual, Does.EndWith(".txt"));
         }
 
         [Test]
-        public void CreateTemporaryFilePath_WithExtensionAndDot_UseExtension()
+        public void CreatePath_WithExtensionAndDot_UseExtension()
         {
-            var actual = TemporaryFileHelper.CreateTemporaryFilePath(extension: ".png");
+            var actual = TemporaryFileHelper.CreatePath(extension: ".png");
             Assert.That(actual, Does.EndWith(".png"));
         }
 
         [Test]
-        public void CreateTemporaryFilePath_WithNamespaceToDirectory_IncludesSubdirectory()
+        public void CreatePath_WithNamespaceToDirectory_IncludesSubdirectory()
         {
-            var actual = TemporaryFileHelper.CreateTemporaryFilePath(namespaceToDirectory: true);
+            var actual = TemporaryFileHelper.CreatePath(namespaceToDirectory: true);
             var expected = Path.Combine(
                 Application.temporaryCachePath,
                 SubdirectoryFromNamespace,
-                nameof(CreateTemporaryFilePath_WithNamespaceToDirectory_IncludesSubdirectory));
+                nameof(CreatePath_WithNamespaceToDirectory_IncludesSubdirectory));
             Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
-        public void CreateTemporaryFilePath_WithCreateDirectory_DirectoryIsCreated()
+        public void CreatePath_WithCreateDirectory_DirectoryIsCreated()
         {
             var baseDirectory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
             if (Directory.Exists(baseDirectory))
@@ -74,12 +74,12 @@ namespace TestHelper.RuntimeInternals
 
             Assume.That(baseDirectory, Does.Not.Exist);
 
-            TemporaryFileHelper.CreateTemporaryFilePath(baseDirectory: baseDirectory, createDirectory: true);
+            TemporaryFileHelper.CreatePath(baseDirectory: baseDirectory, createDirectory: true);
             Assert.That(baseDirectory, Does.Exist.IgnoreFiles);
         }
 
         [Test]
-        public void CreateTemporaryFilePath_WithoutCreateDirectory_DirectoryIsNotCreated()
+        public void CreatePath_WithoutCreateDirectory_DirectoryIsNotCreated()
         {
             var baseDirectory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
             if (Directory.Exists(baseDirectory))
@@ -89,44 +89,44 @@ namespace TestHelper.RuntimeInternals
 
             Assume.That(baseDirectory, Does.Not.Exist);
 
-            TemporaryFileHelper.CreateTemporaryFilePath(baseDirectory: baseDirectory, createDirectory: false);
+            TemporaryFileHelper.CreatePath(baseDirectory: baseDirectory, createDirectory: false);
             Assert.That(baseDirectory, Does.Not.Exist);
         }
 
         [Test]
-        public void CreateTemporaryFilePath_WithDeleteIfExists_FileIsDeleted()
+        public void CreatePath_WithDeleteIfExists_FileIsDeleted()
         {
             var path = Path.Combine(
                 Application.temporaryCachePath,
-                nameof(CreateTemporaryFilePath_WithDeleteIfExists_FileIsDeleted));
+                nameof(CreatePath_WithDeleteIfExists_FileIsDeleted));
             File.WriteAllText(path, "test");
             Assume.That(path, Does.Exist);
 
-            TemporaryFileHelper.CreateTemporaryFilePath(deleteIfExists: true);
+            TemporaryFileHelper.CreatePath(deleteIfExists: true);
             Assert.That(path, Does.Not.Exist);
         }
 
         [Test]
-        public void CreateTemporaryFilePath_WithoutDeleteIfExists_FileIsNotDeleted()
+        public void CreatePath_WithoutDeleteIfExists_FileIsNotDeleted()
         {
             var path = Path.Combine(
                 Application.temporaryCachePath,
-                nameof(CreateTemporaryFilePath_WithoutDeleteIfExists_FileIsNotDeleted));
+                nameof(CreatePath_WithoutDeleteIfExists_FileIsNotDeleted));
             File.WriteAllText(path, "test");
             Assume.That(path, Does.Exist);
 
-            TemporaryFileHelper.CreateTemporaryFilePath(deleteIfExists: false);
+            TemporaryFileHelper.CreatePath(deleteIfExists: false);
             Assert.That(path, Does.Exist);
         }
 
         [TestCase(2, 3.45f, "string")]
-        public void CreateTemporaryFilePath_Parameterized_ReplaceSpecialCharacters(int arg1, float arg2, string arg3)
+        public void CreatePath_Parameterized_ReplaceSpecialCharacters(int arg1, float arg2, string arg3)
         {
-            var actual = TemporaryFileHelper.CreateTemporaryFilePath();
+            var actual = TemporaryFileHelper.CreatePath();
             var arg2String = arg2.ToString(CultureInfo.InvariantCulture).Replace('.', '-') + "f";
             var expected = Path.Combine(
                 Application.temporaryCachePath,
-                $"{nameof(CreateTemporaryFilePath_Parameterized_ReplaceSpecialCharacters)}_{arg1}-{arg2String}-{arg3}_");
+                $"{nameof(CreatePath_Parameterized_ReplaceSpecialCharacters)}_{arg1}-{arg2String}-{arg3}_");
             Assert.That(actual, Is.EqualTo(expected));
         }
     }
