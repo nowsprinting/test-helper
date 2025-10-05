@@ -1,13 +1,10 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-#if UNITY_INCLUDE_TESTS
-using NUnit.Framework;
-#endif
 
 namespace TestHelper.RuntimeInternals
 {
@@ -17,24 +14,6 @@ namespace TestHelper.RuntimeInternals
     /// </summary>
     public static class ScreenshotHelper
     {
-        private static string DefaultDirectoryPath => CommandLineArgs.GetScreenshotDirectory();
-
-        internal static string DefaultFilename(string callerMemberName)
-        {
-#if UNITY_INCLUDE_TESTS
-            if (TestContext.CurrentTestExecutionContext != null)
-            {
-                return TestContext.CurrentTestExecutionContext.CurrentTest.Name
-                    .Replace('(', '_')
-                    .Replace(')', '_')
-                    .Replace(',', '-')
-                    .Replace("\"", "");
-                // Note: Same as the file name created under ActualImages of the Graphics Tests Framework package.
-            }
-#endif
-            return callerMemberName;
-        }
-
         /// <summary>
         /// Take a screenshot and save it to file.
         /// Default save path is <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" + <c>CurrentTest.Name</c> + ".png".
@@ -81,19 +60,24 @@ namespace TestHelper.RuntimeInternals
             }
             else
             {
-                directory = DefaultDirectoryPath; // Not apply specific directory when running on player
+                directory = CommandLineArgs.GetScreenshotDirectory();
             }
 
-            Directory.CreateDirectory(directory);
-
+            string path;
             if (filename == null)
             {
-                filename = DefaultFilename(callerMemberName);
+                path = TemporaryFileHelper.CreateTemporaryFilePath(
+                    baseDirectory: directory,
+                    extension: "png",
+                    callerMemberName: callerMemberName);
             }
-
-            if (!filename.EndsWith(".png"))
+            else
             {
-                filename += ".png";
+                path = Path.Combine(directory, filename);
+                if (!path.EndsWith(".png"))
+                {
+                    path += ".png";
+                }
             }
 
             yield return new WaitForEndOfFrame(); // Required to take screenshots
@@ -102,7 +86,6 @@ namespace TestHelper.RuntimeInternals
                 ? ScreenCapture.CaptureScreenshotAsTexture(superSize)
                 : ScreenCapture.CaptureScreenshotAsTexture(stereoCaptureMode);
 
-            var path = Path.Combine(directory, filename);
             var bytes = texture.EncodeToPNG();
             File.WriteAllBytes(path, bytes);
 
