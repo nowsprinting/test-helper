@@ -19,7 +19,7 @@ namespace TestHelper.Editor.JUnitXml
         {
             var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
             var result = new FakeTestResultAdaptor(nunitXmlPath);
-            var path = TemporaryFileHelper.CreateTemporaryFilePath(extension: "xml", namespaceToDirectory: true);
+            var path = TemporaryFileHelper.CreatePath(extension: "xml", namespaceToDirectory: true);
             JUnitXmlWriter.WriteTo(result, path);
 
             Assume.That(path, Does.Exist);
@@ -34,7 +34,7 @@ namespace TestHelper.Editor.JUnitXml
         {
             var nunitXmlPath = Path.Combine(TestResourcesPath, "nunit3.xml");
             var result = new FakeTestResultAdaptor(nunitXmlPath);
-            var path = TemporaryFileHelper.CreateTemporaryFilePath(extension: "xml", namespaceToDirectory: true);
+            var path = TemporaryFileHelper.CreatePath(extension: "xml", namespaceToDirectory: true);
 
             // Destroy the output destination file.
             File.Copy(nunitXmlPath, path, true);

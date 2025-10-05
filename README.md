@@ -697,7 +697,7 @@ public class MyTestClass
 
 #### TemporaryFileHelper
 
-The `TemporaryFileHelper.CreateTemporaryFilePath` method provides utilities for creating a temporary file path in running tests.  
+The `TemporaryFileHelper.CreatePath` method provides utilities for creating a temporary file path in running tests.  
 By default, the path is named by the test name in the directory pointed to by [Application.temporaryCachePath](https://docs.unity3d.com/ScriptReference/Application-temporaryCachePath.html).
 
 

@@ -66,7 +66,7 @@ namespace TestHelper.RuntimeInternals
             string path;
             if (filename == null)
             {
-                path = TemporaryFileHelper.CreateTemporaryFilePath(
+                path = TemporaryFileHelper.CreatePath(
                     baseDirectory: directory,
                     extension: "png",
                     callerMemberName: callerMemberName);

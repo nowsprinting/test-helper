@@ -23,7 +23,7 @@ namespace TestHelper.RuntimeInternals
         /// <param name="deleteIfExists">Delete existing file if true.</param>
         /// <param name="callerMemberName">The name of the calling method to use when called outside a test context.</param>
         /// <returns></returns>
-        public static string CreateTemporaryFilePath(
+        public static string CreatePath(
             string baseDirectory = null,
             string extension = null,
             bool namespaceToDirectory = false,
