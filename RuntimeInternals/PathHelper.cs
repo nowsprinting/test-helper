@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace TestHelper.RuntimeInternals
 {
-    public static class TemporaryFileHelper
+    public static class PathHelper
     {
         /// <summary>
         /// Creates a temporary file path.
@@ -20,22 +20,37 @@ namespace TestHelper.RuntimeInternals
         /// Replace included special characters in parameterized tests.
         /// Adds repeat counts by command-line arguments to the filename (required test-framework v1.3.5 or newer).
         /// </summary>
-        /// <param name="baseDirectory">If omitted, use <see cref="Application.temporaryCachePath"/>.</param>
         /// <param name="extension">File extension if necessary.</param>
         /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true.</param>
         /// <param name="createDirectory">Create directory if true.</param>
         /// <param name="deleteIfExists">Delete existing file if true.</param>
         /// <param name="callerMemberName">The name of the calling method to use when called outside a test context.</param>
         /// <returns>Temporary file path in running tests.</returns>
-        public static string CreatePath(
-            string baseDirectory = null,
+        public static string CreateTemporaryFilePath(
             string extension = null,
             bool namespaceToDirectory = false,
             bool createDirectory = true,
             bool deleteIfExists = true,
             [CallerMemberName] string callerMemberName = null)
         {
-            var directory = baseDirectory != null ? Path.GetFullPath(baseDirectory) : Application.temporaryCachePath;
+            return CreateFilePath(
+                baseDirectory: Application.temporaryCachePath,
+                extension: extension,
+                namespaceToDirectory: namespaceToDirectory,
+                createDirectory: createDirectory,
+                deleteIfExists: deleteIfExists,
+                callerMemberName: callerMemberName);
+        }
+
+        internal static string CreateFilePath(
+            string baseDirectory,
+            string extension = null,
+            bool namespaceToDirectory = false,
+            bool createDirectory = true,
+            bool deleteIfExists = true,
+            [CallerMemberName] string callerMemberName = null)
+        {
+            var directory = Path.GetFullPath(baseDirectory);
 
 #if UNITY_INCLUDE_TESTS
             if (namespaceToDirectory)
