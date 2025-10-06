@@ -19,6 +19,12 @@
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
-    "versionDefines": [],
+    "versionDefines": [
+      {
+        "name": "jp.co.cyberagent.instant-replay",
+        "expression": "1.0.0",
+        "define": "ENABLE_INSTANT_REPLAY"
+      }
+    ],
     "noEngineReferences": false
 }
