@@ -274,6 +274,41 @@ public class MyTestClass
 > If you want to load during `SetUp` and testing, use [BuildSceneAttribute](#buildscene) and [SceneManagerHelper](#scenemanagerhelper) method instead.
 
 
+#### RecordVideo (optional)
+
+`RecordVideoAttribute` is an NUnit test attribute class for recording a video while running the test.
+
+Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.mp4".
+You can specify the save directory by arguments.
+Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
+
+This attribute can be placed on the test method only.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [RecordVideo]
+    public void MyTestMethod()
+    {
+        // Recording a video while running the test.
+}
+```
+
+> [!IMPORTANT]  
+> `RecordVideoAttribute` is an optional functionality. To use it, you need to install the [Instant Replay for Unity](https://github.com/CyberAgentGameEntertainment/InstantReplay) package v1.0.0 or newer separately via the Package Manager window.
+
+> [!WARNING]  
+> `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
+
+> [!WARNING]  
+> Do not place on Edit Mode tests.
+
+
 #### TakeScreenshot
 
 `TakeScreenshotAttribute` is an NUnit test attribute class to take a screenshot and save it to a file after running the test.
@@ -301,10 +336,10 @@ public class MyTestClass
 ```
 
 > [!WARNING]  
-> Do not place on Edit Mode tests.
+> `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
 
 > [!WARNING]  
-> `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
+> Do not place on Edit Mode tests.
 
 > [!NOTE]  
 > If you want to take screenshots at any time, use the [ScreenshotHelper](#screenshothelper) class.
@@ -682,17 +717,17 @@ public class MyTestClass
 ```
 
 > [!WARNING]  
-> Do not place on Edit Mode tests.
-> And must be called from main thread.
+> `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
 
 > [!WARNING]  
-> `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
+> Do not place on Edit Mode tests.
+> And must be called from main thread.
 
 > [!WARNING]  
 > Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
 
 > [!WARNING]  
-> `UniTask` is required to be used from the async method. And also needs coroutineRunner (any MonoBehaviour) because TakeScreenshot method uses `WaitForEndOfFrame` inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+> `UniTask` is required to be used from the async method. And also needs coroutineRunner (any `MonoBehaviour`) because TakeScreenshot method uses `WaitForEndOfFrame` inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
 
 #### PathHelper

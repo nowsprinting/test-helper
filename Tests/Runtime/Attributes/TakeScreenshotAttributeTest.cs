@@ -27,16 +27,14 @@ namespace TestHelper.Attributes
             nameof(Attributes) + Path.DirectorySeparatorChar +
             nameof(TakeScreenshotAttributeTest);
 
-        private Text _text;
-
         [SetUp]
         public void SetUp()
         {
             var textObject = GameObject.Find("Text");
             Assume.That(textObject, Is.Not.Null);
 
-            _text = textObject.GetComponent<Text>();
-            _text.text = TestContext.CurrentContext.Test.Name;
+            var text = textObject.GetComponent<Text>();
+            text.text = TestContext.CurrentContext.Test.Name;
         }
 
         [Test, Order(0)]

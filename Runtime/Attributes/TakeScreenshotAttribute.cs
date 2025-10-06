@@ -46,7 +46,7 @@ namespace TestHelper.Attributes
         /// Using caller method name when run in runtime context.</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
-        /// <param name="gizmos">True: show Gizmos on <c>GameView</c>.</param>
+        /// <param name="gizmos">Show Gizmos on <c>GameView</c> if true.</param>
         /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true.</param>
         public TakeScreenshotAttribute(
             string directory = null,
