@@ -68,6 +68,8 @@ namespace TestHelper.RuntimeInternals
                 directory = CommandLineArgs.GetScreenshotDirectory();
             }
 
+            Directory.CreateDirectory(directory);
+
             string path;
             if (filename == null)
             {
