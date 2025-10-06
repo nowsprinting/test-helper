@@ -22,6 +22,7 @@ namespace TestHelper.Attributes
         private readonly int _superSize;
         private readonly ScreenCapture.StereoScreenCaptureMode _stereoCaptureMode;
         private readonly bool _gizmos;
+        private readonly bool _namespaceToDirectory;
 
         /// <summary>
         /// Take a screenshot and save it to file after running this test.
@@ -46,18 +47,21 @@ namespace TestHelper.Attributes
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
         /// <param name="gizmos">True: show Gizmos on <c>GameView</c>.</param>
+        /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true.</param>
         public TakeScreenshotAttribute(
             string directory = null,
             string filename = null,
             int superSize = 1,
             ScreenCapture.StereoScreenCaptureMode stereoCaptureMode = ScreenCapture.StereoScreenCaptureMode.LeftEye,
-            bool gizmos = false)
+            bool gizmos = false,
+            bool namespaceToDirectory = false)
         {
             _directory = directory;
             _filename = filename;
             _superSize = superSize;
             _stereoCaptureMode = stereoCaptureMode;
             _gizmos = gizmos;
+            _namespaceToDirectory = namespaceToDirectory;
         }
 
         /// <inheritdoc />
@@ -76,7 +80,8 @@ namespace TestHelper.Attributes
                 GameViewControlHelper.SetGizmos(true);
             }
 
-            yield return ScreenshotHelper.TakeScreenshot(_directory, _filename, _superSize, _stereoCaptureMode);
+            yield return ScreenshotHelper.TakeScreenshot(_directory, _filename, _superSize, _stereoCaptureMode, false,
+                namespaceToDirectory: _namespaceToDirectory);
 
             if (_gizmos)
             {

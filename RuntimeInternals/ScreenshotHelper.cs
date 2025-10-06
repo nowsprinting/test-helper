@@ -5,6 +5,9 @@ using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+#if UNITY_INCLUDE_TESTS
+using NUnit.Framework;
+#endif
 
 namespace TestHelper.RuntimeInternals
 {
@@ -39,12 +42,14 @@ namespace TestHelper.RuntimeInternals
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
         /// <param name="logFilepath">Output filename to Debug.Log</param>
+        /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true.</param>
         public static IEnumerator TakeScreenshot(
             string directory = null,
             string filename = null,
             int superSize = 1,
             ScreenCapture.StereoScreenCaptureMode stereoCaptureMode = ScreenCapture.StereoScreenCaptureMode.LeftEye,
             bool logFilepath = true,
+            bool namespaceToDirectory = false,
             // ReSharper disable once InvalidXmlDocComment
             [CallerMemberName] string callerMemberName = null)
         {
@@ -63,12 +68,15 @@ namespace TestHelper.RuntimeInternals
                 directory = CommandLineArgs.GetScreenshotDirectory();
             }
 
+            Directory.CreateDirectory(directory);
+
             string path;
             if (filename == null)
             {
                 path = TemporaryFileHelper.CreatePath(
                     baseDirectory: directory,
                     extension: "png",
+                    namespaceToDirectory: namespaceToDirectory,
                     callerMemberName: callerMemberName);
             }
             else
@@ -93,6 +101,14 @@ namespace TestHelper.RuntimeInternals
             {
                 Debug.Log($"Save screenshot to {path}");
             }
+
+#if UNITY_INCLUDE_TESTS
+            if (TestContext.CurrentContext != null)
+            {
+                var properties = TestContext.CurrentContext.Test.Properties;
+                properties.Add("Screenshot", path);
+            }
+#endif
         }
     }
 }
