@@ -20,9 +20,8 @@ Required Unity 2019 LTS or later.
 
 It has the following benefits:
 
-- Scenes that are **NOT** in "Scenes in Build" can be specified.
-- The scene path can be specified as a relative path from the test class file.
-- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- Scene that are **NOT** in "Scenes in Build" can be specified.
+- The scene file path can be specified as a relative path from the test class file.
 
 This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
@@ -34,15 +33,22 @@ Usage:
 public class MyTestClass
 {
     [Test]
-    [BuildScene("../../Scenes/SampleScene.unity")]
+    [BuildScene("Assets/Path/To/Tests/Scenes/TestScene.unity")]
     public void MyTestMethod()
     {
         // Setup before load scene
 
         // Load scene
-        await SceneManagerHelper.LoadSceneAsync("../../Scenes/SampleScene.unity");
+        await SceneManagerHelper.LoadSceneAsync("Assets/Path/To/Tests/Scenes/TestScene.unity");
 
         // Excercise the test
+    }
+
+    [Test]
+    [BuildScene("../../Scenes/SampleScene.unity")]
+    public void UsingRelativePath()
+    {
+        // snip
     }
 }
 ```
@@ -232,9 +238,8 @@ public class MyTestClass
 It has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
-- Scenes that are **NOT** in "Scenes in Build" can be specified.
-- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
-- The scene path can be specified as a relative path from the test class file.
+- Scene that are **NOT** in "Scenes in Build" can be specified.
+- The scene file path can be specified as a relative path from the test class file.
 
 This attribute can be placed on the test method only.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
@@ -246,18 +251,11 @@ Usage:
 public class MyTestClass
 {
     [Test]
-    [LoadScene("Assets/MyTests/Scenes/TestScene.unity")]
+    [LoadScene("Assets/Path/To/Tests/Scenes/TestScene.unity")]
     public void MyTestMethod()
     {
         var cube = GameObject.Find("Cube in TestScene");
         Assert.That(cube, Is.Not.Null);
-    }
-
-    [Test]
-    [LoadScene("Packages/YourPackageName/**/SampleScene.unity")]
-    public void UsingGlobPattern()
-    {
-        // snip
     }
 
     [Test]
@@ -659,8 +657,7 @@ The classes in the `TestHelper.RuntimeInternals` assembly can be used from the r
 It has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
-- The scene path can be specified as a relative path from the test class file.
-- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- The scene file path can be specified as a relative path from the test class file.
 
 Usage:
 
@@ -674,8 +671,19 @@ public class MyTestClass
         // Setup before load scene
 
         // Load scene
+        await SceneManagerHelper.LoadSceneAsync("Assets/Path/To/Tests/Scenes/TestScene.unity");
+
+        // Excercise the test
+    }
+
+    [Test]
+    public void UsingRelativePath()
+    {
+        // Setup before load scene
+
+        // Load scene
         await SceneManagerHelper.LoadSceneAsync("../../Scenes/SampleScene.unity");
-        
+
         // Excercise the test
     }
 }

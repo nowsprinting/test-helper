@@ -20,24 +20,24 @@ namespace TestHelper.Attributes
 
         /// <summary>
         /// Build a scene before running this test on the player.
-        ///
+        /// <p/>
         /// This attribute has the following benefits:
         /// <list type="bullet">
-        ///     <item>Scenes that are **NOT** in "Scenes in Build" can be specified.</item>
-        ///     <item>The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.</item>
-        ///     <item>The scene path can be specified as a relative path from the test class file.</item>
+        ///     <item>Scene that are **NOT** in "Scenes in Build" can be specified.</item>
+        ///     <item>The scene file path can be specified as a relative path from the test class file.</item>
         /// </list>
         /// </summary>
         /// <param name="path">Scene file path (optional).
-        /// The path starts with `Assets/` or `Packages/` or `.`.
-        /// And package name using `name` instead of `displayName`, when scenes in the package
+        /// The path must starts with `Assets/` or `Packages/` or `.`.
+        /// And package name using `name` instead of `displayName`, when scene file in the package
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
         /// If the value is omitted, the scene name will be derived from the test file name
-        /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`).</param>
+        /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`).
+        /// </param>
+        /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>
         /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
         /// </remarks>
-        [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
         public BuildSceneAttribute(string path = null, [CallerFilePath] string callerFilePath = null)
         {
             ScenePath = ResolveScenePath(path, callerFilePath);
