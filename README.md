@@ -231,6 +231,54 @@ public class MyTestClass
 ```
 
 
+#### LoadAsset
+
+`LoadAssetAttribute` is a NUnit test attribute class that loads an asset before running the test.
+
+It has the following benefits:
+
+- The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
+- The asset file path can be specified as a relative path from the test class file.
+
+This attribute can be placed on the field only.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [LoadAsset("Assets/Path/To/Tests/Prefabs/Cube.prefab")]
+    private GameObject _prefab;
+
+    [LoadAsset("../../Prefabs/Sphere.prefab")]
+    private GameObject _relative;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
+    {
+        LoadAssetAttribute.LoadAssets(this);
+    }
+
+    [Test]
+    public void MyTestMethod()
+    {
+        Assume.That(_prefab, Is.Not.Null);  // already loaded and set to the field.
+    }
+}
+```
+
+> [!IMPORTANT]  
+> Tests that use this attribute must call the `LoadAssets` static method from the `OneTimeSetUp`.
+
+> [!NOTE]  
+> Properties are not supported. You can place attributes in fields by specifying `[field: LoadAsset]`.
+
+> [!NOTE]  
+> The Resources folder copied to run tests on the player is deleted after the run finishes.
+> However, if post-processing is not performed, such as if the Unity editor crashes, the "Assets/com.nowsprinting.test-helper/Resources" folder will remain.
+> Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
+
 #### LoadScene
 
 `LoadSceneAttribute` is a NUnit test attribute class that loads a scene before running the test.
