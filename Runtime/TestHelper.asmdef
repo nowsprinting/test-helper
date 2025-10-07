@@ -4,7 +4,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "TestHelper.RuntimeInternals"
+        "TestHelper.RuntimeInternals",
+        "InstantReplay",
+        "UniEnc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -22,6 +24,11 @@
             "name": "com.unity.test-framework",
             "expression": "",
             "define": "UNITY_TESTS_FRAMEWORK"
+        },
+        {
+            "name": "jp.co.cyberagent.instant-replay",
+            "expression": "1.0.0",
+            "define": "ENABLE_INSTANT_REPLAY"
         }
     ],
     "noEngineReferences": false
