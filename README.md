@@ -296,6 +296,7 @@ public class MyTestClass
     public void MyTestMethod()
     {
         // Recording a video while running the test.
+    }
 }
 ```
 
