@@ -320,6 +320,9 @@ public class MyTestClass
 > This process runs after `OneTimeSetUp` and before `SetUp`.
 > If you want to load during `SetUp` and testing, use [BuildSceneAttribute](#buildscene) and [SceneManagerHelper](#scenemanagerhelper) method instead.
 
+> [!NOTE]  
+> If you use the Raycaster in your tests, you must delay one frame after loading the scene.
+
 
 #### RecordVideo (optional)
 
