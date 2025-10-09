@@ -14,13 +14,13 @@ namespace TestHelper.Attributes
         [LoadAsset("Packages/com.nowsprinting.test-helper/Tests/Prefabs/Cube.prefab")]
         private GameObject _prefab;
 
-        [LoadAsset("../../Prefabs/Cube.prefab")]
+        [LoadAsset("../../Prefabs/Sphere.prefab")]
         private GameObject _relative;
 
-        [LoadAsset("../../Prefabs/Cube.prefab")]
+        [LoadAsset("../../Prefabs/Capsule.prefab")]
         private static GameObject s_static;
 
-        [field: LoadAsset("../../Prefabs/Cube.prefab")]
+        [field: LoadAsset("../../Prefabs/Cylinder.prefab")]
         [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
         private GameObject Prefab { get; }
 
@@ -41,21 +41,21 @@ namespace TestHelper.Attributes
         public void LoadAssets_FieldWithRelativePath_SetAssetField()
         {
             Assume.That(_relative, Is.Not.Null);
-            Assert.That(_relative.name, Is.EqualTo("Cube"));
+            Assert.That(_relative.name, Is.EqualTo("Sphere"));
         }
 
         [Test]
         public void LoadAssets_StaticField_SetAssetField()
         {
             Assume.That(s_static, Is.Not.Null);
-            Assert.That(s_static.name, Is.EqualTo("Cube"));
+            Assert.That(s_static.name, Is.EqualTo("Capsule"));
         }
 
         [Test]
         public void LoadAssets_Property_SetAssetField()
         {
             Assume.That(Prefab, Is.Not.Null);
-            Assert.That(Prefab.name, Is.EqualTo("Cube"));
+            Assert.That(Prefab.name, Is.EqualTo("Cylinder"));
         }
 
         #region internal methods tests
