@@ -37,7 +37,7 @@ namespace TestHelper.Attributes
         /// </summary>
         /// <param name="camera">true: create main camera object in new scene</param>
         /// <param name="light">true: create directional light object in new scene</param>
-        /// <param name="unloadOthers">true: unload other scenes before running tests</param>
+        /// <param name="unloadOthers">true: unload other scenes before running the test</param>
         /// <remarks>
         /// This process runs after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
         /// </remarks>
