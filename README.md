@@ -782,10 +782,10 @@ public class MyTestClass
 > And must be called from main thread.
 
 > [!WARNING]  
-> Files with the same name will be overwritten. Please specify filename argument when calling over twice in one method.
-
-> [!WARNING]  
 > `UniTask` is required to be used from the async method. And also needs coroutineRunner (any `MonoBehaviour`) because TakeScreenshot method uses `WaitForEndOfFrame` inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+
+> [!NOTE]  
+> If you take multiple screenshots in one method, a counter is inserted to prevent overwriting.
 
 
 #### PathHelper
