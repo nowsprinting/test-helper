@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -17,7 +17,7 @@ using UnityEngine;
 namespace TestHelper.Editor
 {
     /// <summary>
-    /// Temporarily build scenes specified by <c>LoadSceneAttribute</c> when running play mode tests on standalone player.
+    /// Temporarily build scenes specified by <c>LoadSceneAttribute</c> when running play mode tests on player.
     /// </summary>
     public class TemporaryBuildScenesUsingInTest : ITestPlayerBuildModifier
     {
@@ -82,7 +82,8 @@ namespace TestHelper.Editor
         }
 
         /// <summary>
-        /// Add temporary scenes to build when running play mode tests on standalone player.
+        /// Temporarily build scenes specified by <c>LoadSceneAttribute</c> when running play mode tests on player.
+        /// And temporarily copy asset files specified by <c>LoadAssetAttribute</c> to the Resources folder.
         /// </summary>
         /// <remarks>
         /// Required Unity Test Framework package v1.1.13 or higher is to use this script.
@@ -90,6 +91,10 @@ namespace TestHelper.Editor
         /// </remarks>
         public BuildPlayerOptions ModifyOptions(BuildPlayerOptions playerOptions)
         {
+            // Temporarily copy asset files specified by LoadAssetAttribute to the Resources folder
+            TemporaryCopyAssetsForPlayer.CopyAssetFiles();
+
+            // Temporarily build scenes specified by LoadSceneAttribute
             var scenesInBuild = new List<string>(playerOptions.scenes);
             foreach (var scenePath in GetScenesUsingInTest())
             {

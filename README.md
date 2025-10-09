@@ -21,8 +21,7 @@ Required Unity 2019 LTS or later.
 It has the following benefits:
 
 - Scenes that are **NOT** in "Scenes in Build" can be specified.
-- The scene path can be specified as a relative path from the test class file.
-- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- The scene file path can be specified as a relative path from the test class file.
 
 This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
@@ -34,15 +33,22 @@ Usage:
 public class MyTestClass
 {
     [Test]
-    [BuildScene("../../Scenes/SampleScene.unity")]
+    [BuildScene("Assets/Path/To/Tests/Scenes/TestScene.unity")]
     public void MyTestMethod()
     {
         // Setup before load scene
 
         // Load scene
-        await SceneManagerHelper.LoadSceneAsync("../../Scenes/SampleScene.unity");
+        await SceneManagerHelper.LoadSceneAsync("Assets/Path/To/Tests/Scenes/TestScene.unity");
 
         // Excercise the test
+    }
+
+    [Test]
+    [BuildScene("../../Scenes/SampleScene.unity")]
+    public void UsingRelativePath()
+    {
+        // snip
     }
 }
 ```
@@ -225,6 +231,55 @@ public class MyTestClass
 ```
 
 
+#### LoadAsset
+
+`LoadAssetAttribute` is a NUnit test attribute class that loads an asset before running the test.
+
+It has the following benefits:
+
+- The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
+- The asset file path can be specified as a relative path from the test class file.
+
+This attribute can be placed on the field only.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [LoadAsset("Assets/Path/To/Tests/Prefabs/Cube.prefab")]
+    private GameObject _prefab;
+
+    [LoadAsset("../../Prefabs/Sphere.prefab")]
+    private GameObject _relative;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
+    {
+        LoadAssetAttribute.LoadAssets(this);    // Must call this method to load assets.
+    }
+
+    [Test]
+    public void MyTestMethod()
+    {
+        Assume.That(_prefab, Is.Not.Null);  // Already loaded and set to the field.
+    }
+}
+```
+
+> [!IMPORTANT]  
+> Tests that use this attribute must call the `LoadAssets` static method from the `OneTimeSetUp`.
+
+> [!NOTE]  
+> Properties are not supported. You can place attributes in fields by specifying `[field: LoadAsset]`.
+
+> [!NOTE]  
+> The Resources folder copied to run tests on the player is deleted after the run finishes.
+> However, if post-processing is not performed, such as if the Unity editor crashes, the "Assets/com.nowsprinting.test-helper/Resources" folder will remain.
+> Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
+
+
 #### LoadScene
 
 `LoadSceneAttribute` is a NUnit test attribute class that loads a scene before running the test.
@@ -233,8 +288,7 @@ It has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
 - Scenes that are **NOT** in "Scenes in Build" can be specified.
-- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
-- The scene path can be specified as a relative path from the test class file.
+- The scene file path can be specified as a relative path from the test class file.
 
 This attribute can be placed on the test method only.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
@@ -246,18 +300,11 @@ Usage:
 public class MyTestClass
 {
     [Test]
-    [LoadScene("Assets/MyTests/Scenes/TestScene.unity")]
+    [LoadScene("Assets/Path/To/Tests/Scenes/TestScene.unity")]
     public void MyTestMethod()
     {
         var cube = GameObject.Find("Cube in TestScene");
         Assert.That(cube, Is.Not.Null);
-    }
-
-    [Test]
-    [LoadScene("Packages/YourPackageName/**/SampleScene.unity")]
-    public void UsingGlobPattern()
-    {
-        // snip
     }
 
     [Test]
@@ -659,8 +706,7 @@ The classes in the `TestHelper.RuntimeInternals` assembly can be used from the r
 It has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
-- The scene path can be specified as a relative path from the test class file.
-- The scene path can be specified by [glob](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. However, there are restrictions, top level and scene name cannot be omitted.
+- The scene file path can be specified as a relative path from the test class file.
 
 Usage:
 
@@ -674,8 +720,19 @@ public class MyTestClass
         // Setup before load scene
 
         // Load scene
+        await SceneManagerHelper.LoadSceneAsync("Assets/Path/To/Tests/Scenes/TestScene.unity");
+
+        // Excercise the test
+    }
+
+    [Test]
+    public void UsingRelativePath()
+    {
+        // Setup before load scene
+
+        // Load scene
         await SceneManagerHelper.LoadSceneAsync("../../Scenes/SampleScene.unity");
-        
+
         // Excercise the test
     }
 }

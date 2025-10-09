@@ -1,6 +1,7 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System.IO;
 using TestHelper.Editor.JUnitXml;
 using TestHelper.RuntimeInternals;
 using UnityEditor;
@@ -21,9 +22,7 @@ namespace TestHelper.Editor
             api.RegisterCallbacks(new TestRunnerCallbacks());
         }
 
-        /// <summary>
-        /// Not implemented.
-        /// </summary>
+        /// <inheritdoc />
         public void RunStarted(ITestAdaptor testsToRun)
         {
             GameViewResolutionSwitcher.ParseArgumentsAndSwitchIfNeeded();
@@ -36,6 +35,13 @@ namespace TestHelper.Editor
             if (path != null)
             {
                 JUnitXmlWriter.WriteTo(result, path);
+            }
+
+            // Delete temporary copied asset files for running play mode tests on player.
+            if (Directory.Exists(TemporaryCopyAssetsForPlayer.ResourcesRoot))
+            {
+                AssetDatabase.DeleteAsset(TemporaryCopyAssetsForPlayer.ResourcesRoot);
+                // Note: delete with .meta file.
             }
         }
 
