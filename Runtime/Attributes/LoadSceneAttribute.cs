@@ -19,10 +19,7 @@ namespace TestHelper.Attributes
     public class LoadSceneAttribute : BuildSceneAttribute, IOuterUnityTestAction
     {
         /// <summary>
-        /// Load a scene before running this test.
-        /// <p/>
-        /// This process runs after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
-        /// If you want to load during <c>SetUp</c> and testing, use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneAsync"/> instead.
+        /// Load a scene before running the test.
         /// <p/>
         /// This attribute has the following benefits:
         /// <list type="bullet">
@@ -40,6 +37,9 @@ namespace TestHelper.Attributes
         /// </param>
         /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>
+        /// This process runs after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
+        /// If you want to load during <c>SetUp</c> and testing, use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneAsync"/> instead.
+        /// <p/>
         /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
         /// </remarks>
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
