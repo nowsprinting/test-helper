@@ -28,8 +28,8 @@ namespace TestHelper.Attributes
         /// </list>
         /// </summary>
         /// <param name="path">Scene file path (optional).
-        /// The path must starts with `Assets/` or `Packages/` or `.`.
-        /// And package name using `name` instead of `displayName`, when scene file in the package
+        /// The path must start with `Assets/` or `Packages/` or `.`.
+        /// And package name using `name` instead of `displayName`, when scene file is in the package
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
         /// If the value is omitted, the scene name will be derived from the test file name
         /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`).

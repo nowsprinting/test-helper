@@ -32,8 +32,8 @@ namespace TestHelper.RuntimeInternals
         /// </list>
         /// </summary>
         /// <param name="path">Scene file path.
-        /// The path must starts with `Assets/` or `Packages/` or `.`.
-        /// And package name using `name` instead of `displayName`, when scene file in the package
+        /// The path must start with `Assets/` or `Packages/` or `.`.
+        /// And package name using `name` instead of `displayName`, when scene file is in the package
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
         /// </param>
         /// <param name="mode">See LoadSceneMode. Not used when called from Edit Mode tests</param>

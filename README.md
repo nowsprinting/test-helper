@@ -20,7 +20,7 @@ Required Unity 2019 LTS or later.
 
 It has the following benefits:
 
-- Scene that are **NOT** in "Scenes in Build" can be specified.
+- Scenes that are **NOT** in "Scenes in Build" can be specified.
 - The scene file path can be specified as a relative path from the test class file.
 
 This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
@@ -257,13 +257,13 @@ public class MyTestClass
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        LoadAssetAttribute.LoadAssets(this);
+        LoadAssetAttribute.LoadAssets(this);    // Must call this method to load assets.
     }
 
     [Test]
     public void MyTestMethod()
     {
-        Assume.That(_prefab, Is.Not.Null);  // already loaded and set to the field.
+        Assume.That(_prefab, Is.Not.Null);  // Already loaded and set to the field.
     }
 }
 ```
@@ -279,6 +279,7 @@ public class MyTestClass
 > However, if post-processing is not performed, such as if the Unity editor crashes, the "Assets/com.nowsprinting.test-helper/Resources" folder will remain.
 > Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
 
+
 #### LoadScene
 
 `LoadSceneAttribute` is a NUnit test attribute class that loads a scene before running the test.
@@ -286,7 +287,7 @@ public class MyTestClass
 It has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
-- Scene that are **NOT** in "Scenes in Build" can be specified.
+- Scenes that are **NOT** in "Scenes in Build" can be specified.
 - The scene file path can be specified as a relative path from the test class file.
 
 This attribute can be placed on the test method only.

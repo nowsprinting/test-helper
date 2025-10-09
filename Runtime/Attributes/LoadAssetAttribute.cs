@@ -28,8 +28,8 @@ namespace TestHelper.Attributes
         /// </list>
         /// </summary>
         /// <param name="path">Asset file path.
-        /// The path must starts with `Assets/` or `Packages/` or `.`.
-        /// And package name using `name` instead of `displayName`, when asset file in the package (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
+        /// The path must start with `Assets/` or `Packages/` or `.`.
+        /// And package name using `name` instead of `displayName`, when asset file is in the package (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
         /// </param>
         /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>
