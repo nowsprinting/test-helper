@@ -25,7 +25,11 @@ namespace TestHelper.Editor
         /// <inheritdoc />
         public void RunStarted(ITestAdaptor testsToRun)
         {
+            // Switch GameView resolution if command-line arguments are specified.
             GameViewResolutionSwitcher.ParseArgumentsAndSwitchIfNeeded();
+
+            // Reset the counter for creating temporary file paths.
+            PathHelper.ResetCounter();
         }
 
         /// <inheritdoc />

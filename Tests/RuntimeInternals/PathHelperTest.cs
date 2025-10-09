@@ -118,6 +118,40 @@ namespace TestHelper.RuntimeInternals
             Assert.That(actual, Is.EqualTo(expected));
         }
 
+        private int _repeatCounter;
+
+        [Test]
+        [Repeat(3)]
+        public void CreateTemporaryFilePath_Repeat_CounterInsertedIntoFilename()
+        {
+            var counter = _repeatCounter == 0 ? string.Empty : $"_{_repeatCounter}";
+            _repeatCounter++;
+
+            var actual = PathHelper.CreateTemporaryFilePath();
+
+            var expected = Path.Combine(
+                Application.temporaryCachePath,
+                nameof(CreateTemporaryFilePath_Repeat_CounterInsertedIntoFilename) + counter);
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        private int _repeatCounter2;
+
+        [Test]
+        [Repeat(3)]
+        public void CreateTemporaryFilePath_RepeatWithExtension_CounterInsertedIntoFilename()
+        {
+            var counter = _repeatCounter2 == 0 ? string.Empty : $"_{_repeatCounter2}";
+            _repeatCounter2++;
+
+            var actual = PathHelper.CreateTemporaryFilePath(extension: "txt");
+
+            var expected = Path.Combine(
+                Application.temporaryCachePath,
+                nameof(CreateTemporaryFilePath_RepeatWithExtension_CounterInsertedIntoFilename) + counter + ".txt");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
         #region Internal methods tests
 
         [Test]
