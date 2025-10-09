@@ -17,49 +17,6 @@ namespace TestHelper.RuntimeInternals
             nameof(PathHelperTest);
 
         [Test]
-        public void CreateFilePath_WithBaseDirectory_UseSpecifyDirectory()
-        {
-            var baseDirectory = Path.Combine(Application.temporaryCachePath, nameof(PathHelperTest));
-
-            var actual = PathHelper.CreateFilePath(baseDirectory: baseDirectory);
-            var expected = Path.Combine(
-                baseDirectory,
-                nameof(CreateFilePath_WithBaseDirectory_UseSpecifyDirectory));
-            Assert.That(actual, Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void CreateFilePath_WithCreateDirectory_DirectoryIsCreated()
-        {
-            var baseDirectory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
-            if (Directory.Exists(baseDirectory))
-            {
-                Directory.Delete(baseDirectory, recursive: true);
-            }
-
-            Assume.That(baseDirectory, Does.Not.Exist);
-
-            PathHelper.CreateFilePath(baseDirectory: baseDirectory, createDirectory: true);
-            Assert.That(baseDirectory, Does.Exist.IgnoreFiles);
-        }
-
-        [Test]
-        public void CreateFilePath_WithoutCreateDirectory_DirectoryIsNotCreated()
-        {
-            var baseDirectory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
-            if (Directory.Exists(baseDirectory))
-            {
-                Directory.Delete(baseDirectory, recursive: true);
-            }
-
-            Assume.That(baseDirectory, Does.Not.Exist);
-
-            PathHelper.CreateFilePath(baseDirectory: baseDirectory, createDirectory: false);
-            Assert.That(baseDirectory, Does.Not.Exist);
-        }
-
-
-        [Test]
         public void CreateTemporaryFilePath_UseTemporaryCachePath()
         {
             var actual = PathHelper.CreateTemporaryFilePath();
@@ -92,6 +49,36 @@ namespace TestHelper.RuntimeInternals
                 SubdirectoryFromNamespace,
                 nameof(CreateTemporaryFilePath_WithNamespaceToDirectory_IncludesSubdirectory));
             Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void CreateTemporaryFilePath_WithCreateDirectory_DirectoryIsCreated()
+        {
+            var directory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
+            if (Directory.Exists(directory))
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+
+            Assume.That(directory, Does.Not.Exist);
+
+            PathHelper.CreateTemporaryFilePath(namespaceToDirectory: true, createDirectory: true);
+            Assert.That(directory, Does.Exist.IgnoreFiles);
+        }
+
+        [Test]
+        public void CreateTemporaryFilePath_WithoutCreateDirectory_DirectoryIsNotCreated()
+        {
+            var directory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
+            if (Directory.Exists(directory))
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+
+            Assume.That(directory, Does.Not.Exist);
+
+            PathHelper.CreateTemporaryFilePath(namespaceToDirectory: true, createDirectory: false);
+            Assert.That(directory, Does.Not.Exist);
         }
 
         [Test]
@@ -130,5 +117,51 @@ namespace TestHelper.RuntimeInternals
                 $"{nameof(CreateTemporaryFilePath_Parameterized_ReplaceSpecialCharacters)}_{arg1}-{arg2String}-{arg3}_");
             Assert.That(actual, Is.EqualTo(expected));
         }
+
+        #region Internal methods tests
+
+        [Test]
+        public void CreateFilePath_WithBaseDirectory_UseSpecifyDirectory()
+        {
+            var baseDirectory = Path.Combine(Application.temporaryCachePath, nameof(PathHelperTest));
+
+            var actual = PathHelper.CreateFilePath(baseDirectory: baseDirectory);
+            var expected = Path.Combine(
+                baseDirectory,
+                nameof(CreateFilePath_WithBaseDirectory_UseSpecifyDirectory));
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void CreateFilePath_WithCreateDirectory_BaseDirectoryIsCreated()
+        {
+            var baseDirectory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
+            if (Directory.Exists(baseDirectory))
+            {
+                Directory.Delete(baseDirectory, recursive: true);
+            }
+
+            Assume.That(baseDirectory, Does.Not.Exist);
+
+            PathHelper.CreateFilePath(baseDirectory: baseDirectory, createDirectory: true);
+            Assert.That(baseDirectory, Does.Exist.IgnoreFiles);
+        }
+
+        [Test]
+        public void CreateFilePath_WithoutCreateDirectory_BaseDirectoryIsNotCreated()
+        {
+            var baseDirectory = Path.Combine(Application.temporaryCachePath, SubdirectoryFromNamespace);
+            if (Directory.Exists(baseDirectory))
+            {
+                Directory.Delete(baseDirectory, recursive: true);
+            }
+
+            Assume.That(baseDirectory, Does.Not.Exist);
+
+            PathHelper.CreateFilePath(baseDirectory: baseDirectory, createDirectory: false);
+            Assert.That(baseDirectory, Does.Not.Exist);
+        }
+
+        #endregion
     }
 }
