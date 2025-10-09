@@ -6,7 +6,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TestHelper.Attributes;
+#if UNITY_2020_1_OR_NEWER
 using UnityEditor;
+#else
+using System.Reflection;
+#endif
 
 namespace TestHelper.Editor
 {
@@ -22,13 +26,24 @@ namespace TestHelper.Editor
 
         private static IEnumerable<T> FindAttributesOnFields<T>() where T : Attribute
         {
+#if UNITY_2020_1_OR_NEWER
             var symbols = TypeCache.GetFieldsWithAttribute<T>();
-            foreach (var attribute in symbols
-                         .Select(symbol => symbol.GetCustomAttributes(typeof(T), false))
-                         .SelectMany(attributes => attributes))
+            var attributes = symbols.SelectMany(symbol => symbol.GetCustomAttributes(typeof(T), false));
+            foreach (var attribute in attributes)
             {
                 yield return attribute as T;
             }
+#else
+            foreach (var attribute in AppDomain.CurrentDomain.GetAssemblies()
+                         .SelectMany(x => x.GetTypes())
+                         .SelectMany(x => x.GetFields(
+                             BindingFlags.Public | BindingFlags.NonPublic |
+                             BindingFlags.Instance | BindingFlags.Static))
+                         .SelectMany(symbol => symbol.GetCustomAttributes(typeof(T), false)))
+            {
+                yield return attribute as T;
+            }
+#endif
         }
 
         internal static void CopyAssetFiles()
