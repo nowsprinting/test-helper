@@ -1,22 +1,29 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using TestHelper.Attributes;
+using TestHelper.RuntimeInternals.TestUtils;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+#if ENABLE_GRAPHICS_TEST_FRAMEWORK
+using UnityEngine.TestTools.Graphics;
+#endif
+#if ENABLE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace TestHelper.RuntimeInternals
 {
     [TestFixture]
+    [GameViewResolution(GameViewResolution.VGA)]
     public class ScreenshotHelperTest
     {
-        private const string TestScene = "Packages/com.nowsprinting.test-helper/Tests/Scenes/ScreenshotTest.unity";
+        private const string TestScene = "../Scenes/ScreenshotTest.unity";
         private const int FileSizeThreshold = 5441; // VGA size solid color file size
         private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
 
@@ -36,7 +43,7 @@ namespace TestHelper.RuntimeInternals
         [LoadScene(TestScene)]
         public IEnumerator TakeScreenshot_SaveToDefaultPath()
         {
-            var path = Path.Combine(_defaultOutputDirectory, $"{nameof(TakeScreenshot_SaveToDefaultPath)}.png");
+            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -44,10 +51,29 @@ namespace TestHelper.RuntimeInternals
 
             Assume.That(path, Does.Not.Exist);
 
-            yield return ScreenshotHelper.TakeScreenshot(); // default filename is member name when internal
+            yield return ScreenshotHelper.TakeScreenshot();
 
+            Assume.That(path, Does.Exist.IgnoreDirectories);
             Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(FileSizeThreshold));
         }
+
+#if ENABLE_GRAPHICS_TEST_FRAMEWORK
+        [UnityTest]
+        [LoadScene(TestScene)]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        public IEnumerator TakeScreenshot_ImagesMatch()
+        {
+            yield return ScreenshotHelper.TakeScreenshot();
+
+            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
+            Assume.That(path, Does.Exist.IgnoreDirectories);
+
+            var expected = VrtUtils.LoadExpectedImage();
+            var actual = VrtUtils.LoadImage(path);
+            var settings = VrtUtils.CreateImageComparisonSettings();
+            ImageAssert.AreEqual(expected, actual, settings);
+        }
+#endif
 
         [UnityTest]
         [LoadScene(TestScene)]
@@ -78,8 +104,8 @@ namespace TestHelper.RuntimeInternals
             yield return ScreenshotHelper.TakeScreenshot(filename: Filename2);
 
             // Verify after calling twice
-            Assert.That(path1, Does.Exist);
-            Assert.That(path2, Does.Exist);
+            Assert.That(path1, Does.Exist.IgnoreDirectories);
+            Assert.That(path2, Does.Exist.IgnoreDirectories);
         }
 
         [UnityTest]
@@ -92,11 +118,12 @@ namespace TestHelper.RuntimeInternals
             LogAssert.Expect(LogType.Warning, "superSize and stereoCaptureMode cannot be specified at the same time.");
         }
 
+#if ENABLE_UNITASK
         [Test]
         [LoadScene(TestScene)]
         public async Task TakeScreenshot_FromAsyncTest()
         {
-            var path = Path.Combine(_defaultOutputDirectory, $"{nameof(TakeScreenshot_FromAsyncTest)}.png");
+            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -110,12 +137,15 @@ namespace TestHelper.RuntimeInternals
             //   And also needs CoroutineRunner (any MonoBehaviour) because TakeScreenshot method uses WaitForEndOfFrame inside.
             //   See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
-            Assert.That(path, Does.Exist);
+            Assert.That(path, Does.Exist.IgnoreDirectories);
+
+            GameObject.Destroy(coroutineRunner);
         }
 
         private class CoroutineRunner : MonoBehaviour
         {
         }
+#endif
 
         [UnityTest]
         [LoadScene(TestScene)]

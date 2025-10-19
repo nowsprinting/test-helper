@@ -886,10 +886,6 @@ Clone this repository as a submodule under the Packages/ directory in your proje
 git submodule add git@github.com:nowsprinting/test-helper.git Packages/com.nowsprinting.test-helper
 ```
 
-> [!WARNING]  
-> Required installation packages for running tests (when embedded package or adding to the `testables` in manifest.json), as follows:
-> - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or later
-
 
 ### Run tests
 
@@ -902,6 +898,11 @@ UNITY_VERSION=2019.4.40f1 make -k test
 
 > [!WARNING]  
 > You must select "Input Manager (Old)" or "Both" in the **Project Settings > Player > Active Input Handling** for running tests.
+
+> [!TIP]  
+> To run all tests, you need to install the following packages in your project:
+> - [Graphics Test Framework](https://docs.unity3d.com/Packages/com.unity.testframework.graphics@latest)
+> - [UniTask](https://github.com/Cysharp/UniTask)
 
 
 ### Release workflow
