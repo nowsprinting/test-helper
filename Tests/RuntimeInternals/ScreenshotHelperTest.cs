@@ -49,8 +49,6 @@ namespace TestHelper.RuntimeInternals
                 File.Delete(path);
             }
 
-            Assume.That(path, Does.Not.Exist);
-
             yield return ScreenshotHelper.TakeScreenshot();
 
             Assume.That(path, Does.Exist.IgnoreDirectories);
@@ -63,10 +61,13 @@ namespace TestHelper.RuntimeInternals
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         public IEnumerator TakeScreenshot_ImagesMatch()
         {
-            yield return ScreenshotHelper.TakeScreenshot();
-
             var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
-            Assume.That(path, Does.Exist.IgnoreDirectories);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            yield return ScreenshotHelper.TakeScreenshot();
 
             var expected = VrtUtils.LoadExpectedImage();
             var actual = VrtUtils.LoadImage(path);
@@ -94,9 +95,6 @@ namespace TestHelper.RuntimeInternals
                 File.Delete(path2);
             }
 
-            Assume.That(path1, Does.Not.Exist);
-            Assume.That(path2, Does.Not.Exist);
-
             _text.text = filename1;
             yield return ScreenshotHelper.TakeScreenshot(); // not specified
 
@@ -118,6 +116,15 @@ namespace TestHelper.RuntimeInternals
             LogAssert.Expect(LogType.Warning, "superSize and stereoCaptureMode cannot be specified at the same time.");
         }
 
+        [UnityTest]
+        [LoadScene(TestScene)]
+        public IEnumerator TakeScreenshot_WithoutLogFilepath_SuppressLogging()
+        {
+            yield return ScreenshotHelper.TakeScreenshot(logFilepath: false);
+
+            LogAssert.NoUnexpectedReceived(); // No output to Debug.Log
+        }
+
 #if ENABLE_UNITASK
         [Test]
         [LoadScene(TestScene)]
@@ -128,8 +135,6 @@ namespace TestHelper.RuntimeInternals
             {
                 File.Delete(path);
             }
-
-            Assume.That(path, Does.Not.Exist);
 
             var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
             await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner);
@@ -147,13 +152,43 @@ namespace TestHelper.RuntimeInternals
         }
 #endif
 
-        [UnityTest]
+#if UNITY_2023_1_OR_NEWER
+        [Test]
         [LoadScene(TestScene)]
-        public IEnumerator TakeScreenshot_WithoutLogFilepath_SuppressLogging()
+        public async Task TakeScreenshotAsync_SaveToDefaultPath()
         {
-            yield return ScreenshotHelper.TakeScreenshot(logFilepath: false);
+            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
 
-            LogAssert.NoUnexpectedReceived(); // No output to Debug.Log
+            await ScreenshotHelper.TakeScreenshotAsync();
+
+            Assume.That(path, Does.Exist.IgnoreDirectories);
+            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(FileSizeThreshold));
         }
+
+#if ENABLE_GRAPHICS_TEST_FRAMEWORK
+        [Test]
+        [LoadScene(TestScene)]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        public async Task TakeScreenshotAsync_ImagesMatch()
+        {
+            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await ScreenshotHelper.TakeScreenshotAsync();
+
+            var expected = VrtUtils.LoadExpectedImage();
+            var actual = VrtUtils.LoadImage(path);
+            var settings = VrtUtils.CreateImageComparisonSettings();
+            ImageAssert.AreEqual(expected, actual, settings);
+        }
+#endif
+#endif
     }
 }

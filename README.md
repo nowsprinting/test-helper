@@ -147,7 +147,7 @@ public class MyTestClass
 }
 ```
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > Wait for one frame to apply resolution.
 > However, if used with [CreateSceneAttribute](#createscene) or [LoadSceneAttribute](#loadscene), wait is not necessary.
 
@@ -353,10 +353,10 @@ public class MyTestClass
 > [!IMPORTANT]  
 > `RecordVideoAttribute` is an optional functionality. To use it, you need to install the [Instant Replay for Unity](https://github.com/CyberAgentGameEntertainment/InstantReplay) package v1.0.0 or newer separately via the Package Manager window.
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > Do not place on Edit Mode tests.
 
 
@@ -386,10 +386,10 @@ public class MyTestClass
 }
 ```
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > Do not place on Edit Mode tests.
 
 > [!NOTE]  
@@ -569,7 +569,7 @@ public class MyTestClass
 
 `TestHelper.Statistics` namespace provides utilities for statistical testing, including assertions for pseudo-random number generators (PRNG) and statistical summary tools.
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > This feature is experimental.
 > It is possible to make breaking changes without respecting SemVer.
 
@@ -750,7 +750,7 @@ public class MyTestClass
 `ScreenshotHelper` is a utility class to take a screenshot and save it to a file.
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.png".
-(Replace `TestContext.Test.Name` to caller method name when run in runtime context.)
+(Replace `TestContext.Test.Name` to caller method name when called outside a test context.)
 You can specify the save directory and/or filename by arguments.
 Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
 
@@ -769,23 +769,30 @@ public class MyTestClass
     [Test]
     public async Task MyTestMethodAsync()
     {
+        await ScreenshotHelper.TakeScreenshotAsync();   // Required Unity 2023.3 or newer
+    }
+
+    [Test]
+    public async Task MyTestMethodAsync()
+    {
         var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
-        await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner);
+        await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner); // Reruired UniTask package
     }
 
     private class CoroutineRunner : MonoBehaviour { }
 }
 ```
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > Do not place on Edit Mode tests.
 > And must be called from main thread.
 
-> [!WARNING]  
-> `UniTask` is required to be used from the async method. And also needs coroutineRunner (any `MonoBehaviour`) because TakeScreenshot method uses `WaitForEndOfFrame` inside. See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
+> [!TIP]  
+> When using [UniTask](https://github.com/Cysharp/UniTask), you also need a coroutine-runner (any `MonoBehaviour` instance) because the `TakeScreenshot` method uses `WaitForEndOfFrame` internally.
+> See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
 > [!NOTE]  
 > If you take multiple screenshots in one method, a counter is inserted to prevent overwriting.
@@ -896,7 +903,7 @@ make create_project
 UNITY_VERSION=2019.4.40f1 make -k test
 ```
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > You must select "Input Manager (Old)" or "Both" in the **Project Settings > Player > Active Input Handling** for running tests.
 
 > [!TIP]  

@@ -39,7 +39,7 @@ namespace TestHelper.Attributes
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
         /// <param name="filename">Filename to store screenshot.
-        /// Default filename is <c>TestContext.Test.Name</c> + ".png" when run in test-framework context.</param>
+        /// If omitted, default filename is <c>TestContext.Test.Name</c> + ".png".</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
         /// <param name="gizmos">Show Gizmos on <c>GameView</c> if true.</param>
