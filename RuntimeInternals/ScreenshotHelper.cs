@@ -19,24 +19,21 @@ namespace TestHelper.RuntimeInternals
     {
         /// <summary>
         /// Take a screenshot and save it to file.
-        /// Default save path is <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" + <c>CurrentTest.Name</c> + ".png".
         /// </summary>
         /// <remarks>
         /// Limitations:
         /// <list type="bullet">
-        ///     <item>Do not attach to Edit Mode tests.</item>
+        ///     <item>Do not call form Edit Mode tests.</item>
         ///     <item>Must be called from main thread.</item>
         ///     <item><c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
         ///     <item><c>UniTask</c> is required to be used from the async method. And also needs coroutineRunner (any <c>MonoBehaviour</c>) because <c>TakeScreenshot</c> method uses <c>WaitForEndOfFrame</c> inside. See more information: <see href="https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation"/></item>
         /// </list>
-        /// <br/>
-        /// Using <c>ScreenCapture.CaptureScreenshotAsTexture</c> internally.
         /// </remarks>
         /// <param name="directory">Directory to save screenshots.
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
         /// <param name="filename">Filename to store screenshot.
-        /// Default filename is <c>CurrentTest.Name</c> + ".png" when run in test-framework context.
+        /// Default filename is <c>TestContext.Test.Name</c> + ".png" when run in test-framework context.
         /// Using caller method name when run in runtime context.</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>

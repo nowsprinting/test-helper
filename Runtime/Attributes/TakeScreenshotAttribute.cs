@@ -26,24 +26,20 @@ namespace TestHelper.Attributes
 
         /// <summary>
         /// Take a screenshot and save it to file after running this test.
-        ///
-        /// Default save path is $"{Application.persistentDataPath}/TestHelper/Screenshots/{CurrentTest.Name}.png".
-        /// If you want to take screenshots at any time, use the <c>TestHelper.RuntimeInternals.ScreenshotHelper</c> class.
         /// </summary>
         /// <remarks>
         /// Limitations:
         /// <list type="bullet">
-        ///     <item>Do not attach to Edit Mode tests.</item>
+        ///     <item>Do not place on Edit Mode tests.</item>
         ///     <item><c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
         /// </list>
-        /// Using <c>ScreenCapture.CaptureScreenshotAsTexture</c> internally.
+        /// If you want to take screenshots at any time, use the <c>TestHelper.RuntimeInternals.ScreenshotHelper</c> class.
         /// </remarks>
         /// <param name="directory">Directory to save screenshots.
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
         /// <param name="filename">Filename to store screenshot.
-        /// Default filename is <c>CurrentTest.Name</c> + ".png" when run in test-framework context.
-        /// Using caller method name when run in runtime context.</param>
+        /// Default filename is <c>TestContext.Test.Name</c> + ".png" when run in test-framework context.</param>
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
         /// <param name="gizmos">Show Gizmos on <c>GameView</c> if true.</param>
