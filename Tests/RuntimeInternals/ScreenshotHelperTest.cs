@@ -77,18 +77,18 @@ namespace TestHelper.RuntimeInternals
 
         [UnityTest]
         [LoadScene(TestScene)]
-        public IEnumerator TakeScreenshot_Multiple_SaveToEachSpecifyPaths()
+        public IEnumerator TakeScreenshot_MultipleCall_SaveToEachFile()
         {
-            const string Filename1 = "TakeScreenshot_Multiple_SpecifyFilename1.png";
-            const string Filename2 = "TakeScreenshot_Multiple_SpecifyFilename2.png";
+            var filename1 = $"{TestContext.CurrentContext.Test.Name}.png";
+            var filename2 = $"{TestContext.CurrentContext.Test.Name}_1.png";
 
-            var path1 = Path.Combine(_defaultOutputDirectory, Filename1);
+            var path1 = Path.Combine(_defaultOutputDirectory, filename1);
             if (File.Exists(path1))
             {
                 File.Delete(path1);
             }
 
-            var path2 = Path.Combine(_defaultOutputDirectory, Filename2);
+            var path2 = Path.Combine(_defaultOutputDirectory, filename2);
             if (File.Exists(path2))
             {
                 File.Delete(path2);
@@ -97,11 +97,11 @@ namespace TestHelper.RuntimeInternals
             Assume.That(path1, Does.Not.Exist);
             Assume.That(path2, Does.Not.Exist);
 
-            _text.text = Filename1;
-            yield return ScreenshotHelper.TakeScreenshot(filename: Filename1);
+            _text.text = filename1;
+            yield return ScreenshotHelper.TakeScreenshot(); // not specified
 
-            _text.text = Filename2;
-            yield return ScreenshotHelper.TakeScreenshot(filename: Filename2);
+            _text.text = filename2;
+            yield return ScreenshotHelper.TakeScreenshot(); // not specified
 
             // Verify after calling twice
             Assert.That(path1, Does.Exist.IgnoreDirectories);
