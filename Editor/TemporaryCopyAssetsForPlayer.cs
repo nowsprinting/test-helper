@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TestHelper.Attributes;
-#if UNITY_2020_1_OR_NEWER
 using UnityEditor;
-#else
+#if !UNITY_2020_1_OR_NEWER
 using System.Reflection;
 #endif
 
