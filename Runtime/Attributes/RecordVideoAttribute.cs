@@ -23,7 +23,6 @@ namespace TestHelper.Attributes
     {
         private readonly string _baseDirectory;
         private readonly bool _namespaceToDirectory;
-        private readonly bool _gizmos;
         private readonly uint _width;
         private readonly uint _height;
         private readonly uint _fpsHint;
@@ -41,14 +40,12 @@ namespace TestHelper.Attributes
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
         /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true.</param>
-        /// <param name="gizmos">Show Gizmos on <c>GameView</c> if true.</param>
-        /// <param name="width">Video output max width. If omit, use <see cref="Screen.width"/>.</param>
-        /// <param name="height">Video output max height. If omit, use <see cref="Screen.height"/>.</param>
+        /// <param name="width">Video output max width. If omitted (0), use <see cref="Screen.width"/>.</param>
+        /// <param name="height">Video output max height. If omitted (0), use <see cref="Screen.height"/>.</param>
         /// <param name="fpsHint">Video output frame rate hint.</param>
         public RecordVideoAttribute(
             string baseDirectory = null,
             bool namespaceToDirectory = false,
-            bool gizmos = false,
             uint width = 0,
             uint height = 0,
             uint fpsHint = 30)
@@ -63,7 +60,6 @@ namespace TestHelper.Attributes
             }
 
             _namespaceToDirectory = namespaceToDirectory;
-            _gizmos = gizmos;
             _width = width != 0 ? width : (uint)Screen.width;
             _height = height != 0 ? height : (uint)Screen.height;
             _fpsHint = fpsHint;
@@ -78,12 +74,6 @@ namespace TestHelper.Attributes
         /// <inheritdoc/>
         public IEnumerator BeforeTest(ITest test)
         {
-            if (_gizmos)
-            {
-                _beforeGizmos = GameViewControlHelper.GetGizmos();
-                GameViewControlHelper.SetGizmos(true);
-            }
-
             _session?.Dispose();
             _session = new RealtimeInstantReplaySession(CreateOptions());
             yield break;
@@ -92,11 +82,6 @@ namespace TestHelper.Attributes
         /// <inheritdoc/>
         public IEnumerator AfterTest(ITest test)
         {
-            if (_gizmos)
-            {
-                GameViewControlHelper.SetGizmos(_beforeGizmos);
-            }
-
             var outputPath = PathHelper.CreateFilePath(
                 baseDirectory: _baseDirectory,
                 extension: "mp4",
