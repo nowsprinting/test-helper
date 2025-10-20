@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -103,9 +104,7 @@ namespace TestHelper.Attributes
 #if UNITY_EDITOR
                 var asset = AssetDatabase.LoadAssetAtPath(attribute.AssetPath, field.FieldType);
 #else
-                var resourcePath = Path.Combine(
-                    Path.GetDirectoryName(attribute.AssetPath) ?? string.Empty,
-                    Path.GetFileNameWithoutExtension(attribute.AssetPath));
+                var resourcePath = GetResourcePath(attribute.AssetPath);
                 var asset = Resources.Load(resourcePath, field.FieldType);
 #endif
                 if (asset == null)
@@ -116,6 +115,16 @@ namespace TestHelper.Attributes
 
                 field.SetValue(testClassInstance, asset);
             }
+        }
+
+        [SuppressMessage("ReSharper", "UnusedMember.Local")]
+        private static string GetResourcePath(string assetPath)
+        {
+            var directoryName = Path.GetDirectoryName(assetPath);
+            var filenameWithoutExtension = Path.GetFileNameWithoutExtension(assetPath);
+            return string.IsNullOrEmpty(directoryName)
+                ? filenameWithoutExtension
+                : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
         }
     }
 }
