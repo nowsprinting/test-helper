@@ -134,7 +134,8 @@ namespace TestHelper.Attributes
 
         [Test]
         [LoadScene(TestScene)]
-        [RecordVideo(gizmos: true)]
+        [GizmosShowOnGameView]
+        [RecordVideo]
         public async Task Attach_WithGizmos_OutputVideoWithGizmos()
         {
             await RotateCube();
