@@ -57,7 +57,7 @@ namespace TestHelper.Editor
                     Directory.CreateDirectory(destDir);
                 }
 
-                File.Copy(attribute.AssetPath, destFileName, true);
+                AssetDatabase.CopyAsset(attribute.AssetPath, destFileName);
             }
         }
     }
