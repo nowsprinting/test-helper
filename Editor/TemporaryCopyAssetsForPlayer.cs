@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using TestHelper.Attributes;
 using UnityEditor;
+using UnityEngine;
 #if !UNITY_2020_1_OR_NEWER
 using System.Reflection;
 #endif
@@ -56,7 +57,10 @@ namespace TestHelper.Editor
                     Directory.CreateDirectory(destDir);
                 }
 
-                AssetDatabase.CopyAsset(attribute.AssetPath, destFileName);
+                if (!AssetDatabase.CopyAsset(attribute.AssetPath, destFileName))
+                {
+                    Debug.LogError($"Failed to copy asset file from '{attribute.AssetPath}' to '{destFileName}'");
+                }
             }
         }
     }

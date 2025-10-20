@@ -34,7 +34,7 @@ namespace TestHelper.Attributes
         /// </param>
         /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>
-        /// When running tests on the player, it temporarily copies asset files to the <c>Resources</c> folder by <see cref="Editor.TemporaryCopyAssetsForPlayer"/>.
+        /// When running tests on the player, it temporarily copies asset files to the <c>Resources</c> folder by <see cref="TestHelper.Editor.TemporaryCopyAssetsForPlayer"/>.
         /// </remarks>
         public LoadAssetAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
@@ -124,7 +124,7 @@ namespace TestHelper.Attributes
             var filenameWithoutExtension = Path.GetFileNameWithoutExtension(assetPath);
             return string.IsNullOrEmpty(directoryName)
                 ? filenameWithoutExtension
-                : $"{directoryName}/{filenameWithoutExtension}";
+                : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
         }
     }
 }
