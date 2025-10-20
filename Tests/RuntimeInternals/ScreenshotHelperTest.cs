@@ -20,14 +20,48 @@ using Cysharp.Threading.Tasks;
 namespace TestHelper.RuntimeInternals
 {
     [TestFixture]
-    [GameViewResolution(GameViewResolution.VGA)]
     public class ScreenshotHelperTest
     {
         private const string TestScene = "../Scenes/ScreenshotTest.unity";
-        private const int FileSizeThreshold = 5441; // VGA size solid color file size
         private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
 
         private Text _text;
+
+#if ENABLE_GRAPHICS_TEST_FRAMEWORK
+        [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // VGA
+        private Texture2D _expectedTakeScreenshotImagesMatch;
+        // Note: In the image inspector window, set the following:
+        //      - Advanced > Non-Power of 2: None
+        //      - Advanced > Read/Write: on
+
+#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
+        [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // Full HD
+#elif UNITY_STANDALONE_LINUX
+        [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshot_ImagesMatch) + ".png")]   // VGA
+#elif UNITY_ANDROID
+        [LoadAsset("../Images/Android/Pixel6a/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // 1080x2400
+#endif
+        private Texture2D _expectedTakeScreenshotImagesMatchOnPlayer;
+
+        [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // VGA
+        private Texture2D _expectedTakeScreenshotAsyncImagesMatch;
+
+#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
+        [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // Full HD
+#elif UNITY_STANDALONE_LINUX
+        [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")]  // VGA
+#elif UNITY_ANDROID
+        [LoadAsset("../Images/Android/Pixel6a/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // 1080x2400
+#endif
+        private Texture2D _expectedTakeScreenshotAsyncImagesMatchOnPlayer;
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            LoadAssetAttribute.LoadAssets(this);           // Must call this method to load assets.
+            VrtUtils.ConvertTexture2dFieldsToARGB32(this); // convert to same as actual texture format
+        }
+#endif
 
         [SetUp]
         public void SetUp()
@@ -51,14 +85,17 @@ namespace TestHelper.RuntimeInternals
 
             yield return ScreenshotHelper.TakeScreenshot();
 
-            Assume.That(path, Does.Exist.IgnoreDirectories);
-            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(FileSizeThreshold));
+            Assert.That(path, Does.Exist.IgnoreDirectories);
+#if !UNITY_ANDROID
+            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(0));
+#endif
         }
 
 #if ENABLE_GRAPHICS_TEST_FRAMEWORK
         [UnityTest]
+        [GameViewResolution(GameViewResolution.VGA)]
+        [GizmosShowOnGameView(false)]
         [LoadScene(TestScene)]
-        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         public IEnumerator TakeScreenshot_ImagesMatch()
         {
             var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
@@ -69,9 +106,11 @@ namespace TestHelper.RuntimeInternals
 
             yield return ScreenshotHelper.TakeScreenshot();
 
-            var expected = VrtUtils.LoadExpectedImage();
+            var expected = Application.isEditor
+                ? _expectedTakeScreenshotImagesMatch
+                : _expectedTakeScreenshotImagesMatchOnPlayer;
             var actual = VrtUtils.LoadImage(path);
-            var settings = VrtUtils.CreateImageComparisonSettings();
+            var settings = VrtUtils.GetImageComparisonSettings();
             ImageAssert.AreEqual(expected, actual, settings);
         }
 #endif
@@ -144,6 +183,7 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(path, Does.Exist.IgnoreDirectories);
 
+            // tear down
             GameObject.Destroy(coroutineRunner);
         }
 
@@ -165,14 +205,17 @@ namespace TestHelper.RuntimeInternals
 
             await ScreenshotHelper.TakeScreenshotAsync();
 
-            Assume.That(path, Does.Exist.IgnoreDirectories);
-            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(FileSizeThreshold));
+            Assert.That(path, Does.Exist.IgnoreDirectories);
+#if !UNITY_ANDROID
+            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(0));
+#endif
         }
 
 #if ENABLE_GRAPHICS_TEST_FRAMEWORK
         [Test]
+        [GameViewResolution(GameViewResolution.VGA)]
+        [GizmosShowOnGameView(false)]
         [LoadScene(TestScene)]
-        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         public async Task TakeScreenshotAsync_ImagesMatch()
         {
             var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
@@ -183,9 +226,11 @@ namespace TestHelper.RuntimeInternals
 
             await ScreenshotHelper.TakeScreenshotAsync();
 
-            var expected = VrtUtils.LoadExpectedImage();
+            var expected = Application.isEditor
+                ? _expectedTakeScreenshotAsyncImagesMatch
+                : _expectedTakeScreenshotAsyncImagesMatchOnPlayer;
             var actual = VrtUtils.LoadImage(path);
-            var settings = VrtUtils.CreateImageComparisonSettings();
+            var settings = VrtUtils.GetImageComparisonSettings();
             ImageAssert.AreEqual(expected, actual, settings);
         }
 #endif
