@@ -29,7 +29,7 @@ namespace TestHelper.RuntimeInternals
 
 #if ENABLE_GRAPHICS_TEST_FRAMEWORK
         [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // VGA
-        private Texture2D _expectedTakeScreenshotImagesMatch;
+        private Texture2D _expectedTakeScreenshotImagesMatch;                             // in Editor
         // Note: In the image inspector window, set the following:
         //      - Advanced > Non-Power of 2: None
         //      - Advanced > Read/Write: on
@@ -44,7 +44,7 @@ namespace TestHelper.RuntimeInternals
         private Texture2D _expectedTakeScreenshotImagesMatchOnPlayer;
 
         [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // VGA
-        private Texture2D _expectedTakeScreenshotAsyncImagesMatch;
+        private Texture2D _expectedTakeScreenshotAsyncImagesMatch;                             // in Editor
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
         [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // Full HD
@@ -54,6 +54,9 @@ namespace TestHelper.RuntimeInternals
         [LoadAsset("../Images/Android/Pixel6a/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // 1080x2400
 #endif
         private Texture2D _expectedTakeScreenshotAsyncImagesMatchOnPlayer;
+
+        [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshotAsync_WithScale_ImagesMatch) + ".png")]
+        private Texture2D _expectedTakeScreenshotAsyncWithScaleImagesMatch; // in Editor only
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -256,6 +259,27 @@ namespace TestHelper.RuntimeInternals
             var expected = Application.isEditor
                 ? _expectedTakeScreenshotAsyncImagesMatch
                 : _expectedTakeScreenshotAsyncImagesMatchOnPlayer;
+            var actual = VrtUtils.LoadImage(path);
+            var settings = VrtUtils.GetImageComparisonSettings();
+            ImageAssert.AreEqual(expected, actual, settings);
+        }
+
+        [Test]
+        [GameViewResolution(GameViewResolution.VGA)]
+        [GizmosShowOnGameView(false)]
+        [LoadScene(TestScene)]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        public async Task TakeScreenshotAsync_WithScale_ImagesMatch()
+        {
+            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await ScreenshotHelper.TakeScreenshotAsync(scale: 0.5f);
+
+            var expected = _expectedTakeScreenshotAsyncWithScaleImagesMatch;
             var actual = VrtUtils.LoadImage(path);
             var settings = VrtUtils.GetImageComparisonSettings();
             ImageAssert.AreEqual(expected, actual, settings);

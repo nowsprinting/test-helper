@@ -102,37 +102,39 @@ namespace TestHelper.RuntimeInternals
         /// If omitted, default filename is <c>TestContext.Test.Name</c> + ".png" when run in test context.
         /// Using <see cref="callerMemberName"/> when called outside a test context.</param>
         /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true and filename omitted.</param>
+        /// <param name="scale">Save screenshot scale factor.</param>
         /// <param name="callerMemberName">Used as the default file name when called outside a test context</param>
         public static async Awaitable TakeScreenshotAsync(
             string directory = null,
             string filename = null,
             bool namespaceToDirectory = false,
+            float scale = 1.0f,
             [CallerMemberName] string callerMemberName = null)
         {
+            if (Camera.main)
+            {
+                Camera.main.forceIntoRenderTexture = true;
+            }
+
             await Awaitable.EndOfFrameAsync(); // Required to take screenshots
 
             var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
-            byte[] png = null;
+            byte[] png;
 
             if (SystemInfo.supportsAsyncGPUReadback)
             {
-                if (Camera.main)
-                {
-                    Camera.main.forceIntoRenderTexture = true;
-                }
-
-                var width = Screen.width;
-                var height = Screen.height;
-                var capturedTexture = RenderTexture.GetTemporary(width, height);
+                var capturedTexture = RenderTexture.GetTemporary(Screen.width, Screen.height);
                 var format = capturedTexture.graphicsFormat;
                 ScreenCapture.CaptureScreenshotIntoRenderTexture(capturedTexture);
 
-                var flippedTexture = RenderTexture.GetTemporary(width, height);
-                Graphics.Blit(capturedTexture, flippedTexture, s_blitScale, s_blitOffset); // y-axis flip if needed
+                var width = (int)(Screen.width * scale);
+                var height = (int)(Screen.height * scale);
+                var scaledTexture = RenderTexture.GetTemporary(width, height);
+                Graphics.Blit(capturedTexture, scaledTexture, s_blitScale, s_blitOffset); // y-axis flip if needed
                 RenderTexture.ReleaseTemporary(capturedTexture);
 
-                var request = await AsyncGPUReadback.RequestAsync(flippedTexture);
-                RenderTexture.ReleaseTemporary(flippedTexture);
+                var request = await AsyncGPUReadback.RequestAsync(scaledTexture);
+                RenderTexture.ReleaseTemporary(scaledTexture);
 
                 using var imageBytes = request.GetData<byte>();
                 png = ImageConversion.EncodeArrayToPNG(imageBytes.ToArray(), format, (uint)width, (uint)height);
