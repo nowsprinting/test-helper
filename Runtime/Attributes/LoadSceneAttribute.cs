@@ -15,6 +15,8 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Load a scene before running this test.
     /// </summary>
+    /// <seealso cref="CreateSceneAttribute"/>
+    /// <seealso cref="SceneManagerHelper"/>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class LoadSceneAttribute : BuildSceneAttribute, IOuterUnityTestAction
     {
@@ -32,6 +34,7 @@ namespace TestHelper.Attributes
         /// The path must start with `Assets/` or `Packages/` or `.`.
         /// And package name using `name` instead of `displayName`, when scene file is in the package
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
+        /// <p/>
         /// If the value is omitted, the scene name will be derived from the test file name
         /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`).
         /// </param>

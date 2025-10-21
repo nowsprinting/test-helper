@@ -12,6 +12,7 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Skip this test run on Unity editor window (headed mode).
     /// </summary>
+    /// <seealso cref="IgnoreBatchModeAttribute"/>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
     public class IgnoreWindowModeAttribute : NUnitAttribute, IApplyToTest
     {

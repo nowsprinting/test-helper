@@ -27,10 +27,14 @@ namespace TestHelper.Attributes
         ///     <item>The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.</item>
         ///     <item>The asset file path can be specified as a relative path from the test class file.</item>
         /// </list>
+        /// <p/>
+        /// Loading asset with <see cref="AssetDatabase.LoadAssetAtPath(string,Type)"/> in the editor, and <see cref="Resources.Load(string,Type)"/> on the player.
+        /// Asset settings such as image format will conform to the .meta file.
         /// </summary>
         /// <param name="path">Asset file path.
         /// The path must start with `Assets/` or `Packages/` or `.`.
-        /// And package name using `name` instead of `displayName`, when asset file is in the package (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
+        /// And package name using `name` instead of `displayName`, when asset file is in the package
+        /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
         /// </param>
         /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>

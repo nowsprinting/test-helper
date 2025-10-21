@@ -12,6 +12,7 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Skip this test run on batchmode (headless mode).
     /// </summary>
+    /// <seealso cref="IgnoreWindowModeAttribute"/>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
     public class IgnoreBatchModeAttribute : NUnitAttribute, IApplyToTest
     {

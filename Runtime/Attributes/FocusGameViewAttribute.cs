@@ -12,6 +12,7 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Focus <c>GameView</c> or <c>SimulatorWindow</c> before running this test.
     /// </summary>
+    /// <seealso cref="GameViewResolutionAttribute"/>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
     public class FocusGameViewAttribute : NUnitAttribute, IApplyToContext
     {

@@ -18,7 +18,7 @@ Required Unity 2019 LTS or later.
 
 `BuildSceneAttribute` is a NUnit test attribute class that build a scene before running the test on player.
 
-It has the following benefits:
+This attribute has the following benefits:
 
 - Scenes that are **NOT** in "Scenes in Build" can be specified.
 - The scene file path can be specified as a relative path from the test class file.
@@ -61,7 +61,7 @@ public class MyTestClass
 
 `CreateSceneAttribute` is an NUnit test attribute class to create a new scene and activate it before running the test.
 
-It has the following benefits:
+This attribute has the following benefits:
 
 - Can use the same code for running Edit Mode tests, Play Mode tests in Editor, and on Player
 
@@ -233,9 +233,9 @@ public class MyTestClass
 
 #### LoadAsset
 
-`LoadAssetAttribute` is a NUnit test attribute class that loads an asset before running the test.
+`LoadAssetAttribute` is a NUnit test attribute class that load an asset file at the specified path into the field before running the test.
 
-It has the following benefits:
+This attribute has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
 - The asset file path can be specified as a relative path from the test class file.
@@ -279,12 +279,16 @@ public class MyTestClass
 > However, if post-processing is not performed, such as if the Unity editor crashes, the "Assets/com.nowsprinting.test-helper/Resources" folder will remain.
 > Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
 
+> [!NOTE]  
+> Loading asset with `AssetDatabase.LoadAssetAtPath(string,Type)` in the editor, and `Resources.Load(string,Type)` on the player.
+> Asset settings such as image format will conform to the .meta file.
+
 
 #### LoadScene
 
 `LoadSceneAttribute` is a NUnit test attribute class that loads a scene before running the test.
 
-It has the following benefits:
+This attribute has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
 - Scenes that are **NOT** in "Scenes in Build" can be specified.
@@ -706,7 +710,7 @@ The classes in the `TestHelper.RuntimeInternals` assembly can be used from the r
 
 `SceneManagerHelper` is a utility class to load the scene file.
 
-It has the following benefits:
+This method has the following benefits:
 
 - The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.
 - The scene file path can be specified as a relative path from the test class file.
