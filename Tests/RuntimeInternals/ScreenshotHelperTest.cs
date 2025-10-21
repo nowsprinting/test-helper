@@ -238,21 +238,6 @@ namespace TestHelper.RuntimeInternals
             }
         }
 
-        [Test]
-        [LoadScene(TestScene)]
-        public async Task TakeScreenshotAsync_NotUseAsyncGPUReadback_SaveToDefaultPath()
-        {
-            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-
-            await ScreenshotHelper.TakeScreenshotAsync(superSize: 2);
-
-            Assert.That(path, Does.Exist.IgnoreDirectories);
-        }
-
 #if ENABLE_GRAPHICS_TEST_FRAMEWORK
         [Test]
         [GameViewResolution(GameViewResolution.VGA)]

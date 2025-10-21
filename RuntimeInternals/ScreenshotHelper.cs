@@ -39,7 +39,7 @@ namespace TestHelper.RuntimeInternals
         /// <param name="superSize">The factor to increase resolution with.</param>
         /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
         /// <param name="logFilepath">Output filename to Debug.Log</param>
-        /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true.</param>
+        /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true and filename omitted.</param>
         /// <param name="callerMemberName">Used as the default file name when called outside a test context</param>
         public static IEnumerator TakeScreenshot(
             string directory = null,
@@ -101,31 +101,20 @@ namespace TestHelper.RuntimeInternals
         /// <param name="filename">Filename to store screenshot.
         /// If omitted, default filename is <c>TestContext.Test.Name</c> + ".png" when run in test context.
         /// Using <see cref="callerMemberName"/> when called outside a test context.</param>
-        /// <param name="superSize">The factor to increase resolution with.</param>
-        /// <param name="stereoCaptureMode">The eye texture to capture when stereo rendering is enabled.</param>
-        /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true.</param>
+        /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true and filename omitted.</param>
         /// <param name="callerMemberName">Used as the default file name when called outside a test context</param>
         public static async Awaitable TakeScreenshotAsync(
             string directory = null,
             string filename = null,
-            int superSize = 1,
-            ScreenCapture.StereoScreenCaptureMode stereoCaptureMode = ScreenCapture.StereoScreenCaptureMode.LeftEye,
             bool namespaceToDirectory = false,
             [CallerMemberName] string callerMemberName = null)
         {
-            if (superSize != 1 && stereoCaptureMode != ScreenCapture.StereoScreenCaptureMode.LeftEye)
-            {
-                Debug.LogWarning("superSize and stereoCaptureMode cannot be specified at the same time.");
-                return;
-            }
-
             await Awaitable.EndOfFrameAsync(); // Required to take screenshots
 
             var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
             byte[] png = null;
 
-            if (superSize == 1 && stereoCaptureMode == ScreenCapture.StereoScreenCaptureMode.LeftEye &&
-                SystemInfo.supportsAsyncGPUReadback)
+            if (SystemInfo.supportsAsyncGPUReadback)
             {
                 if (Camera.main)
                 {
@@ -150,10 +139,7 @@ namespace TestHelper.RuntimeInternals
             }
             else
             {
-                var texture = superSize != 1
-                    ? ScreenCapture.CaptureScreenshotAsTexture(superSize)
-                    : ScreenCapture.CaptureScreenshotAsTexture(stereoCaptureMode);
-
+                var texture = ScreenCapture.CaptureScreenshotAsTexture(1);
                 png = texture.EncodeToPNG();
                 Object.Destroy(texture);
             }
