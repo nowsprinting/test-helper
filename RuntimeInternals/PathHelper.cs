@@ -100,7 +100,7 @@ namespace TestHelper.RuntimeInternals
 #if UNITY_INCLUDE_TESTS
         private static string GetSubdirectoryFromNamespace()
         {
-            if (TestContext.CurrentContext != null)
+            if (TestContext.CurrentTestExecutionContext != null)
             {
                 var fullName = TestContext.CurrentContext.Test.FullName;
                 var testName = TestContext.CurrentContext.Test.Name;
@@ -114,7 +114,7 @@ namespace TestHelper.RuntimeInternals
         private static string GetFilename(string callerMemberName)
         {
             string name;
-            if (TestContext.CurrentContext != null)
+            if (TestContext.CurrentTestExecutionContext != null)
             {
                 name = TestContext.CurrentContext.Test.Name
                     .Replace('(', '_')
