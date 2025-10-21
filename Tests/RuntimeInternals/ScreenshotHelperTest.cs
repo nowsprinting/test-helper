@@ -6,11 +6,11 @@ using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TestHelper.Attributes;
-using TestHelper.RuntimeInternals.TestUtils;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 #if ENABLE_GRAPHICS_TEST_FRAMEWORK
+using TestHelper.RuntimeInternals.TestUtils;
 using UnityEngine.TestTools.Graphics;
 #endif
 #if ENABLE_UNITASK

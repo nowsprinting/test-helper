@@ -75,7 +75,7 @@ namespace TestHelper.RuntimeInternals
             }
 
 #if UNITY_INCLUDE_TESTS
-            if (TestContext.CurrentContext != null)
+            if (TestContext.CurrentTestExecutionContext != null)
             {
                 var properties = TestContext.CurrentContext.Test.Properties;
                 properties.Add("Screenshot", path);
@@ -161,7 +161,7 @@ namespace TestHelper.RuntimeInternals
             await File.WriteAllBytesAsync(path, png);
 
 #if UNITY_INCLUDE_TESTS
-            if (TestContext.CurrentContext != null)
+            if (TestContext.CurrentTestExecutionContext != null)
             {
                 var properties = TestContext.CurrentContext.Test.Properties;
                 properties.Add("Screenshot", path);
