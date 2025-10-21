@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Rendering;
 #if UNITY_INCLUDE_TESTS
 using NUnit.Framework;
 #endif
@@ -118,18 +119,46 @@ namespace TestHelper.RuntimeInternals
                 return;
             }
 
-            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
-
             await Awaitable.EndOfFrameAsync(); // Required to take screenshots
 
-            var texture = superSize != 1
-                ? ScreenCapture.CaptureScreenshotAsTexture(superSize)
-                : ScreenCapture.CaptureScreenshotAsTexture(stereoCaptureMode);
+            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
+            byte[] png = null;
 
-            var bytes = texture.EncodeToPNG();
-            await File.WriteAllBytesAsync(path, bytes);
+            if (superSize == 1 && stereoCaptureMode == ScreenCapture.StereoScreenCaptureMode.LeftEye &&
+                SystemInfo.supportsAsyncGPUReadback)
+            {
+                if (Camera.main)
+                {
+                    Camera.main.forceIntoRenderTexture = true;
+                }
 
-            Object.Destroy(texture);
+                var width = Screen.width;
+                var height = Screen.height;
+                var capturedTexture = RenderTexture.GetTemporary(width, height);
+                var format = capturedTexture.graphicsFormat;
+                ScreenCapture.CaptureScreenshotIntoRenderTexture(capturedTexture);
+
+                var flippedTexture = RenderTexture.GetTemporary(width, height);
+                Graphics.Blit(capturedTexture, flippedTexture, s_blitScale, s_blitOffset); // y-axis flip if needed
+                RenderTexture.ReleaseTemporary(capturedTexture);
+
+                var request = await AsyncGPUReadback.RequestAsync(flippedTexture);
+                RenderTexture.ReleaseTemporary(flippedTexture);
+
+                using var imageBytes = request.GetData<byte>();
+                png = ImageConversion.EncodeArrayToPNG(imageBytes.ToArray(), format, (uint)width, (uint)height);
+            }
+            else
+            {
+                var texture = superSize != 1
+                    ? ScreenCapture.CaptureScreenshotAsTexture(superSize)
+                    : ScreenCapture.CaptureScreenshotAsTexture(stereoCaptureMode);
+
+                png = texture.EncodeToPNG();
+                Object.Destroy(texture);
+            }
+
+            await File.WriteAllBytesAsync(path, png);
 
 #if UNITY_INCLUDE_TESTS
             if (TestContext.CurrentContext != null)
@@ -139,6 +168,14 @@ namespace TestHelper.RuntimeInternals
             }
 #endif
         }
+
+        private static readonly Vector2 s_blitScale = SystemInfo.graphicsUVStartsAtTop
+            ? new Vector2(1, -1) // Flip Y-axis
+            : new Vector2(1, 1);
+
+        private static readonly Vector2 s_blitOffset = SystemInfo.graphicsUVStartsAtTop
+            ? new Vector2(0, 1) // Offset Y-axis after flip
+            : new Vector2(0, 0);
 #endif
 
         private static string GetSavePath(string directory, string filename, bool namespaceToDirectory,

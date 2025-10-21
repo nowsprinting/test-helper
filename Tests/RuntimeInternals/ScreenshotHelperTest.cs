@@ -211,6 +211,48 @@ namespace TestHelper.RuntimeInternals
 #endif
         }
 
+        [Test]
+        [LoadScene(TestScene)]
+        public async Task TakeScreenshotAsync_ContinuousCall_SaveToDefaultPath()
+        {
+            var paths = new string[5];
+            for (var i = 0; i < paths.Length; i++)
+            {
+                paths[i] = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
+                if (File.Exists(paths[i]))
+                {
+                    File.Delete(paths[i]);
+                }
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+                _text.text = $"{TestContext.CurrentContext.Test.Name}_{i}.png";
+                ScreenshotHelper.TakeScreenshotAsync().AsUniTask().Forget();
+                await UniTask.NextFrame();
+            }
+
+            foreach (var path in paths)
+            {
+                Assert.That(path, Does.Exist.IgnoreDirectories);
+            }
+        }
+
+        [Test]
+        [LoadScene(TestScene)]
+        public async Task TakeScreenshotAsync_NotUseAsyncGPUReadback_SaveToDefaultPath()
+        {
+            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await ScreenshotHelper.TakeScreenshotAsync(superSize: 2);
+
+            Assert.That(path, Does.Exist.IgnoreDirectories);
+        }
+
 #if ENABLE_GRAPHICS_TEST_FRAMEWORK
         [Test]
         [GameViewResolution(GameViewResolution.VGA)]
