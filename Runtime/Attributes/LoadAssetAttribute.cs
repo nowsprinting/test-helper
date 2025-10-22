@@ -19,7 +19,7 @@ namespace TestHelper.Attributes
         internal string AssetPath { get; private set; }
 
         /// <summary>
-        /// Load an asset file at the specified path into the field.
+        /// Loads an asset file at the specified path into the field.
         /// Tests that use this attribute must call the <see cref="LoadAssets"/> static method from the <c>OneTimeSetUp</c> method.
         /// <p/>
         /// This attribute has the following benefits:
@@ -27,10 +27,14 @@ namespace TestHelper.Attributes
         ///     <item>The same code can be used for Edit Mode tests and Play Mode tests in Editor and on Player.</item>
         ///     <item>The asset file path can be specified as a relative path from the test class file.</item>
         /// </list>
+        /// <p/>
+        /// Loads asset with <see cref="AssetDatabase.LoadAssetAtPath(string,Type)"/> in the editor, and <see cref="Resources.Load(string,Type)"/> on the player.
+        /// Asset settings such as image format will conform to the .meta file.
         /// </summary>
         /// <param name="path">Asset file path.
         /// The path must start with `Assets/` or `Packages/` or `.`.
-        /// And package name using `name` instead of `displayName`, when asset file is in the package (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
+        /// And package name using `name` instead of `displayName`, when asset file is in the package
+        /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
         /// </param>
         /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>

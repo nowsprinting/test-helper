@@ -14,6 +14,7 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Take a screenshot and save it to file after running this test.
     /// </summary>
+    /// <seealso cref="ScreenshotHelper"/>
     [AttributeUsage(AttributeTargets.Method)]
     public class TakeScreenshotAttribute : NUnitAttribute, IOuterUnityTestAction
     {

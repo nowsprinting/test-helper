@@ -2,7 +2,6 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
@@ -31,6 +30,7 @@ namespace TestHelper.Attributes
         /// The path must start with `Assets/` or `Packages/` or `.`.
         /// And package name using `name` instead of `displayName`, when scene file is in the package
         /// (e.g., `Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity`).
+        /// <p/>
         /// If the value is omitted, the scene name will be derived from the test file name
         /// (e.g., `Asset/Tests/ScreenshotTest.cs` will load `Asset/Tests/ScreenshotTest.unity`).
         /// </param>

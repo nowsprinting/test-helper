@@ -18,6 +18,7 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Create a new scene before running this test.
     /// </summary>
+    /// <seealso cref="LoadSceneAttribute"/>
     [AttributeUsage(AttributeTargets.Method)]
     public class CreateSceneAttribute : NUnitAttribute, IOuterUnityTestAction
     {
