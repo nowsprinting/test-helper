@@ -6,6 +6,7 @@
         "UnityEditor.TestRunner",
         "TestHelper.RuntimeInternals",
         "TestHelper",
+        "UnityEngine.TestTools.Graphics",
         "UniTask"
     ],
     "includePlatforms": [],
@@ -19,6 +20,17 @@
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.testframework.graphics",
+            "expression": "",
+            "define": "ENABLE_GRAPHICS_TEST_FRAMEWORK"
+        },
+        {
+            "name": "com.cysharp.unitask",
+            "expression": "",
+            "define": "ENABLE_UNITASK"
+        }
+    ],
     "noEngineReferences": false
 }
