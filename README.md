@@ -233,7 +233,7 @@ public class MyTestClass
 
 #### LoadAsset
 
-`LoadAssetAttribute` is a NUnit test attribute class that load an asset file at the specified path into the field before running the test.
+`LoadAssetAttribute` is a NUnit test attribute class that loads an asset file at the specified path into the field before running the test.
 
 This attribute has the following benefits:
 
@@ -280,7 +280,7 @@ public class MyTestClass
 > Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
 
 > [!NOTE]  
-> Loading asset with `AssetDatabase.LoadAssetAtPath(string,Type)` in the editor, and `Resources.Load(string,Type)` on the player.
+> Loads asset with `AssetDatabase.LoadAssetAtPath(string,Type)` in the editor, and `Resources.Load(string,Type)` on the player.
 > Asset settings such as image format will conform to the .meta file.
 
 
