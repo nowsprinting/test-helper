@@ -120,9 +120,13 @@ namespace TestHelper.RuntimeInternals
                     .Replace('(', '_')
                     .Replace(')', '_')
                     .Replace(',', '-')
-                    .Replace('.', '-')
-                    .Replace("\"", "");
-                // Note: Similar to the file name created under ActualImages in the Graphics Test Framework package, but also replace the period.
+                    .Replace("\"", "")
+                    .Replace("/", "")
+                    .Replace("\\", "")
+                    .Replace("¥", "")
+                    .Replace(":", "")
+                    .Replace(";", "");
+                // Note: Similar to the file name created under ActualImages in the Graphics Test Framework package.
             }
             else
             {

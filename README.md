@@ -803,6 +803,37 @@ public class MyTestClass
 The `PathHelper.CreateTemporaryFilePath` method provides utilities for creating a temporary file path in running tests.  
 By default, the path is named by the test name in the directory pointed to by [Application.temporaryCachePath](https://docs.unity3d.com/ScriptReference/Application-temporaryCachePath.html).
 
+Usage:
+
+```csharp
+namespace MyNamespace
+{
+  [TestFixture]
+  public class MyTestClass
+  {
+    [Test]
+    public void MyTestMethod()
+    {
+      var path = PathHelper.CreateTemporaryFilePath(extension: "txt");
+      File.WriteAllText(path, "test file");
+      // write to {Application.temporaryCachePath}/MyTestMethod.txt
+
+      var path2 = PathHelper.CreateTemporaryFilePath(extension: "txt");
+      File.WriteAllText(path2, "test file");
+      // write to {Application.temporaryCachePath}/MyTestMethod_1.txt
+    }
+
+    [Test]
+    public void MyTestMethod2()
+    {
+      var path = PathHelper.CreateTemporaryFilePath(namespaceToDirectory: true);
+      File.WriteAllText(path, "test file");
+      // write to {Application.temporaryCachePath}/MyNamespace/MyTestClass/MyTestMethod2
+    }
+  }
+}
+```
+
 
 
 ### Editor Extensions

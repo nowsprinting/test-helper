@@ -1,7 +1,6 @@
 // Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
-using System.Globalization;
 using System.IO;
 using NUnit.Framework;
 using UnityEngine;
@@ -111,11 +110,25 @@ namespace TestHelper.RuntimeInternals
         public void CreateTemporaryFilePath_Parameterized_ReplaceSpecialCharacters(int arg1, float arg2, string arg3)
         {
             var actual = PathHelper.CreateTemporaryFilePath();
-            var arg2String = arg2.ToString(CultureInfo.InvariantCulture).Replace('.', '-') + "f";
             var expected = Path.Combine(
                 Application.temporaryCachePath,
-                $"{nameof(CreateTemporaryFilePath_Parameterized_ReplaceSpecialCharacters)}_{arg1}-{arg2String}-{arg3}_");
+                $"{nameof(CreateTemporaryFilePath_Parameterized_ReplaceSpecialCharacters)}_2-3.45f-string_");
             Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [TestCase("Invalid/Separator")]
+        [TestCase("Invalid\\Separator")]
+        [TestCase("Invalid¥Separator")]
+        [TestCase("Invalid:Separator")]
+        [TestCase("Invalid;Separator")]
+        public void CreateTemporaryFilePath_Parameterized_RemoveIllegalCharacters(string s)
+        {
+            var actual = PathHelper.CreateTemporaryFilePath();
+            var expected = Path.Combine(
+                Application.temporaryCachePath,
+                $"{nameof(CreateTemporaryFilePath_Parameterized_RemoveIllegalCharacters)}_InvalidSeparator_");
+            Assert.That(actual, Does.StartWith(expected));
+            // Note: The filename will remain the same and append a subscript, so it is asserted with StartWith.
         }
 
         private int _repeatCounter;
