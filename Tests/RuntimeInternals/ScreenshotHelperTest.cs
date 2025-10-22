@@ -197,6 +197,20 @@ namespace TestHelper.RuntimeInternals
 
 #if UNITY_2023_1_OR_NEWER
         [Test]
+        [GameViewResolution(GameViewResolution.VGA)]
+        [LoadScene(TestScene)]
+        public async Task TakeScreenshotAsPngBytesAsync_ReturnsPngBytes()
+        {
+            var png = await ScreenshotHelper.TakeScreenshotAsPngBytesAsync();
+
+            var texture = new Texture2D(0, 0);
+            texture.LoadImage(png);
+
+            Assert.That(texture.width, Is.EqualTo(640));
+            Assert.That(texture.height, Is.EqualTo(480));
+        }
+
+        [Test]
         [LoadScene(TestScene)]
         public async Task TakeScreenshotAsync_SaveToDefaultPath()
         {

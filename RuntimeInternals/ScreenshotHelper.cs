@@ -111,6 +111,35 @@ namespace TestHelper.RuntimeInternals
             float scale = 1.0f,
             [CallerMemberName] string callerMemberName = null)
         {
+            var png = await TakeScreenshotAsPngBytesAsync(scale);
+
+            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
+            await File.WriteAllBytesAsync(path, png);
+
+#if UNITY_INCLUDE_TESTS
+            if (TestContext.CurrentTestExecutionContext != null)
+            {
+                var properties = TestContext.CurrentContext.Test.Properties;
+                properties.Add("Screenshot", path);
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Take a screenshot.
+        /// </summary>
+        /// <remarks>
+        /// Limitations:
+        /// <list type="bullet">
+        ///     <item>Do not call from Edit Mode tests.</item>
+        ///     <item>Must be called from main thread.</item>
+        ///     <item><c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
+        /// </list>
+        /// </remarks>
+        /// <param name="scale">Save screenshot scale factor.</param>
+        /// <returns>PNG image byte array.</returns>
+        public static async Awaitable<byte[]> TakeScreenshotAsPngBytesAsync(float scale = 1.0f)
+        {
             if (Camera.main)
             {
                 Camera.main.forceIntoRenderTexture = true;
@@ -118,7 +147,6 @@ namespace TestHelper.RuntimeInternals
 
             await Awaitable.EndOfFrameAsync(); // Required to take screenshots
 
-            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
             byte[] png;
 
             if (SystemInfo.supportsAsyncGPUReadback)
@@ -146,15 +174,7 @@ namespace TestHelper.RuntimeInternals
                 Object.Destroy(texture);
             }
 
-            await File.WriteAllBytesAsync(path, png);
-
-#if UNITY_INCLUDE_TESTS
-            if (TestContext.CurrentTestExecutionContext != null)
-            {
-                var properties = TestContext.CurrentContext.Test.Properties;
-                properties.Add("Screenshot", path);
-            }
-#endif
+            return png;
         }
 
         private static readonly Vector2 s_blitScale = SystemInfo.graphicsUVStartsAtTop
