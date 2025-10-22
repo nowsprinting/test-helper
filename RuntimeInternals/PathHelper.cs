@@ -126,7 +126,7 @@ namespace TestHelper.RuntimeInternals
                     .Replace("¥", "")
                     .Replace(":", "")
                     .Replace(";", "");
-                // Note: Similar to the file name created under ActualImages in the Graphics Test Framework package, but also replace the period.
+                // Note: Similar to the file name created under ActualImages in the Graphics Test Framework package.
             }
             else
             {
