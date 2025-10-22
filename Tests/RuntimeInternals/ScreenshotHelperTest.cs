@@ -216,12 +216,20 @@ namespace TestHelper.RuntimeInternals
 
         [Test]
         [LoadScene(TestScene)]
-        public async Task TakeScreenshotAsync_ContinuousCall_SaveToDefaultPath()
+        public async Task TakeScreenshotAsync_ContinuousCall_SaveToEachFile()
         {
             var paths = new string[5];
             for (var i = 0; i < paths.Length; i++)
             {
-                paths[i] = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
+                if (i == 0)
+                {
+                    paths[i] = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
+                }
+                else
+                {
+                    paths[i] = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}_{i}.png");
+                }
+
                 if (File.Exists(paths[i]))
                 {
                     File.Delete(paths[i]);
@@ -230,10 +238,12 @@ namespace TestHelper.RuntimeInternals
 
             for (var i = 0; i < 5; i++)
             {
-                _text.text = $"{TestContext.CurrentContext.Test.Name}_{i}.png";
+                _text.text = $"{TestContext.CurrentContext.Test.Name}_{i}";
                 ScreenshotHelper.TakeScreenshotAsync().AsUniTask().Forget();
                 await UniTask.NextFrame();
             }
+
+            await UniTask.Delay(200);
 
             foreach (var path in paths)
             {

@@ -776,7 +776,7 @@ public class MyTestClass
     public async Task MyTestMethodAsync()
     {
         var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
-        await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner); // Reruired UniTask package
+        await ScreenshotHelper.TakeScreenshot().ToUniTask(coroutineRunner); // Required UniTask package
     }
 
     private class CoroutineRunner : MonoBehaviour { }
