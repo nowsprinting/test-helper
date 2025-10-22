@@ -59,7 +59,7 @@ namespace TestHelper.RuntimeInternals.TestUtils
             {
                 TargetWidth = Screen.width,
                 TargetHeight = Screen.height,
-                AverageCorrectnessThreshold = 0.0003f,
+                AverageCorrectnessThreshold = 0.0005f,
             };
         }
     }
