@@ -20,16 +20,15 @@ namespace TestHelper.RuntimeInternals
     {
         /// <summary>
         /// Take a screenshot and save it to file.
-        /// </summary>
-        /// <remarks>
+        /// <p/>
         /// Limitations:
         /// <list type="bullet">
         ///     <item>Do not call from Edit Mode tests.</item>
         ///     <item>Must be called from main thread.</item>
-        ///     <item><c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
-        ///     <item><c>UniTask</c> is required to be used from the async method. And also needs coroutineRunner (any <c>MonoBehaviour</c>) because <c>TakeScreenshot</c> method uses <c>WaitForEndOfFrame</c> inside. See more information: <see href="https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation"/></item>
+        ///     <item><c>GameView</c> must be visible. Use the <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
+        ///     <item><c>UniTask</c> is required to be used from the async method. And also needs coroutineRunner (any <c>MonoBehaviour</c>) because this method uses <c>WaitForEndOfFrame</c> inside. See more information: <see href="https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation"/></item>
         /// </list>
-        /// </remarks>
+        /// </summary>
         /// <param name="directory">Directory to save screenshots.
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
@@ -41,6 +40,14 @@ namespace TestHelper.RuntimeInternals
         /// <param name="logFilepath">Output filename to Debug.Log</param>
         /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true and filename omitted.</param>
         /// <param name="callerMemberName">Used as the default file name when called outside a test context</param>
+        /// <remarks>
+        /// When using MacOS with Metal Graphics API, the following warning appears at runtime. It seems that we should just ignore it.
+        /// <list type="bullet">
+        ///     <item>Ignoring depth surface load action as it is memoryless</item>
+        ///     <item>Ignoring depth surface store action as it is memoryless</item>
+        /// </list>
+        /// </remarks>
+        /// <seealso href="https://stackoverflow.com/questions/66062201/unity-warning-ignoring-depth-surface-load-action-as-it-is-memoryless"/>
         public static IEnumerator TakeScreenshot(
             string directory = null,
             string filename = null,
@@ -86,15 +93,14 @@ namespace TestHelper.RuntimeInternals
 #if UNITY_2023_1_OR_NEWER
         /// <summary>
         /// Take a screenshot and save it to file.
-        /// </summary>
-        /// <remarks>
+        /// <p/>
         /// Limitations:
         /// <list type="bullet">
         ///     <item>Do not call from Edit Mode tests.</item>
         ///     <item>Must be called from main thread.</item>
-        ///     <item><c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
+        ///     <item><c>GameView</c> must be visible. Use the <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
         /// </list>
-        /// </remarks>
+        /// </summary>
         /// <param name="directory">Directory to save screenshots.
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
@@ -127,15 +133,14 @@ namespace TestHelper.RuntimeInternals
 
         /// <summary>
         /// Take a screenshot.
-        /// </summary>
-        /// <remarks>
+        /// <p/>
         /// Limitations:
         /// <list type="bullet">
         ///     <item>Do not call from Edit Mode tests.</item>
         ///     <item>Must be called from main thread.</item>
-        ///     <item><c>GameView</c> must be visible. Use <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
+        ///     <item><c>GameView</c> must be visible. Use the <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
         /// </list>
-        /// </remarks>
+        /// </summary>
         /// <param name="scale">Save screenshot scale factor.</param>
         /// <returns>PNG image byte array.</returns>
         public static async Awaitable<byte[]> TakeScreenshotAsPngBytesAsync(float scale = 1.0f)
