@@ -399,6 +399,12 @@ public class MyTestClass
 > [!NOTE]  
 > If you want to take screenshots at any time, use the [ScreenshotHelper](#screenshothelper) class.
 
+> [!NOTE]  
+> When using MacOS with Metal Graphics API, the following warning appears at runtime. It seems that we should just ignore it.
+> see: https://stackoverflow.com/questions/66062201/unity-warning-ignoring-depth-surface-load-action-as-it-is-memoryless
+> - Ignoring depth surface load action as it is memoryless
+> - Ignoring depth surface store action as it is memoryless
+
 
 #### TimeScale
 
@@ -800,6 +806,12 @@ public class MyTestClass
 
 > [!NOTE]  
 > If you take multiple screenshots in one method, a counter is inserted to prevent overwriting.
+
+> [!NOTE]  
+> When using `TakeScreenshot` method on MacOS with Metal Graphics API, the following warning appears at runtime. It seems that we should just ignore it.
+> see: https://stackoverflow.com/questions/66062201/unity-warning-ignoring-depth-surface-load-action-as-it-is-memoryless
+> - Ignoring depth surface load action as it is memoryless
+> - Ignoring depth surface store action as it is memoryless
 
 
 #### PathHelper
