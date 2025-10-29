@@ -292,7 +292,6 @@ namespace TestHelper.RuntimeInternals
         [GameViewResolution(GameViewResolution.VGA)]
         [GizmosShowOnGameView(false)]
         [LoadScene(TestScene)]
-        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         public async Task TakeScreenshotAsync_WithScale_ImagesMatch()
         {
             var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.png");
