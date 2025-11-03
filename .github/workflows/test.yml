@@ -32,7 +32,7 @@ jobs:
   test:
     if: github.event.pull_request.head.repo.fork == false # Skip on public fork, because can not read secrets.
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
       contents: read
       checks: write
@@ -55,24 +55,17 @@ jobs:
             testMode: Standalone  # run tests on player
 
     steps:
-      - name: Crete project for tests
-        uses: nowsprinting/create-unity-project-action@fab595f04a568aa51a94b28b7202b861b0f7d8b2 # v3
+      - name: Create project for test
+        uses: nowsprinting/create-unity-project-action@e6a2ccac5eaa666d219b4bee94781bfb3b768c86 # v3
         with:
-          project-path: UnityProject~
-
-      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
-        with:
-          path: ${{ env.CREATED_PROJECT_PATH }}/Library
-          key: Library-linux-${{ matrix.unityVersion }}-${{ github.ref }}
-          restore-keys: |
-            Library-linux-${{ matrix.unityVersion }}
-            Library-linux
-            Library
+          project-path: .
 
       - name: Get package checkout path
         run: |
           name=com.$(echo "${GITHUB_REPOSITORY}" | sed 's/\//\./g')
           echo "PACKAGE_PATH=$CREATED_PROJECT_PATH/Packages/$name" >> "$GITHUB_ENV"
+          # In Linux editor, there is a problem that assets in local packages cannot be found with `AssetDatabase.FindAssets`.
+          # As a workaround, I have made it into an embedded package.
 
       - name: Checkout repository as embedded package
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -80,28 +73,42 @@ jobs:
           submodules: false
           lfs: false
           path: ${{ env.PACKAGE_PATH }}
-          # In Linux editor, there is a problem that assets in local packages cannot be found with `AssetDatabase.FindAssets`.
-          # As a workaround, I have made it into an embedded package.
 
-      - name: Install dependencies
+      - name: Restore cache
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
+        with:
+          path: ${{ env.CREATED_PROJECT_PATH }}/Library
+          key: Library-${{ runner.os }}-${{ matrix.unityVersion }}-${{ hashFiles(format('{0}/package.json', env.PACKAGE_PATH)) }}
+          restore-keys: |
+            Library-${{ runner.os }}-${{ matrix.unityVersion }}-
+            Library-${{ runner.os }}-
+            Library-
+
+      - name: Install dependent UPM packages
         run: |
           npm install -g openupm-cli
           openupm add -f com.unity.test-framework@stable
-          openupm add -f com.unity.testtools.codecoverage
           openupm add -f com.cysharp.unitask
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
 
-      - name: Install Graphics Test Framework
+      - name: Install codecoverage package
         run: |
-          openupm add -f com.unity.testframework.graphics
+          openupm add -f com.unity.testtools.codecoverage
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
-        if: ${{ matrix.vrt }}
+        if: ${{ matrix.octocov }}
 
       - name: Set coverage assembly filters
         run: |
           assemblies=$(find ${{ env.PACKAGE_PATH }} -name "*.asmdef" | sed -e s/.*\\//\+/ | sed -e s/\\.asmdef// | sed -e s/^.*\\.Tests//)
           # shellcheck disable=SC2001,SC2048,SC2086
           echo "assembly_filters=$(echo ${assemblies[*]} | sed -e s/\ /,/g),+<assets>,-*.Tests" >> "$GITHUB_ENV"
+        if: ${{ matrix.octocov }}
+
+      - name: Install Graphics Test Framework
+        run: |
+          openupm add -f com.unity.testframework.graphics
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+        if: ${{ matrix.vrt }}
 
       - name: Set license secret key
         run: echo "secret_key=UNITY_LICENSE_$(echo ${{ matrix.unityVersion }} | cut -c 1-4)" >> "$GITHUB_ENV"
@@ -113,7 +120,8 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}  # Default is `auto`
           checkName: test result (${{ matrix.unityVersion }}, ${{ matrix.testMode }})
           projectPath: ${{ env.CREATED_PROJECT_PATH }}
-          customParameters: -testCategory "!IgnoreCI" -retry 5 -testHelperScreenshotDirectory /github/workspace/artifacts/Screenshots
+          customParameters: -retry 5 -testCategory "!IgnoreCI" -testHelperScreenshotDirectory /github/workspace/artifacts/Screenshots
+          # Note: `/github/workspace/artifacts` is the artifacts path inside the game-ci container
           coverageOptions: generateAdditionalMetrics;generateTestReferences;generateHtmlReport;generateAdditionalReports;dontClear;assemblyFilters:${{ env.assembly_filters }}
           # see: https://docs.unity3d.com/Packages/com.unity.testtools.codecoverage@1.2/manual/CoverageBatchmode.html
           testMode: ${{ matrix.testMode }}
@@ -143,17 +151,3 @@ jobs:
             ${{ steps.test.outputs.artifactsPath }}
             ${{ steps.test.outputs.coveragePath }}
         if: always()
-
-  notify:
-    needs: test
-    if: github.event.pull_request.head.repo.fork == false # Skip on public fork, because can not read secrets.
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      actions: read
-
-    steps:
-      - uses: Gamesight/slack-workflow-status@68bf00d0dbdbcb206c278399aa1ef6c14f74347a # v1.3.0
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
