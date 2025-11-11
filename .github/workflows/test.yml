@@ -91,6 +91,12 @@ jobs:
           openupm add -f com.cysharp.unitask
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
 
+      - name: Install Graphics Test Framework
+        run: |
+          openupm add -f com.unity.testframework.graphics
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+        if: ${{ matrix.vrt }}
+
       - name: Install codecoverage package
         run: |
           openupm add -f com.unity.testtools.codecoverage
@@ -104,12 +110,6 @@ jobs:
           echo "assembly_filters=$(echo ${assemblies[*]} | sed -e s/\ /,/g),+<assets>,-*.Tests" >> "$GITHUB_ENV"
         if: ${{ matrix.octocov }}
 
-      - name: Install Graphics Test Framework
-        run: |
-          openupm add -f com.unity.testframework.graphics
-        working-directory: ${{ env.CREATED_PROJECT_PATH }}
-        if: ${{ matrix.vrt }}
-
       - name: Set license secret key
         run: echo "secret_key=UNITY_LICENSE_$(echo ${{ matrix.unityVersion }} | cut -c 1-4)" >> "$GITHUB_ENV"
 
@@ -118,7 +118,7 @@ jobs:
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           unityVersion: ${{ matrix.unityVersion }}  # Default is `auto`
-          checkName: test result (${{ matrix.unityVersion }}, ${{ matrix.testMode }})
+          checkName: test (${{ matrix.unityVersion }}, ${{ matrix.testMode }})
           projectPath: ${{ env.CREATED_PROJECT_PATH }}
           customParameters: -retry 5 -testCategory "!IgnoreCI" -testHelperScreenshotDirectory /github/workspace/artifacts/Screenshots
           # Note: `/github/workspace/artifacts` is the artifacts path inside the game-ci container
