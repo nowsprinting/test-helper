@@ -171,6 +171,8 @@ namespace TestHelper.RuntimeInternals
 
                 using var imageBytes = request.GetData<byte>();
                 var imageByteArray = imageBytes.ToArray();
+                // Note: Reason for not using ArrayPool: NativeArray.CopyTo throws "ArgumentException: source and destination length must be the same" in Unity 6000.2.6f1.
+
                 await Awaitable.BackgroundThreadAsync();
                 png = ImageConversion.EncodeArrayToPNG(imageByteArray, format, (uint)width, (uint)height);
                 await Awaitable.MainThreadAsync();
