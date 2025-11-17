@@ -5,7 +5,7 @@
 [![openupm](https://img.shields.io/npm/v/com.nowsprinting.test-helper?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.nowsprinting.test-helper/)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nowsprinting/test-helper)
 
-Custom attributes, comparers, and constraints for writing more expressive tests in [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest).  
+Custom attributes, constraints, and comparers for writing more expressive tests in [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest).  
 Required Unity 2019 LTS or later.
 
 
@@ -460,6 +460,36 @@ public class MyTestClass
 
 
 
+### Constraints
+
+#### Destroyed
+
+`DestroyedConstraint` tests that a `UnityEngine.Object` is destroyed.
+
+Usage:
+
+```csharp
+using Is = TestHelper.Constraints.Is;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public void MyTestMethod()
+    {
+        var actual = GameObject.Find("Cube");
+        GameObject.DestroyImmediate(actual);
+
+        Assert.That(actual, Is.Destroyed);
+    }
+}
+```
+
+> [!NOTE]  
+> When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
+
+
+
 ### Comparers
 
 #### XmlComparer
@@ -495,36 +525,6 @@ public class MyTestClass
     }
 }
 ```
-
-
-
-### Constraints
-
-#### Destroyed
-
-`DestroyedConstraint` tests that a `UnityEngine.Object` is destroyed.
-
-Usage:
-
-```csharp
-using Is = TestHelper.Constraints.Is;
-
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    public void MyTestMethod()
-    {
-        var actual = GameObject.Find("Cube");
-        GameObject.DestroyImmediate(actual);
-
-        Assert.That(actual, Is.Destroyed);
-    }
-}
-```
-
-> [!NOTE]  
-> When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
 
 
 
