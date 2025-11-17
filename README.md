@@ -462,26 +462,6 @@ public class MyTestClass
 
 ### Comparers
 
-#### GameObjectNameComparer
-
-`GameObjectNameComparer` is a NUnit test comparer class that compares two `GameObject` by name.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    public void MyTestMethod()
-    {
-        var actual = GameObject.FindObjectsOfType<GameObject>();
-        Assert.That(actual, Does.Contain(new GameObject("test")).Using(new GameObjectNameComparer()));
-    }
-}
-```
-
-
 #### XDocumentComparer
 
 `XDocumentComparer` is a NUnit test comparer class that loosely compares `XDocument`.
