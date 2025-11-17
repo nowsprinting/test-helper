@@ -170,7 +170,10 @@ namespace TestHelper.RuntimeInternals
                 RenderTexture.ReleaseTemporary(scaledTexture);
 
                 using var imageBytes = request.GetData<byte>();
-                png = ImageConversion.EncodeArrayToPNG(imageBytes.ToArray(), format, (uint)width, (uint)height);
+                var imageByteArray = imageBytes.ToArray();
+                await Awaitable.BackgroundThreadAsync();
+                png = ImageConversion.EncodeArrayToPNG(imageByteArray, format, (uint)width, (uint)height);
+                await Awaitable.MainThreadAsync();
             }
             else
             {
