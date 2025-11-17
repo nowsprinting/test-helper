@@ -11,6 +11,9 @@ namespace TestHelper.Comparers
     /// <summary>
     /// Compare two <c>GameObject</c> by name.
     /// </summary>
+    /// <remarks>
+    /// This class is reference implementation for custom comparer.
+    /// </remarks>
     /// <example>
     /// <code>
     /// [TestFixture]

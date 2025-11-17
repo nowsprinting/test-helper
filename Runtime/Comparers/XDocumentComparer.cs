@@ -10,8 +10,8 @@ using System.Xml.Linq;
 namespace TestHelper.Comparers
 {
     /// <summary>
-    /// Compare two <c>XDocument</c> loosely.
-    ///
+    /// Compare two <see cref="XDocument"/> loosely.
+    /// <br/>
     /// It only compares the attributes and values of each element in the document unordered.
     /// XML declarations and comments are ignored.
     /// </summary>

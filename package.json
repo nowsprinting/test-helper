@@ -1,6 +1,6 @@
 {
   "name": "com.nowsprinting.test-helper",
-  "description": "Custom attributes, comparers, and constraints for writing more expressive tests in Unity Test Framework",
+  "description": "Custom attributes, constraints, and comparers for writing more expressive tests in Unity Test Framework",
   "version": "1.3.1",
   "author": "Koji Hasegawa <hasegawa@hubsys.co.jp> (https://github.com/nowsprinting)",
   "category": "Unity Test Framework",

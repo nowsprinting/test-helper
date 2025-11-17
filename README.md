@@ -5,7 +5,7 @@
 [![openupm](https://img.shields.io/npm/v/com.nowsprinting.test-helper?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.nowsprinting.test-helper/)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nowsprinting/test-helper)
 
-Custom attributes, comparers, and constraints for writing more expressive tests in [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest).  
+Custom attributes, constraints, and comparers for writing more expressive tests in [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest).  
 Required Unity 2019 LTS or later.
 
 
@@ -460,54 +460,37 @@ public class MyTestClass
 
 
 
+### Constraints
+
+#### Destroyed
+
+`DestroyedConstraint` tests that a `UnityEngine.Object` is destroyed.
+
+Usage:
+
+```csharp
+using Is = TestHelper.Constraints.Is;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public void MyTestMethod()
+    {
+        var actual = GameObject.Find("Cube");
+        GameObject.DestroyImmediate(actual);
+
+        Assert.That(actual, Is.Destroyed);
+    }
+}
+```
+
+> [!NOTE]  
+> When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
+
+
+
 ### Comparers
-
-#### GameObjectNameComparer
-
-`GameObjectNameComparer` is a NUnit test comparer class that compares two `GameObject` by name.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    public void MyTestMethod()
-    {
-        var actual = GameObject.FindObjectsOfType<GameObject>();
-        Assert.That(actual, Does.Contain(new GameObject("test")).Using(new GameObjectNameComparer()));
-    }
-}
-```
-
-
-#### XDocumentComparer
-
-`XDocumentComparer` is a NUnit test comparer class that loosely compares `XDocument`.
-
-It only compares the attributes and values of each element in the document unordered.
-XML declarations and comments are ignored.
-
-Usage:
-
-```csharp
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    public void MyTestMethod()
-    {
-        var x = XDocument.Parse(@"<root><child>value1</child><child attribute=""attr"">value2</child></root>");
-        var y = XDocument.Parse(@"<?xml version=""1.0"" encoding=""utf-8""?>
-<root><!-- comment --><child attribute=""attr"">value2</child><!-- comment --><child>value1</child></root>");
-        // with XML declaration, comments, and different order
-
-        Assert.That(x, Is.EqualTo(y).Using(new XDocumentComparer()));
-    }
-}
-```
-
 
 #### XmlComparer
 
@@ -542,36 +525,6 @@ public class MyTestClass
     }
 }
 ```
-
-
-
-### Constraints
-
-#### Destroyed
-
-`DestroyedConstraint` tests that a `UnityEngine.Object` is destroyed.
-
-Usage:
-
-```csharp
-using Is = TestHelper.Constraints.Is;
-
-[TestFixture]
-public class MyTestClass
-{
-    [Test]
-    public void MyTestMethod()
-    {
-        var actual = GameObject.Find("Cube");
-        GameObject.DestroyImmediate(actual);
-
-        Assert.That(actual, Is.Destroyed);
-    }
-}
-```
-
-> [!NOTE]  
-> When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
 
 
 
