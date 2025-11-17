@@ -549,7 +549,7 @@ public class MyTestClass
 
 #### Destroyed
 
-`DestroyedConstraint` tests that a `GameObject` is destroyed.
+`DestroyedConstraint` tests that a `UnityEngine.Object` is destroyed.
 
 Usage:
 
