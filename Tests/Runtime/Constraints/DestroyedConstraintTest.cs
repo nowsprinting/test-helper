@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 Koji Hasegawa.
+﻿// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -35,7 +35,7 @@ namespace TestHelper.Constraints
             {
                 Assert.That(actual, Is.Destroyed);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <Foo (UnityEngine.GameObject)>{Environment.NewLine}"));
+                $"  Expected: destroyed UnityEngine.Object{Environment.NewLine}  But was:  <Foo (UnityEngine.GameObject)>{Environment.NewLine}"));
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace TestHelper.Constraints
                 // ReSharper disable once ExpressionIsAlwaysNull
                 Assert.That(actual, Is.Destroyed);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  null{Environment.NewLine}"));
+                $"  Expected: destroyed UnityEngine.Object{Environment.NewLine}  But was:  null{Environment.NewLine}"));
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace TestHelper.Constraints
             {
                 Assert.That(actual, Is.Destroyed);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: destroyed GameObject{Environment.NewLine}  But was:  <string.Empty>{Environment.NewLine}"));
+                $"  Expected: destroyed UnityEngine.Object{Environment.NewLine}  But was:  <string.Empty>{Environment.NewLine}"));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace TestHelper.Constraints
             {
                 Assert.That(actual, Is.Not.Destroyed()); // Note: Use it in method style when with operators
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: not destroyed GameObject{Environment.NewLine}  But was:  <null>{Environment.NewLine}"));
+                $"  Expected: not destroyed UnityEngine.Object{Environment.NewLine}  But was:  <null>{Environment.NewLine}"));
         }
 
         [Test]

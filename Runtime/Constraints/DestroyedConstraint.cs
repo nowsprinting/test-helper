@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 Koji Hasegawa.
+﻿// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using NUnit.Framework.Constraints;
@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TestHelper.Constraints
 {
     /// <summary>
-    /// An NUnit test constraint class to destroyed <c>GameObject</c>.
+    /// An NUnit test constraint class to destroyed <see cref="UnityEngine.Object"/>.
     /// </summary>
     /// <example>
     /// <code>
@@ -30,14 +30,14 @@ namespace TestHelper.Constraints
     {
         public DestroyedConstraint(params object[] args) : base(args)
         {
-            base.Description = "destroyed GameObject";
+            base.Description = "destroyed UnityEngine.Object";
         }
 
         public override ConstraintResult ApplyTo(object actual)
         {
-            if (actual is GameObject actualGameObject)
+            if (actual is Object actualObject)
             {
-                return new ConstraintResult(this, actual, (bool)actualGameObject == false);
+                return new ConstraintResult(this, actual, !(bool)actualObject);
             }
 
             return new ConstraintResult(this, actual, false);
