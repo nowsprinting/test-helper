@@ -8,7 +8,7 @@ namespace TestHelper.Comparers
 {
     /// <summary>
     /// Compare two <c>string</c> as an XML document.
-    ///
+    /// <br/>
     /// It only compares the attributes and values of each element in the document unordered.
     /// XML declarations and comments are ignored, and white spaces, tabs, and newlines before and after the value are ignored.
     /// </summary>
