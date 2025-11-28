@@ -16,8 +16,8 @@ namespace TestHelper.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public class TimeScaleAttribute : NUnitAttribute, IOuterUnityTestAction
     {
-        private readonly float _beforeTimeScale;
         private readonly float _timeScale;
+        private float _beforeTimeScale;
 
         /// <summary>
         /// Change the <c>Time.timeScale</c> during this test running.
@@ -25,13 +25,13 @@ namespace TestHelper.Attributes
         /// <param name="timeScale">The scale at which time passes.</param>
         public TimeScaleAttribute(float timeScale)
         {
-            _beforeTimeScale = Time.timeScale;
             _timeScale = timeScale;
         }
 
         /// <inheritdoc />
         public IEnumerator BeforeTest(ITest test)
         {
+            _beforeTimeScale = Time.timeScale;
             Time.timeScale = _timeScale;
             yield return null;
         }

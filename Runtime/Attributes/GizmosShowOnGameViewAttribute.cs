@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -17,7 +17,7 @@ namespace TestHelper.Attributes
     public class GizmosShowOnGameViewAttribute : NUnitAttribute, IOuterUnityTestAction
     {
         private readonly bool _show;
-        private readonly bool _beforeShow;
+        private bool _beforeShow;
 
         /// <summary>
         /// Show/ hide Gizmos on <c>GameView</c> during this test running.
@@ -26,12 +26,12 @@ namespace TestHelper.Attributes
         public GizmosShowOnGameViewAttribute(bool show = true)
         {
             _show = show;
-            _beforeShow = GameViewControlHelper.GetGizmos();
         }
 
         /// <inheritdoc />
         public IEnumerator BeforeTest(ITest test)
         {
+            _beforeShow = GameViewControlHelper.GetGizmos();
             GameViewControlHelper.SetGizmos(_show);
             yield return null;
         }
