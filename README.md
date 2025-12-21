@@ -334,7 +334,7 @@ public class MyTestClass
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.mp4".
 You can specify the save directory by arguments.
-Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
+Directory can also be specified by command line argument `-testHelperScreenshotDirectory`.
 
 This attribute can be placed on the test method only.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
@@ -370,7 +370,7 @@ public class MyTestClass
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.png".
 You can specify the save directory and/or filename by arguments.
-Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
+Directory can also be specified by command line argument `-testHelperScreenshotDirectory`.
 
 This attribute can be placed on the test method only.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
@@ -492,6 +492,38 @@ public class MyTestClass
 
 ### Comparers
 
+#### FlipTexture2dEqualityComparer (optional)
+
+`FlipTexture2dEqualityComparer` is a NUnit test comparer class that compares two `Texture2D` using [FLIP](https://github.com/NVlabs/flip).
+
+Output error map image file if assertion fails.
+Default output path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.diff.png".
+You can specify the output directory and/or filename by constructor arguments.
+Directory can also be specified by command line argument `-testHelperScreenshotDirectory`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public async Task MyTestMethod()
+    {
+        await Awaitable.EndOfFrameAsync();
+        var actual = ScreenCapture.CaptureScreenshotAsTexture();
+        var expected = AssetDatabase.LoadAssetAtPath<Texture2D>(ExpectedImagePath);
+
+        var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f);
+        Assert.That(actual, Is.EqualTo(expected).Using(comparer));
+    }
+}
+```
+
+> [!IMPORTANT]  
+> `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [Flip.Binding.CSharp](https://nuget.org/Flip.Binding.CSharp) NuGet package v1.7.0 or newer.
+> Also, add scripting define symbol `ENABLE_FLIP` if not installed via OpenUPM (UnityNuGet).
+
 #### XmlComparer
 
 `XmlComparer` is a NUnit test comparer class that compares two `string` as an XML document.
@@ -508,8 +540,8 @@ public class MyTestClass
     [Test]
     public void MyTestMethod()
     {
-        var x = @"<root><child>value1</child><child attribute=""attr"">value2</child></root>";
-        var y = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        var actual = @"<root><child>value1</child><child attribute=""attr"">value2</child></root>";
+        var expected = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <root>
   <!-- comment -->
   <child attribute=""attr"">
@@ -521,7 +553,7 @@ public class MyTestClass
   </child>
 </root>";
 
-        Assert.That(x, Is.EqualTo(y).Using(new XmlComparer()));
+        Assert.That(actual, Is.EqualTo(expected).Using(new XmlComparer()));
     }
 }
 ```
@@ -618,7 +650,7 @@ Experimental and Statistical Summary:
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Statistics/`TestContext.Test.Name`.png".
 You can specify the save directory and/or filename by arguments.
-Directory can also be specified by command line arguments `-testHelperStatisticsDirectory`.
+Directory can also be specified by command line argument `-testHelperStatisticsDirectory`.
 
 Usage:
 
@@ -715,7 +747,7 @@ public class MyTestClass
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.png".
 (Replace `TestContext.Test.Name` to caller method name when called outside a test context.)
 You can specify the save directory and/or filename by arguments.
-Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
+Directory can also be specified by command line argument `-testHelperScreenshotDirectory`.
 
 Usage:
 

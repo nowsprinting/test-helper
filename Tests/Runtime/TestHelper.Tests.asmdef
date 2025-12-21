@@ -13,18 +13,19 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "Flip.Binding.CSharp.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
     "versionDefines": [
-      {
-        "name": "jp.co.cyberagent.instant-replay",
-        "expression": "1.0.0",
-        "define": "ENABLE_INSTANT_REPLAY"
-      }
+        {
+            "name": "jp.co.cyberagent.instant-replay",
+            "expression": "1.0.0",
+            "define": "ENABLE_INSTANT_REPLAY"
+        }
     ],
     "noEngineReferences": false
 }
