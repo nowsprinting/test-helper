@@ -521,8 +521,8 @@ public class MyTestClass
 ```
 
 > [!IMPORTANT]  
-> `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [Flip.Binding.CSharp](https://nuget.org/Flip.Binding.CSharp) NuGet package v1.7.0 or newer.
-> Also, add scripting define symbol `ENABLE_FLIP` if not installed via OpenUPM (UnityNuGet).
+> `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [FlipBinding.CSharp](https://nuget.org/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
+> Also, add scripting define symbol `ENABLE_FLIP_BINDING` if not installed via OpenUPM (UnityNuGet).
 
 #### XmlComparer
 

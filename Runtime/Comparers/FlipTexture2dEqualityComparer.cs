@@ -1,10 +1,10 @@
 // Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
-#if ENABLE_FLIP
+#if ENABLE_FLIP_BINDING
 using System.Collections.Generic;
 using System.IO;
-using Flip.Binding.CSharp;
+using FlipBinding.CSharp;
 using TestHelper.RuntimeInternals;
 using UnityEngine;
 
@@ -86,7 +86,7 @@ namespace TestHelper.Comparers
             var referenceRgb = ConvertToRgbArray(y);
             var testRgb = ConvertToRgbArray(x);
 
-            var result = Flip.Binding.CSharp.Flip.Evaluate(
+            var result = Flip.Evaluate(
                 referenceRgb,
                 testRgb,
                 y.width,

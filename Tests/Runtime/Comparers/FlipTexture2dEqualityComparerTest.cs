@@ -1,7 +1,7 @@
 // Copyright (c) 2023-2025 Koji Hasegawa.
 // This software is released under the MIT License.
 
-#if ENABLE_FLIP
+#if ENABLE_FLIP_BINDING
 using System.IO;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
