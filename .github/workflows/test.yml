@@ -91,9 +91,9 @@ jobs:
           openupm add -f com.cysharp.unitask
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
 
-      - name: Install Graphics Test Framework
+      - name: Install FlipBinding.CSharp package for visual regression testing
         run: |
-          openupm add -f com.unity.testframework.graphics
+          openupm add -f org.nuget.flipbinding.csharp
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
         if: ${{ matrix.vrt }}
 
