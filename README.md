@@ -521,7 +521,7 @@ public class MyTestClass
 ```
 
 > [!IMPORTANT]  
-> `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [FlipBinding.CSharp](https://nuget.org/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
+> `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
 > Also, add scripting define symbol `ENABLE_FLIP_BINDING` if not installed via OpenUPM (UnityNuGet).
 
 #### XmlComparer
@@ -940,8 +940,9 @@ UNITY_VERSION=2019.4.40f1 make -k test
 
 > [!TIP]  
 > To run all tests, you need to install the following packages in your project:
-> - [Graphics Test Framework](https://docs.unity3d.com/Packages/com.unity.testframework.graphics@latest)
-> - [UniTask](https://github.com/Cysharp/UniTask)
+> - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or newer.
+> - [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
+> - [Instant Replay for Unity](https://github.com/CyberAgentGameEntertainment/InstantReplay) package v1.0.0 or newer
 
 
 ### Release workflow
