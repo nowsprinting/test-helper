@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2025 Koji Hasegawa.
+# Copyright (c) 2023-2026 Koji Hasegawa.
 # This software is released under the MIT License.
 
 name: Test
@@ -41,16 +41,16 @@ jobs:
       fail-fast: false
       matrix:
         unityVersion: # Available versions see: https://game.ci/docs/docker/versions
-          - 2019.4.40f1
-          - 2022.3.62f1
-          - 6000.0.58f1
-          - 6000.2.6f1
+          - 2019.4.41f2
+          - 2022.3.62f3 # Non-Enterprise LTS
+          - 6000.0.65f1
+          - 6000.3.4f1
         testMode:
           - All # run tests in editor
         include:
-          - unityVersion: 6000.2.6f1
+          - unityVersion: 6000.3.4f1
             octocov: true
-          - unityVersion: 6000.2.6f1
+          - unityVersion: 2022.3.62f3 # "Error building Player because scripts are compiling" in 6000.0.65f1 and 6000.3.4f1
             testMode: Standalone  # run tests on player
 
     steps:
