@@ -334,7 +334,7 @@ public class MyTestClass
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.mp4".
 You can specify the save directory by arguments.
-Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
+Directory can also be specified by command line argument `-testHelperScreenshotDirectory`.
 
 This attribute can be placed on the test method only.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
@@ -370,7 +370,7 @@ public class MyTestClass
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.png".
 You can specify the save directory and/or filename by arguments.
-Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
+Directory can also be specified by command line argument `-testHelperScreenshotDirectory`.
 
 This attribute can be placed on the test method only.
 Can be used with sync `Test`, async `Test`, and `UnityTest`.
@@ -492,6 +492,42 @@ public class MyTestClass
 
 ### Comparers
 
+#### FlipTexture2dEqualityComparer (optional)
+
+`FlipTexture2dEqualityComparer` is a NUnit test comparer class that compares two `Texture2D` using [FLIP](https://github.com/NVlabs/flip).
+
+Output error map image file if assertion fails.
+Default output path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.diff.png".
+You can specify the output directory and/or filename by constructor arguments.
+Directory can also be specified by command line argument `-testHelperScreenshotDirectory`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public async Task MyTestMethod()
+    {
+        await Awaitable.EndOfFrameAsync();
+        var actual = ScreenCapture.CaptureScreenshotAsTexture();
+        var expected = AssetDatabase.LoadAssetAtPath<Texture2D>(ExpectedImagePath);
+
+        var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f);
+        Assert.That(actual, Is.EqualTo(expected).Using(comparer));
+    }
+}
+```
+
+> [!IMPORTANT]  
+> `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
+> Also, add scripting define symbol `ENABLE_FLIP_BINDING` if not installed via OpenUPM (UnityNuGet).
+
+> [!NOTE]  
+> When running on the Ubuntu 22.04 image (e.g., [GameCI](https://game.ci/) provided images), the GLIBCXX_3.4.32 (GCC 13+) required by FLIP's native libraries is missing.
+> So, you will need to create a custom Docker image that includes libstdc++6 from GCC 13.
+
 #### XmlComparer
 
 `XmlComparer` is a NUnit test comparer class that compares two `string` as an XML document.
@@ -508,8 +544,8 @@ public class MyTestClass
     [Test]
     public void MyTestMethod()
     {
-        var x = @"<root><child>value1</child><child attribute=""attr"">value2</child></root>";
-        var y = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        var actual = @"<root><child>value1</child><child attribute=""attr"">value2</child></root>";
+        var expected = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <root>
   <!-- comment -->
   <child attribute=""attr"">
@@ -521,7 +557,7 @@ public class MyTestClass
   </child>
 </root>";
 
-        Assert.That(x, Is.EqualTo(y).Using(new XmlComparer()));
+        Assert.That(actual, Is.EqualTo(expected).Using(new XmlComparer()));
     }
 }
 ```
@@ -618,7 +654,7 @@ Experimental and Statistical Summary:
 
 Default save path is "`Application.persistentDataPath`/TestHelper/Statistics/`TestContext.Test.Name`.png".
 You can specify the save directory and/or filename by arguments.
-Directory can also be specified by command line arguments `-testHelperStatisticsDirectory`.
+Directory can also be specified by command line argument `-testHelperStatisticsDirectory`.
 
 Usage:
 
@@ -715,7 +751,7 @@ public class MyTestClass
 Default save path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.png".
 (Replace `TestContext.Test.Name` to caller method name when called outside a test context.)
 You can specify the save directory and/or filename by arguments.
-Directory can also be specified by command line arguments `-testHelperScreenshotDirectory`.
+Directory can also be specified by command line argument `-testHelperScreenshotDirectory`.
 
 Usage:
 
@@ -908,8 +944,9 @@ UNITY_VERSION=2019.4.40f1 make -k test
 
 > [!TIP]  
 > To run all tests, you need to install the following packages in your project:
-> - [Graphics Test Framework](https://docs.unity3d.com/Packages/com.unity.testframework.graphics@latest)
-> - [UniTask](https://github.com/Cysharp/UniTask)
+> - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or newer.
+> - [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
+> - [Instant Replay for Unity](https://github.com/CyberAgentGameEntertainment/InstantReplay) package v1.0.0 or newer
 
 
 ### Release workflow

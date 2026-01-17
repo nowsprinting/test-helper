@@ -50,7 +50,6 @@ jobs:
         include:
           - unityVersion: 6000.2.6f1
             octocov: true
-            vrt: true
           - unityVersion: 6000.2.6f1
             testMode: Standalone  # run tests on player
 
@@ -90,12 +89,6 @@ jobs:
           openupm add -f com.unity.test-framework@stable
           openupm add -f com.cysharp.unitask
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
-
-      - name: Install Graphics Test Framework
-        run: |
-          openupm add -f com.unity.testframework.graphics
-        working-directory: ${{ env.CREATED_PROJECT_PATH }}
-        if: ${{ matrix.vrt }}
 
       - name: Install codecoverage package
         run: |

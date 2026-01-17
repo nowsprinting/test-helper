@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections;
@@ -9,9 +9,10 @@ using TestHelper.Attributes;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
-#if ENABLE_GRAPHICS_TEST_FRAMEWORK
-using TestHelper.RuntimeInternals.TestUtils;
-using UnityEngine.TestTools.Graphics;
+#if ENABLE_FLIP_BINDING
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using TestHelper.Comparers;
 #endif
 #if ENABLE_UNITASK
 using Cysharp.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace TestHelper.RuntimeInternals
 
         private Text _text;
 
-#if ENABLE_GRAPHICS_TEST_FRAMEWORK
+#if ENABLE_FLIP_BINDING
         [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // VGA
         private Texture2D _expectedTakeScreenshotImagesMatch;                             // in Editor
         // Note: In the image inspector window, set the following:
@@ -61,8 +62,8 @@ namespace TestHelper.RuntimeInternals
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            LoadAssetAttribute.LoadAssets(this);           // Must call this method to load assets.
-            VrtUtils.ConvertTexture2dFieldsToARGB32(this); // convert to same as actual texture format
+            LoadAssetAttribute.LoadAssets(this);  // Must call this method to load assets.
+            ConvertTexture2dFieldsToARGB32(this); // convert to same as actual texture format
         }
 #endif
 
@@ -94,7 +95,7 @@ namespace TestHelper.RuntimeInternals
 #endif
         }
 
-#if ENABLE_GRAPHICS_TEST_FRAMEWORK
+#if ENABLE_FLIP_BINDING
         [UnityTest]
         [GameViewResolution(GameViewResolution.VGA)]
         [GizmosShowOnGameView(false)]
@@ -112,9 +113,10 @@ namespace TestHelper.RuntimeInternals
             var expected = Application.isEditor
                 ? _expectedTakeScreenshotImagesMatch
                 : _expectedTakeScreenshotImagesMatchOnPlayer;
-            var actual = VrtUtils.LoadImage(path);
-            var settings = VrtUtils.GetImageComparisonSettings();
-            ImageAssert.AreEqual(expected, actual, settings);
+            var actual = LoadImage(path);
+
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f);
+            Assert.That(actual, Is.EqualTo(expected).Using(comparer));
         }
 #endif
 
@@ -265,7 +267,7 @@ namespace TestHelper.RuntimeInternals
             }
         }
 
-#if ENABLE_GRAPHICS_TEST_FRAMEWORK
+#if ENABLE_FLIP_BINDING
         [Test]
         [GameViewResolution(GameViewResolution.VGA)]
         [GizmosShowOnGameView(false)]
@@ -283,9 +285,10 @@ namespace TestHelper.RuntimeInternals
             var expected = Application.isEditor
                 ? _expectedTakeScreenshotAsyncImagesMatch
                 : _expectedTakeScreenshotAsyncImagesMatchOnPlayer;
-            var actual = VrtUtils.LoadImage(path);
-            var settings = VrtUtils.GetImageComparisonSettings();
-            ImageAssert.AreEqual(expected, actual, settings);
+            var actual = LoadImage(path);
+
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f);
+            Assert.That(actual, Is.EqualTo(expected).Using(comparer));
         }
 
         [Test]
@@ -303,11 +306,55 @@ namespace TestHelper.RuntimeInternals
             await ScreenshotHelper.TakeScreenshotAsync(scale: 0.5f);
 
             var expected = _expectedTakeScreenshotAsyncWithScaleImagesMatch;
-            var actual = VrtUtils.LoadImage(path);
-            var settings = VrtUtils.GetImageComparisonSettings();
-            ImageAssert.AreEqual(expected, actual, settings);
+            var actual = LoadImage(path);
+
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f);
+            Assert.That(actual, Is.EqualTo(expected).Using(comparer));
         }
 #endif
+#endif
+
+#if ENABLE_FLIP_BINDING
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        private static void ConvertTexture2dFieldsToARGB32(object testClassInstance)
+        {
+            var type = testClassInstance.GetType();
+            var fields = type.GetFields(
+                BindingFlags.Public | BindingFlags.NonPublic |
+                BindingFlags.Instance | BindingFlags.Static);
+            foreach (var field in fields)
+            {
+                if (field.FieldType == typeof(Texture2D))
+                {
+                    var src = (Texture2D)field.GetValue(testClassInstance);
+                    if (src.format != TextureFormat.ARGB32)
+                    {
+                        var pixels = src.GetPixels32();
+                        var dst = new Texture2D(src.width, src.height, TextureFormat.ARGB32, false);
+                        dst.SetPixels32(pixels);
+                        dst.Apply();
+                        field.SetValue(testClassInstance, dst);
+                    }
+                }
+            }
+        }
+
+        [SuppressMessage("ReSharper", "UnusedMember.Local")]
+        private static Texture2D LoadExpectedImage()
+        {
+            var path = Path.Combine(
+                "Packages/com.nowsprinting.test-helper/Tests/Images",
+                $"{TestContext.CurrentContext.Test.Name}.png");
+            return LoadImage(path);
+        }
+
+        private static Texture2D LoadImage(string path)
+        {
+            var bytes = File.ReadAllBytes(Path.GetFullPath(path));
+            var texture = new Texture2D(0, 0);
+            texture.LoadImage(bytes); // load png as ARGB32 format
+            return texture;
+        }
 #endif
     }
 }

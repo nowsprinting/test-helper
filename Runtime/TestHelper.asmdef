@@ -13,7 +13,8 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "FlipBinding.CSharp.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
@@ -29,6 +30,11 @@
             "name": "jp.co.cyberagent.instant-replay",
             "expression": "1.0.0",
             "define": "ENABLE_INSTANT_REPLAY"
+        },
+        {
+            "name": "org.nuget.flipbinding.csharp",
+            "expression": "1.0.0",
+            "define": "ENABLE_FLIP_BINDING"
         }
     ],
     "noEngineReferences": false
