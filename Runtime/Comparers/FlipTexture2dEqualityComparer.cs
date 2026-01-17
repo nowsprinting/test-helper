@@ -105,7 +105,7 @@ namespace TestHelper.Comparers
             }
 
             Debug.Log($"Mean FLIP error value: {result.MeanError}\n" +
-                      $"Exceeds the specified tolerance {_meanErrorTolerance:F10}".TrimEnd('0'));
+                      $"Exceeds the specified tolerance {_meanErrorTolerance}");
             SaveErrorMap(result);
             return -1;
         }
@@ -150,7 +150,7 @@ namespace TestHelper.Comparers
             var bytes = texture.EncodeToPNG();
             File.WriteAllBytes(path, bytes);
 
-            Debug.Log($"Error map save to: {path}");
+            Debug.Log($"Error map saved to: {path}");
             Object.Destroy(texture);
         }
 

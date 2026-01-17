@@ -63,7 +63,7 @@ namespace TestHelper.RuntimeInternals
         public void OneTimeSetUp()
         {
             LoadAssetAttribute.LoadAssets(this);  // Must call this method to load assets.
-            ConvertTexture2dFieldsToArgb32(this); // convert to same as actual texture format
+            ConvertTexture2dFieldsToARGB32(this); // convert to same as actual texture format
         }
 #endif
 
@@ -315,7 +315,8 @@ namespace TestHelper.RuntimeInternals
 #endif
 
 #if ENABLE_FLIP_BINDING
-        private static void ConvertTexture2dFieldsToArgb32(object testClassInstance)
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        private static void ConvertTexture2dFieldsToARGB32(object testClassInstance)
         {
             var type = testClassInstance.GetType();
             var fields = type.GetFields(
