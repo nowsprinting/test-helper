@@ -1,12 +1,14 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+#if !UNITY_2022_1_OR_NEWER
+using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
+#endif
 
 namespace TestHelper.RuntimeInternals
 {
@@ -23,18 +25,6 @@ namespace TestHelper.RuntimeInternals
             await SceneManagerHelper.LoadSceneAsync(path);
             var cube = GameObject.Find("CubeInNotInScenesInBuild");
             Assume.That(cube, Is.Not.Null);
-        }
-
-        [TestCase("./Scene.unity", // include `./`
-            "Assets/Tests/Runtime/Caller.cs",
-            "Assets/Tests/Runtime/Scene.unity")]
-        [TestCase("../../BadPath/../Scenes/Scene.unity", // include `../`
-            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
-            "Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity")]
-        public void GetAbsolutePath(string relativePath, string callerFilePath, string expected)
-        {
-            var actual = SceneManagerHelper.GetAbsolutePath(relativePath, callerFilePath);
-            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity")]

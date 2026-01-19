@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -143,5 +143,138 @@ namespace TestHelper.RuntimeInternals
             return name;
         }
 #endif
+
+        /// <summary>
+        /// Resolves a relative path from the caller file to Unity path format (Assets/ or Packages/).
+        /// </summary>
+        /// <param name="relativePath">Relative path from caller file</param>
+        /// <param name="callerFilePath">Caller file path</param>
+        /// <returns>Unity path format (e.g., "Assets/...", "Packages/...")</returns>
+        internal static string ResolveUnityPath(string relativePath, string callerFilePath)
+        {
+            var callerDirectory = Path.GetDirectoryName(callerFilePath);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
+
+            // First, look for Assets/
+            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
+            if (assetsIndexOf > 0)
+            {
+                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf));
+            }
+
+            // Next, look for Packages/
+            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
+            if (packageIndexOf > 0)
+            {
+                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf));
+            }
+
+            // If neither found, it might be an Embedded package
+            // Find project root and convert to Packages/{packageName}/ format
+            var projectRoot = FindProjectRoot(absolutePath);
+            if (projectRoot != null)
+            {
+                var relativeFromRoot = absolutePath.Substring(projectRoot.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var unityPath = ConvertToUnityPath(relativeFromRoot);
+                if (unityPath != null)
+                {
+                    return unityPath;
+                }
+            }
+
+            Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
+            return null;
+            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
+
+            string ConvertToUnixPathSeparator(string path)
+            {
+                return path.Replace('\\', '/');
+            }
+        }
+
+        private static string FindProjectRoot(string absolutePath)
+        {
+            var directory = Path.GetDirectoryName(absolutePath);
+            while (!string.IsNullOrEmpty(directory))
+            {
+                // Project root has Assets/ directory or Packages/manifest.json
+                if (Directory.Exists(Path.Combine(directory, "Assets")) ||
+                    File.Exists(Path.Combine(directory, "Packages", "manifest.json")))
+                {
+                    return directory;
+                }
+
+                directory = Path.GetDirectoryName(directory);
+            }
+
+            return null;
+        }
+
+        private static string ConvertToUnityPath(string relativePathFromRoot)
+        {
+            relativePathFromRoot = relativePathFromRoot.Replace('\\', '/');
+            var segments = relativePathFromRoot.Split('/');
+            if (segments.Length < 2)
+            {
+                return null;
+            }
+
+            // Check if the first directory has package.json
+            var firstDirectory = segments[0];
+            var packageJsonPath = Path.Combine(firstDirectory, "package.json");
+
+            if (File.Exists(packageJsonPath))
+            {
+                var packageName = GetPackageNameFromJson(packageJsonPath);
+                if (!string.IsNullOrEmpty(packageName))
+                {
+                    // Convert to Packages/{packageName}/remaining/path
+                    var remainingSegments = new string[segments.Length - 1];
+                    Array.Copy(segments, 1, remainingSegments, 0, remainingSegments.Length);
+                    return "Packages/" + packageName + "/" + string.Join("/", remainingSegments);
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetPackageNameFromJson(string packageJsonPath)
+        {
+            try
+            {
+                var json = File.ReadAllText(packageJsonPath);
+                // Simple JSON parsing to extract "name": "..."
+                var nameIndex = json.IndexOf("\"name\"", StringComparison.Ordinal);
+                if (nameIndex < 0)
+                {
+                    return null;
+                }
+
+                var colonIndex = json.IndexOf(":", nameIndex, StringComparison.Ordinal);
+                if (colonIndex < 0)
+                {
+                    return null;
+                }
+
+                var openQuoteIndex = json.IndexOf("\"", colonIndex, StringComparison.Ordinal);
+                if (openQuoteIndex < 0)
+                {
+                    return null;
+                }
+
+                var closeQuoteIndex = json.IndexOf("\"", openQuoteIndex + 1, StringComparison.Ordinal);
+                if (closeQuoteIndex < 0)
+                {
+                    return null;
+                }
+
+                return json.Substring(openQuoteIndex + 1, closeQuoteIndex - openQuoteIndex - 1);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
