@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace TestHelper.Attributes
     public class LoadAssetAttribute : Attribute
     {
         internal string AssetPath { get; private set; }
+
+        internal string CallerFilePath { get; private set; }
 
         /// <summary>
         /// Loads an asset file at the specified path into the field.
@@ -42,6 +45,8 @@ namespace TestHelper.Attributes
         /// </remarks>
         public LoadAssetAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
+            CallerFilePath = callerFilePath;
+
             if (path.StartsWith("."))
             {
                 AssetPath = RuntimeInternals.PathHelper.ResolveUnityPath(path, callerFilePath);
@@ -80,7 +85,8 @@ namespace TestHelper.Attributes
 #if UNITY_EDITOR
                 var asset = AssetDatabase.LoadAssetAtPath(attribute.AssetPath, field.FieldType);
 #else
-                var resourcePath = GetResourcePath(attribute.AssetPath);
+                var originalPath = GetOriginalPathFromAttribute(field);
+                var resourcePath = GetResourcePath(attribute, originalPath);
                 var asset = Resources.Load(resourcePath, field.FieldType);
 #endif
                 if (asset == null)
@@ -94,8 +100,52 @@ namespace TestHelper.Attributes
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        private static string GetResourcePath(string assetPath)
+        private static string GetOriginalPathFromAttribute(FieldInfo field)
         {
+            var attrData = field.GetCustomAttributesData()
+                .FirstOrDefault(a => a.AttributeType == typeof(LoadAssetAttribute));
+            return attrData?.ConstructorArguments[0].Value as string;
+        }
+
+        [SuppressMessage("ReSharper", "UnusedMember.Local")]
+        private static string GetResourcePath(LoadAssetAttribute attribute, string originalPath)
+        {
+            var callerFilePath = attribute.CallerFilePath;
+            if (callerFilePath != null && originalPath != null && originalPath.StartsWith("."))
+            {
+                // Remove leading "./" from CallerFilePath if present
+                callerFilePath = callerFilePath.TrimStart('.', '/', '\\');
+
+                var callerDirectory = Path.GetDirectoryName(callerFilePath);
+                var realPath = Path.GetFullPath(Path.Combine(callerDirectory ?? "", originalPath))
+                    .Replace('\\', '/');
+
+                // Normalize the path to remove any leading "./" or "../"
+                while (realPath.StartsWith("./") || realPath.StartsWith(".\\"))
+                {
+                    realPath = realPath.Substring(2);
+                }
+
+                // Convert to resource path (remove extension)
+                var directoryName = Path.GetDirectoryName(realPath);
+                var filenameWithoutExtension = Path.GetFileNameWithoutExtension(realPath);
+                return string.IsNullOrEmpty(directoryName)
+                    ? filenameWithoutExtension
+                    : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
+            }
+
+            // Fallback to legacy behavior
+            return GetLegacyResourcePath(attribute.AssetPath);
+        }
+
+        [SuppressMessage("ReSharper", "UnusedMember.Local")]
+        private static string GetLegacyResourcePath(string assetPath)
+        {
+            if (assetPath == null)
+            {
+                return null;
+            }
+
             var directoryName = Path.GetDirectoryName(assetPath);
             var filenameWithoutExtension = Path.GetFileNameWithoutExtension(assetPath);
             return string.IsNullOrEmpty(directoryName)

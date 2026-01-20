@@ -157,14 +157,18 @@ namespace TestHelper.RuntimeInternals
             var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
 
             // First, look for Assets/ (ensure it's a directory, not part of another name)
-            var assetsIndexOf = absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Assets{Path.DirectorySeparatorChar}", StringComparison.Ordinal);
+            var assetsIndexOf =
+                absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Assets{Path.DirectorySeparatorChar}",
+                    StringComparison.Ordinal);
             if (assetsIndexOf >= 0)
             {
                 return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf + 1));
             }
 
             // Next, look for Packages/ (ensure it's a directory, not part of another name like "LocalPackages")
-            var packageIndexOf = absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Packages{Path.DirectorySeparatorChar}", StringComparison.Ordinal);
+            var packageIndexOf =
+                absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Packages{Path.DirectorySeparatorChar}",
+                    StringComparison.Ordinal);
             if (packageIndexOf >= 0)
             {
                 return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf + 1));
@@ -175,7 +179,8 @@ namespace TestHelper.RuntimeInternals
             var projectRoot = FindProjectRoot(absolutePath);
             if (projectRoot != null)
             {
-                var relativeFromRoot = absolutePath.Substring(projectRoot.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var relativeFromRoot = absolutePath.Substring(projectRoot.Length)
+                    .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                 var unityPath = ConvertToUnityPath(relativeFromRoot, projectRoot);
                 if (unityPath != null)
                 {

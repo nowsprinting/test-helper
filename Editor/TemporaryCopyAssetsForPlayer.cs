@@ -1,16 +1,14 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using TestHelper.Attributes;
 using UnityEditor;
 using UnityEngine;
-#if !UNITY_2020_1_OR_NEWER
-using System.Reflection;
-#endif
 
 namespace TestHelper.Editor
 {
@@ -46,11 +44,53 @@ namespace TestHelper.Editor
 #endif
         }
 
+        private static IEnumerable<(LoadAssetAttribute attribute, string originalPath)>
+            FindAttributesOnFieldsWithOriginalPath()
+        {
+#if UNITY_2020_1_OR_NEWER
+            var fields = TypeCache.GetFieldsWithAttribute<LoadAssetAttribute>();
+            foreach (var field in fields)
+            {
+                var attribute = field.GetCustomAttribute<LoadAssetAttribute>();
+                if (attribute == null)
+                {
+                    continue;
+                }
+
+                var attrData = field.GetCustomAttributesData()
+                    .FirstOrDefault(a => a.AttributeType == typeof(LoadAssetAttribute));
+                var originalPath = attrData?.ConstructorArguments[0].Value as string;
+
+                yield return (attribute, originalPath);
+            }
+#else
+            foreach (var field in AppDomain.CurrentDomain.GetAssemblies()
+                         .SelectMany(x => x.GetTypes())
+                         .SelectMany(x => x.GetFields(
+                             BindingFlags.Public | BindingFlags.NonPublic |
+                             BindingFlags.Instance | BindingFlags.Static)))
+            {
+                var attribute = field.GetCustomAttribute<LoadAssetAttribute>();
+                if (attribute == null)
+                {
+                    continue;
+                }
+
+                var attrData = field.GetCustomAttributesData()
+                    .FirstOrDefault(a => a.AttributeType == typeof(LoadAssetAttribute));
+                var originalPath = attrData?.ConstructorArguments[0].Value as string;
+
+                yield return (attribute, originalPath);
+            }
+#endif
+        }
+
         internal static void CopyAssetFiles()
         {
-            foreach (var attribute in FindAttributesOnFields<LoadAssetAttribute>())
+            foreach (var (attribute, originalPath) in FindAttributesOnFieldsWithOriginalPath())
             {
-                var destFileName = Path.Combine(ResourcesRoot, "Resources", attribute.AssetPath);
+                var realPath = CalculateRealPath(attribute.CallerFilePath, originalPath);
+                var destFileName = Path.Combine(ResourcesRoot, "Resources", realPath);
                 var destDir = Path.GetDirectoryName(destFileName);
                 if (destDir != null && !Directory.Exists(destDir))
                 {
@@ -62,6 +102,34 @@ namespace TestHelper.Editor
                     Debug.LogError($"Failed to copy asset file from '{attribute.AssetPath}' to '{destFileName}'");
                 }
             }
+        }
+
+        private static string CalculateRealPath(string callerFilePath, string originalPath)
+        {
+            if (originalPath != null && originalPath.StartsWith("."))
+            {
+                var callerDirectory = Path.GetDirectoryName(callerFilePath);
+                var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory ?? "", originalPath));
+
+                // Convert to Unity-style path (forward slashes)
+                absolutePath = absolutePath.Replace('\\', '/');
+
+                // Get project root
+                var projectRoot = Path.GetFullPath(Directory.GetCurrentDirectory()).Replace('\\', '/');
+                if (!projectRoot.EndsWith("/"))
+                {
+                    projectRoot += "/";
+                }
+
+                // Convert to relative path from project root
+                if (absolutePath.StartsWith(projectRoot))
+                {
+                    return absolutePath.Substring(projectRoot.Length);
+                }
+            }
+
+            // Fallback to original AssetPath
+            return originalPath ?? "";
         }
     }
 }
