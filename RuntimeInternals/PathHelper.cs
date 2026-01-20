@@ -156,18 +156,18 @@ namespace TestHelper.RuntimeInternals
             // ReSharper disable once AssignNullToNotNullAttribute
             var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
 
-            // First, look for Assets/
-            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
-            if (assetsIndexOf > 0)
+            // First, look for Assets/ (ensure it's a directory, not part of another name)
+            var assetsIndexOf = absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Assets{Path.DirectorySeparatorChar}", StringComparison.Ordinal);
+            if (assetsIndexOf >= 0)
             {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf));
+                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf + 1));
             }
 
-            // Next, look for Packages/
-            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
-            if (packageIndexOf > 0)
+            // Next, look for Packages/ (ensure it's a directory, not part of another name like "LocalPackages")
+            var packageIndexOf = absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Packages{Path.DirectorySeparatorChar}", StringComparison.Ordinal);
+            if (packageIndexOf >= 0)
             {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf));
+                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf + 1));
             }
 
             // If neither found, it might be an Embedded package
