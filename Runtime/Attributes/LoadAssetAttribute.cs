@@ -49,7 +49,12 @@ namespace TestHelper.Attributes
 
             if (path.StartsWith("."))
             {
+#if UNITY_EDITOR
                 AssetPath = RuntimeInternals.PathHelper.ResolveUnityPath(path, callerFilePath);
+#else
+                // Will be resolved at runtime in GetResourcePath() for standalone player
+                AssetPath = null;
+#endif
             }
             else
             {
@@ -117,14 +122,11 @@ namespace TestHelper.Attributes
                 callerFilePath = callerFilePath.TrimStart('.', '/', '\\');
 
                 var callerDirectory = Path.GetDirectoryName(callerFilePath);
-                var realPath = Path.GetFullPath(Path.Combine(callerDirectory ?? "", originalPath))
-                    .Replace('\\', '/');
 
-                // Normalize the path to remove any leading "./" or "../"
-                while (realPath.StartsWith("./") || realPath.StartsWith(".\\"))
-                {
-                    realPath = realPath.Substring(2);
-                }
+                // Use Uri to resolve relative paths without depending on file system
+                var baseUri = new Uri($"file:///{callerDirectory?.Replace('\\', '/')}/");
+                var relativeUri = new Uri(baseUri, originalPath);
+                var realPath = relativeUri.LocalPath.TrimStart('/').Replace('\\', '/');
 
                 // Convert to resource path (remove extension)
                 var directoryName = Path.GetDirectoryName(realPath);

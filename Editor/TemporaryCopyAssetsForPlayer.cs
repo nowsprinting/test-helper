@@ -89,7 +89,7 @@ namespace TestHelper.Editor
         {
             foreach (var (attribute, originalPath) in FindAttributesOnFieldsWithOriginalPath())
             {
-                var realPath = CalculateRealPath(attribute.CallerFilePath, originalPath);
+                var realPath = CalculateRealPath(attribute, originalPath);
                 var destFileName = Path.Combine(ResourcesRoot, "Resources", realPath);
                 var destDir = Path.GetDirectoryName(destFileName);
                 if (destDir != null && !Directory.Exists(destDir))
@@ -104,15 +104,17 @@ namespace TestHelper.Editor
             }
         }
 
-        private static string CalculateRealPath(string callerFilePath, string originalPath)
+        private static string CalculateRealPath(LoadAssetAttribute attribute, string originalPath)
         {
             if (originalPath != null && originalPath.StartsWith("."))
             {
+                var callerFilePath = attribute.CallerFilePath;
                 var callerDirectory = Path.GetDirectoryName(callerFilePath);
-                var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory ?? "", originalPath));
 
-                // Convert to Unity-style path (forward slashes)
-                absolutePath = absolutePath.Replace('\\', '/');
+                // Use Uri to resolve relative paths
+                var baseUri = new Uri($"file:///{callerDirectory?.Replace('\\', '/')}/");
+                var relativeUri = new Uri(baseUri, originalPath);
+                var resolvedPath = relativeUri.LocalPath.TrimStart('/').Replace('\\', '/');
 
                 // Get project root
                 var projectRoot = Path.GetFullPath(Directory.GetCurrentDirectory()).Replace('\\', '/');
@@ -121,15 +123,18 @@ namespace TestHelper.Editor
                     projectRoot += "/";
                 }
 
-                // Convert to relative path from project root
-                if (absolutePath.StartsWith(projectRoot))
+                // Convert to relative path from project root if it's absolute
+                if (resolvedPath.Contains(":") && resolvedPath.StartsWith(projectRoot))
                 {
-                    return absolutePath.Substring(projectRoot.Length);
+                    return resolvedPath.Substring(projectRoot.Length);
                 }
+
+                // Already a relative path
+                return resolvedPath;
             }
 
-            // Fallback to original AssetPath
-            return originalPath ?? "";
+            // Fallback: use originalPath if available, otherwise use AssetPath
+            return originalPath ?? attribute.AssetPath;
         }
     }
 }

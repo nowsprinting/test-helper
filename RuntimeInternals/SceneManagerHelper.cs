@@ -88,6 +88,7 @@ namespace TestHelper.RuntimeInternals
         /// <exception cref="FileNotFoundException">Scene file not found</exception>
         internal static string GetExistScenePath(string path, string callerFilePath)
         {
+#if UNITY_EDITOR
             if (path.StartsWith("."))
             {
                 path = PathHelper.ResolveUnityPath(path, callerFilePath);
@@ -97,9 +98,11 @@ namespace TestHelper.RuntimeInternals
             {
                 return null;
             }
-#if UNITY_EDITOR
+
             return GetExistScenePathInEditor(path);
 #else
+            // On player, skip path resolution and validation
+            // GetExistScenePathOnPlayer() extracts only the scene name from the path
             return GetExistScenePathOnPlayer(path);
 #endif
         }
