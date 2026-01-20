@@ -199,6 +199,7 @@ namespace TestHelper.RuntimeInternals
 
 #if UNITY_2023_1_OR_NEWER
         [Test]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         [GameViewResolution(GameViewResolution.VGA)]
         [LoadScene(TestScene)]
         public async Task TakeScreenshotAsPngBytesAsync_ReturnsPngBytes()

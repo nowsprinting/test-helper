@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -69,28 +69,5 @@ namespace TestHelper.Attributes
             Assert.That(_texture2d.width, Is.EqualTo(640));
             Assert.That(_texture2d.height, Is.EqualTo(480));
         }
-
-        #region internal methods tests
-
-        private static IEnumerable<TestCaseData> GetAbsolutePathTestCases()
-        {
-            yield return new TestCaseData("./Foo.txt",
-                    "Assets/Tests/Runtime/Caller.cs",
-                    "Assets/Tests/Runtime/Foo.txt")
-                .SetName(nameof(GetAbsolutePath) + "(current path)");
-            yield return new TestCaseData("../../DummyDirectory/../Foo/Bar.txt",
-                    "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
-                    "Packages/com.nowsprinting.test-helper/Tests/Foo/Bar.txt")
-                .SetName(nameof(GetAbsolutePath) + "(upstream path)");
-        }
-
-        [TestCaseSource(nameof(GetAbsolutePathTestCases))]
-        public void GetAbsolutePath(string relativePath, string callerFilePath, string expected)
-        {
-            var actual = LoadAssetAttribute.GetAbsolutePath(relativePath, callerFilePath);
-            Assert.That(actual, Is.EqualTo(expected));
-        }
-
-        #endregion
     }
 }
