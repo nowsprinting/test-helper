@@ -176,7 +176,7 @@ namespace TestHelper.RuntimeInternals
             if (projectRoot != null)
             {
                 var relativeFromRoot = absolutePath.Substring(projectRoot.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                var unityPath = ConvertToUnityPath(relativeFromRoot);
+                var unityPath = ConvertToUnityPath(relativeFromRoot, projectRoot);
                 if (unityPath != null)
                 {
                     return unityPath;
@@ -211,7 +211,7 @@ namespace TestHelper.RuntimeInternals
             return null;
         }
 
-        private static string ConvertToUnityPath(string relativePathFromRoot)
+        private static string ConvertToUnityPath(string relativePathFromRoot, string projectRoot)
         {
             relativePathFromRoot = relativePathFromRoot.Replace('\\', '/');
             var segments = relativePathFromRoot.Split('/');
@@ -220,19 +220,25 @@ namespace TestHelper.RuntimeInternals
                 return null;
             }
 
-            // Check if the first directory has package.json
-            var firstDirectory = segments[0];
-            var packageJsonPath = Path.Combine(firstDirectory, "package.json");
-
-            if (File.Exists(packageJsonPath))
+            // Search for package.json at any depth (from deep to shallow)
+            for (var depth = segments.Length - 1; depth >= 1; depth--)
             {
-                var packageName = GetPackageNameFromJson(packageJsonPath);
-                if (!string.IsNullOrEmpty(packageName))
+                var packageDirSegments = new string[depth];
+                Array.Copy(segments, 0, packageDirSegments, 0, depth);
+                var packageDirRelative = string.Join("/", packageDirSegments);
+
+                // Use absolute path for File.Exists check
+                var packageJsonPath = Path.Combine(projectRoot, packageDirRelative, "package.json");
+
+                if (File.Exists(packageJsonPath))
                 {
-                    // Convert to Packages/{packageName}/remaining/path
-                    var remainingSegments = new string[segments.Length - 1];
-                    Array.Copy(segments, 1, remainingSegments, 0, remainingSegments.Length);
-                    return "Packages/" + packageName + "/" + string.Join("/", remainingSegments);
+                    var packageName = GetPackageNameFromJson(packageJsonPath);
+                    if (!string.IsNullOrEmpty(packageName))
+                    {
+                        var remainingSegments = new string[segments.Length - depth];
+                        Array.Copy(segments, depth, remainingSegments, 0, remainingSegments.Length);
+                        return "Packages/" + packageName + "/" + string.Join("/", remainingSegments);
+                    }
                 }
             }
 
