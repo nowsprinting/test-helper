@@ -7,7 +7,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 #if !UNITY_2023_1_OR_NEWER
-using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
+using Cysharp.Threading.Tasks;
 #endif
 
 namespace TestHelper.RuntimeInternals

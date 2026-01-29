@@ -2,11 +2,10 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -17,9 +16,10 @@ namespace TestHelper.Attributes
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class LoadAssetAttribute : Attribute
     {
+#if UNITY_EDITOR
         internal string AssetPath { get; private set; }
-
-        internal string CallerFilePath { get; private set; }
+#endif
+        internal string ResourcePath { get; private set; }
 
         /// <summary>
         /// Loads an asset file at the specified path into the field.
@@ -41,25 +41,63 @@ namespace TestHelper.Attributes
         /// </param>
         /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>
-        /// When running tests on the player, it temporarily copies asset files to the <c>Resources</c> folder by <see cref="TestHelper.Editor.TemporaryCopyAssetsForPlayer"/>.
+        /// When running tests on the player, it temporarily copies asset files to the <c>Resources</c> folder by <see cref="Editor.TemporaryCopyAssetsForPlayer"/>.
         /// </remarks>
         public LoadAssetAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
-            CallerFilePath = callerFilePath;
-
-            if (path.StartsWith("."))
-            {
 #if UNITY_EDITOR
-                AssetPath = RuntimeInternals.PathHelper.ResolveUnityPath(path, callerFilePath);
-#else
-                // Will be resolved at runtime in GetResourcePath() for standalone player
-                AssetPath = null;
-#endif
+            if (path != null && path.StartsWith("."))
+            {
+                AssetPath = PathHelper.ResolveUnityPath(path, callerFilePath);
             }
             else
             {
-                AssetPath = path;
+                AssetPath = PathHelper.ResolveUnityPath(path);
             }
+#endif
+            if (path != null && path.StartsWith("."))
+            {
+                ResourcePath = BuildResourcePath(path, callerFilePath);
+            }
+            else
+            {
+                ResourcePath = BuildResourcePath(path);
+            }
+        }
+
+        private static string BuildResourcePath(string relativePath, string callerFilePath)
+        {
+            var callerDirectory = Path.GetDirectoryName(callerFilePath);
+            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory!, relativePath));
+
+            var assetsIndexOf = absolutePath.IndexOf(
+                $"{Path.DirectorySeparatorChar}Assets{Path.DirectorySeparatorChar}",
+                StringComparison.Ordinal);
+            if (assetsIndexOf >= 0)
+            {
+                return BuildResourcePath(absolutePath.Substring(assetsIndexOf + 1));
+            }
+
+            // Next, look for Packages/ (ensure it's a directory, not part of another name like "LocalPackages")
+            var packageIndexOf =
+                absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Packages{Path.DirectorySeparatorChar}",
+                    StringComparison.Ordinal);
+            if (packageIndexOf >= 0)
+            {
+                return BuildResourcePath(absolutePath.Substring(packageIndexOf + 1));
+            }
+
+            return BuildResourcePath(absolutePath);
+        }
+
+        private static string BuildResourcePath(string absolutePath)
+        {
+            // Convert to resource path (remove extension)
+            var directoryName = Path.Join("com.nowsprinting.test-helper", Path.GetDirectoryName(absolutePath)); // TODO: Path.Join
+            var filenameWithoutExtension = Path.GetFileNameWithoutExtension(absolutePath);
+            return string.IsNullOrEmpty(directoryName)
+                ? filenameWithoutExtension
+                : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
         }
 
         /// <summary>
@@ -89,70 +127,21 @@ namespace TestHelper.Attributes
                 }
 #if UNITY_EDITOR
                 var asset = AssetDatabase.LoadAssetAtPath(attribute.AssetPath, field.FieldType);
-#else
-                var originalPath = GetOriginalPathFromAttribute(field);
-                var resourcePath = GetResourcePath(attribute, originalPath);
-                var asset = Resources.Load(resourcePath, field.FieldType);
-#endif
                 if (asset == null)
                 {
                     Debug.LogError($"Failed to load asset at path: {attribute.AssetPath} type: {field.FieldType}");
                     continue;
                 }
-
+#else
+                var asset = Resources.Load(attribute.ResourcePath, field.FieldType);
+                if (asset == null)
+                {
+                    Debug.LogError($"Failed to load asset at path: {attribute.ResourcePath} type: {field.FieldType}");
+                    continue;
+                }
+#endif
                 field.SetValue(testClassInstance, asset);
             }
-        }
-
-        [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        private static string GetOriginalPathFromAttribute(FieldInfo field)
-        {
-            var attrData = field.GetCustomAttributesData()
-                .FirstOrDefault(a => a.AttributeType == typeof(LoadAssetAttribute));
-            return attrData?.ConstructorArguments[0].Value as string;
-        }
-
-        [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        private static string GetResourcePath(LoadAssetAttribute attribute, string originalPath)
-        {
-            var callerFilePath = attribute.CallerFilePath;
-            if (callerFilePath != null && originalPath != null && originalPath.StartsWith("."))
-            {
-                // Remove leading "./" from CallerFilePath if present
-                callerFilePath = callerFilePath.TrimStart('.', '/', '\\');
-
-                var callerDirectory = Path.GetDirectoryName(callerFilePath);
-
-                // Use Uri to resolve relative paths without depending on file system
-                var baseUri = new Uri($"file:///{callerDirectory?.Replace('\\', '/')}/");
-                var relativeUri = new Uri(baseUri, originalPath);
-                var realPath = relativeUri.LocalPath.TrimStart('/').Replace('\\', '/');
-
-                // Convert to resource path (remove extension)
-                var directoryName = Path.GetDirectoryName(realPath);
-                var filenameWithoutExtension = Path.GetFileNameWithoutExtension(realPath);
-                return string.IsNullOrEmpty(directoryName)
-                    ? filenameWithoutExtension
-                    : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
-            }
-
-            // Fallback to legacy behavior
-            return GetLegacyResourcePath(attribute.AssetPath);
-        }
-
-        [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        private static string GetLegacyResourcePath(string assetPath)
-        {
-            if (assetPath == null)
-            {
-                return null;
-            }
-
-            var directoryName = Path.GetDirectoryName(assetPath);
-            var filenameWithoutExtension = Path.GetFileNameWithoutExtension(assetPath);
-            return string.IsNullOrEmpty(directoryName)
-                ? filenameWithoutExtension
-                : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
         }
     }
 }

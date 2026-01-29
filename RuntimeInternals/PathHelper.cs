@@ -153,8 +153,28 @@ namespace TestHelper.RuntimeInternals
         internal static string ResolveUnityPath(string relativePath, string callerFilePath)
         {
             var callerDirectory = Path.GetDirectoryName(callerFilePath);
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
+            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory!, relativePath));
+            return ResolveUnityPath(absolutePath);
+        }
+
+        /// <summary>
+        /// Resolves an absolute path to Unity path format (Assets/ or Packages/).
+        /// </summary>
+        /// <param name="absolutePath">Absolute file path</param>
+        /// <returns>Unity path format (e.g., "Assets/...", "Packages/...")</returns>
+        internal static string ResolveUnityPath(string absolutePath)
+        {
+            if (!Application.isEditor)
+            {
+                throw new InvalidOperationException("ResolveUnityPath can be used only in the Editor.");
+            }
+
+            if (absolutePath.StartsWith($"Assets{Path.DirectorySeparatorChar}") ||
+                absolutePath.StartsWith($"Packages{Path.DirectorySeparatorChar}"))
+            {
+                // Already in Unity path format
+                return absolutePath;
+            }
 
             // First, look for Assets/ (ensure it's a directory, not part of another name)
             var assetsIndexOf =
@@ -188,10 +208,11 @@ namespace TestHelper.RuntimeInternals
                 }
             }
 
-            Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
+            Debug.LogError($"Can not resolve from absolute path: {absolutePath}");
             return null;
             // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
 
+            // Local function
             string ConvertToUnixPathSeparator(string path)
             {
                 return path.Replace('\\', '/');
