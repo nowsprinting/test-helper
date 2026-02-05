@@ -524,10 +524,6 @@ public class MyTestClass
 > `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
 > Also, add scripting define symbol `ENABLE_FLIP_BINDING` if not installed via OpenUPM (UnityNuGet).
 
-> [!IMPORTANT]  
-> When running on the Ubuntu 22.04 image (e.g., [GameCI](https://game.ci/) provided images), the GLIBCXX_3.4.32 (GCC 13+) required by FLIP's native libraries is missing.
-> So, you will need to create a custom Docker image that includes libstdc++6 from GCC 13.
-
 #### XmlComparer
 
 `XmlComparer` is a NUnit test comparer class that compares two `string` as an XML document.

@@ -50,6 +50,7 @@ jobs:
         include:
           - unityVersion: 6000.3.4f1
             octocov: true
+            flip: true
           - unityVersion: 2022.3.62f3 # "Error building Player because scripts are compiling" in 6000.0.65f1 and 6000.3.4f1
             testMode: Standalone  # run tests on player
 
@@ -73,6 +74,25 @@ jobs:
           lfs: false
           path: ${{ env.PACKAGE_PATH }}
 
+      - name: Install dependent UPM packages
+        run: |
+          npm install -g openupm-cli
+          openupm add -f com.unity.test-framework@stable
+          openupm add -f com.cysharp.unitask
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+
+      - name: Install FlipBinding.CSharp package
+        run: |
+          openupm add -f org.nuget.flipbinding.csharp
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+        if: ${{ matrix.flip }}
+
+      - name: Install codecoverage package
+        run: |
+          openupm add -f com.unity.testtools.codecoverage
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+        if: ${{ matrix.octocov }}
+
       - name: Restore cache
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
@@ -82,19 +102,6 @@ jobs:
             Library-${{ runner.os }}-${{ matrix.unityVersion }}-
             Library-${{ runner.os }}-
             Library-
-
-      - name: Install dependent UPM packages
-        run: |
-          npm install -g openupm-cli
-          openupm add -f com.unity.test-framework@stable
-          openupm add -f com.cysharp.unitask
-        working-directory: ${{ env.CREATED_PROJECT_PATH }}
-
-      - name: Install codecoverage package
-        run: |
-          openupm add -f com.unity.testtools.codecoverage
-        working-directory: ${{ env.CREATED_PROJECT_PATH }}
-        if: ${{ matrix.octocov }}
 
       - name: Set coverage assembly filters
         run: |
