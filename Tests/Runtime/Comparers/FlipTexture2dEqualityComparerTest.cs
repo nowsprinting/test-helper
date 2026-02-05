@@ -48,7 +48,7 @@ namespace TestHelper.Comparers
             Assert.That(() => { Assert.That(_actual, Is.EqualTo(_expected).Using(comparer)); },
                 Throws.TypeOf<AssertionException>());
             LogAssert.Expect(LogType.Log,
-                new Regex(@"Mean FLIP error value: 0\.\d+\r?\nExceeds the specified tolerance 0.00001"));
+                new Regex(@"^Mean FLIP error value: 0\.\d+\r?\nExceeds the specified tolerance 0.00001$"));
         }
 
         [Test]

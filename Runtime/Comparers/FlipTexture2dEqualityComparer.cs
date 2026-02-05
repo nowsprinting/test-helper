@@ -105,7 +105,7 @@ namespace TestHelper.Comparers
             }
 
             Debug.Log($"Mean FLIP error value: {result.MeanError}\n" +
-                      $"Exceeds the specified tolerance {_meanErrorTolerance}");
+                      $"Exceeds the specified tolerance {_meanErrorTolerance:0.######}");
             SaveErrorMap(result);
             return -1;
         }
