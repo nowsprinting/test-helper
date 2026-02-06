@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.IO;
@@ -207,6 +207,24 @@ namespace TestHelper.RuntimeInternals
 
             PathHelper.CreateFilePath(baseDirectory: baseDirectory, createDirectory: false);
             Assert.That(baseDirectory, Does.Not.Exist);
+        }
+
+        [TestCase("./Scene.unity",
+            "Assets/Tests/Runtime/Caller.cs",
+            "Assets/Tests/Runtime/Scene.unity")]
+        [TestCase("../../BadPath/../Scenes/Scene.unity",
+            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
+            "Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity")]
+        [TestCase("./Foo.txt",
+            "Assets/Tests/Runtime/Caller.cs",
+            "Assets/Tests/Runtime/Foo.txt")]
+        [TestCase("../../DummyDirectory/../Foo/Bar.txt",
+            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
+            "Packages/com.nowsprinting.test-helper/Tests/Foo/Bar.txt")]
+        public void ResolveUnityPath(string relativePath, string callerFilePath, string expected)
+        {
+            var actual = PathHelper.ResolveUnityPath(relativePath, callerFilePath);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         #endregion

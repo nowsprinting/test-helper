@@ -1,9 +1,10 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace TestHelper.Attributes
     public class LoadAssetAttribute : Attribute
     {
         internal string AssetPath { get; private set; }
+
+        internal string CallerFilePath { get; private set; }
 
         /// <summary>
         /// Loads an asset file at the specified path into the field.
@@ -42,41 +45,20 @@ namespace TestHelper.Attributes
         /// </remarks>
         public LoadAssetAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
+            CallerFilePath = callerFilePath;
+
             if (path.StartsWith("."))
             {
-                AssetPath = GetAbsolutePath(path, callerFilePath);
+#if UNITY_EDITOR
+                AssetPath = RuntimeInternals.PathHelper.ResolveUnityPath(path, callerFilePath);
+#else
+                // Will be resolved at runtime in GetResourcePath() for standalone player
+                AssetPath = null;
+#endif
             }
             else
             {
                 AssetPath = path;
-            }
-        }
-
-        internal static string GetAbsolutePath(string relativePath, string callerFilePath)
-        {
-            var callerDirectory = Path.GetDirectoryName(callerFilePath);
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
-
-            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
-            if (assetsIndexOf > 0)
-            {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf));
-            }
-
-            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
-            if (packageIndexOf > 0)
-            {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf));
-            }
-
-            Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
-            return null;
-            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
-
-            string ConvertToUnixPathSeparator(string path)
-            {
-                return path.Replace('\\', '/'); // Normalize path separator
             }
         }
 
@@ -108,7 +90,8 @@ namespace TestHelper.Attributes
 #if UNITY_EDITOR
                 var asset = AssetDatabase.LoadAssetAtPath(attribute.AssetPath, field.FieldType);
 #else
-                var resourcePath = GetResourcePath(attribute.AssetPath);
+                var originalPath = GetOriginalPathFromAttribute(field);
+                var resourcePath = GetResourcePath(attribute, originalPath);
                 var asset = Resources.Load(resourcePath, field.FieldType);
 #endif
                 if (asset == null)
@@ -122,8 +105,49 @@ namespace TestHelper.Attributes
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        private static string GetResourcePath(string assetPath)
+        private static string GetOriginalPathFromAttribute(FieldInfo field)
         {
+            var attrData = field.GetCustomAttributesData()
+                .FirstOrDefault(a => a.AttributeType == typeof(LoadAssetAttribute));
+            return attrData?.ConstructorArguments[0].Value as string;
+        }
+
+        [SuppressMessage("ReSharper", "UnusedMember.Local")]
+        private static string GetResourcePath(LoadAssetAttribute attribute, string originalPath)
+        {
+            var callerFilePath = attribute.CallerFilePath;
+            if (callerFilePath != null && originalPath != null && originalPath.StartsWith("."))
+            {
+                // Remove leading "./" from CallerFilePath if present
+                callerFilePath = callerFilePath.TrimStart('.', '/', '\\');
+
+                var callerDirectory = Path.GetDirectoryName(callerFilePath);
+
+                // Use Uri to resolve relative paths without depending on file system
+                var baseUri = new Uri($"file:///{callerDirectory?.Replace('\\', '/')}/");
+                var relativeUri = new Uri(baseUri, originalPath);
+                var realPath = relativeUri.LocalPath.TrimStart('/').Replace('\\', '/');
+
+                // Convert to resource path (remove extension)
+                var directoryName = Path.GetDirectoryName(realPath);
+                var filenameWithoutExtension = Path.GetFileNameWithoutExtension(realPath);
+                return string.IsNullOrEmpty(directoryName)
+                    ? filenameWithoutExtension
+                    : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
+            }
+
+            // Fallback to legacy behavior
+            return GetLegacyResourcePath(attribute.AssetPath);
+        }
+
+        [SuppressMessage("ReSharper", "UnusedMember.Local")]
+        private static string GetLegacyResourcePath(string assetPath)
+        {
+            if (assetPath == null)
+            {
+                return null;
+            }
+
             var directoryName = Path.GetDirectoryName(assetPath);
             var filenameWithoutExtension = Path.GetFileNameWithoutExtension(assetPath);
             return string.IsNullOrEmpty(directoryName)

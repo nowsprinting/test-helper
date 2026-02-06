@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -88,48 +88,23 @@ namespace TestHelper.RuntimeInternals
         /// <exception cref="FileNotFoundException">Scene file not found</exception>
         internal static string GetExistScenePath(string path, string callerFilePath)
         {
+#if UNITY_EDITOR
             if (path.StartsWith("."))
             {
-                path = GetAbsolutePath(path, callerFilePath);
+                path = PathHelper.ResolveUnityPath(path, callerFilePath);
             }
 
             if (!ValidatePath(path))
             {
                 return null;
             }
-#if UNITY_EDITOR
+
             return GetExistScenePathInEditor(path);
 #else
+            // On player, skip path resolution and validation
+            // GetExistScenePathOnPlayer() extracts only the scene name from the path
             return GetExistScenePathOnPlayer(path);
 #endif
-        }
-
-        internal static string GetAbsolutePath(string relativePath, string callerFilePath)
-        {
-            var callerDirectory = Path.GetDirectoryName(callerFilePath);
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
-
-            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
-            if (assetsIndexOf > 0)
-            {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf));
-            }
-
-            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
-            if (packageIndexOf > 0)
-            {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf));
-            }
-
-            Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
-            return null;
-            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
-
-            string ConvertToUnixPathSeparator(string path)
-            {
-                return path.Replace('\\', '/'); // Normalize path separator
-            }
         }
 
         private static bool ValidatePath(string path)
