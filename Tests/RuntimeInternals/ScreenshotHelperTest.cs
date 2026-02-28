@@ -312,6 +312,78 @@ namespace TestHelper.RuntimeInternals
             Assert.That(actual, Is.EqualTo(expected).Using(comparer));
         }
 #endif
+
+        [Test]
+        [GameViewResolution(GameViewResolution.VGA)]
+        [LoadScene(TestScene)]
+        public async Task TakeScreenshotAsJpegBytesAsync_ReturnsJpegBytes()
+        {
+            var jpeg = await ScreenshotHelper.TakeScreenshotAsJpegBytesAsync();
+
+            var texture = new Texture2D(0, 0);
+            texture.LoadImage(jpeg);
+
+            Assert.That(texture.width, Is.EqualTo(640));
+            Assert.That(texture.height, Is.EqualTo(480));
+        }
+
+        [Test]
+        [LoadScene(TestScene)]
+        public async Task TakeScreenshotAsync_WithJpegFormat_SavesJpegFile([Values(1, 50, 100)] int quality)
+        {
+            var filename = $"TakeScreenshotAsync_WithJpegFormat_SavesJpegFile_quality{quality}";
+            var path = Path.Combine(_defaultOutputDirectory, filename + ".jpeg");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await ScreenshotHelper.TakeScreenshotAsync(
+                directory: _defaultOutputDirectory,
+                filename: filename,
+                format: ImageFormat.Jpeg,
+                quality: quality);
+
+            Assert.That(path, Does.Exist.IgnoreDirectories);
+        }
+
+        [Test]
+        [LoadScene(TestScene)]
+        public async Task TakeScreenshotAsync_WithJpegFormatAndFilename_SavesWithJpegExtension()
+        {
+            var filename = "TakeScreenshotAsync_WithJpegFormatAndFilename_SavesWithJpegExtension";
+            var path = Path.Combine(_defaultOutputDirectory, filename + ".jpeg");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await ScreenshotHelper.TakeScreenshotAsync(
+                directory: _defaultOutputDirectory,
+                filename: filename,
+                format: ImageFormat.Jpeg);
+
+            Assert.That(path, Does.Exist.IgnoreDirectories);
+        }
+
+        [Test]
+        [LoadScene(TestScene)]
+        public async Task TakeScreenshotAsync_WithJpegFormatAndJpegFilename_DoesNotDuplicateExtension()
+        {
+            var filename = "TakeScreenshotAsync_WithJpegFormatAndJpegFilename_DoesNotDuplicateExtension.jpeg";
+            var path = Path.Combine(_defaultOutputDirectory, filename);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await ScreenshotHelper.TakeScreenshotAsync(
+                directory: _defaultOutputDirectory,
+                filename: filename,
+                format: ImageFormat.Jpeg);
+
+            Assert.That(path, Does.Exist.IgnoreDirectories);
+        }
 #endif
 
 #if ENABLE_FLIP_BINDING

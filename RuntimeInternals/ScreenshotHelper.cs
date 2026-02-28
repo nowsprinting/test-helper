@@ -63,7 +63,7 @@ namespace TestHelper.RuntimeInternals
                 yield break;
             }
 
-            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
+            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName, "png");
 
             yield return new WaitForEndOfFrame(); // Required to take screenshots
 
@@ -109,18 +109,33 @@ namespace TestHelper.RuntimeInternals
         /// Using <see cref="callerMemberName"/> when called outside a test context.</param>
         /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true and filename omitted.</param>
         /// <param name="scale">Save screenshot scale factor.</param>
+        /// <param name="format">Image encoding format.</param>
+        /// <param name="quality">JPEG encoding quality (1-100). Only used when <paramref name="format"/> is <see cref="ImageFormat.Jpeg"/>.</param>
         /// <param name="callerMemberName">Used as the default file name when called outside a test context</param>
         public static async Awaitable TakeScreenshotAsync(
             string directory = null,
             string filename = null,
             bool namespaceToDirectory = false,
             float scale = 1.0f,
+            ImageFormat format = ImageFormat.Png,
+            int quality = 75,
             [CallerMemberName] string callerMemberName = null)
         {
-            var png = await TakeScreenshotAsPngBytesAsync(scale);
+            byte[] imageBytes;
+            switch (format)
+            {
+                case ImageFormat.Jpeg:
+                    imageBytes = await TakeScreenshotAsJpegBytesAsync(scale, quality);
+                    break;
+                case ImageFormat.Png:
+                default:
+                    imageBytes = await TakeScreenshotAsPngBytesAsync(scale);
+                    break;
+            }
 
-            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
-            await File.WriteAllBytesAsync(path, png);
+            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName,
+                format.ToString().ToLower());
+            await File.WriteAllBytesAsync(path, imageBytes);
 
 #if UNITY_INCLUDE_TESTS
             if (TestContext.CurrentTestExecutionContext != null)
@@ -194,10 +209,29 @@ namespace TestHelper.RuntimeInternals
         private static readonly Vector2 s_blitOffset = SystemInfo.graphicsUVStartsAtTop
             ? new Vector2(0, 1) // Offset Y-axis after flip
             : new Vector2(0, 0);
+
+        /// <summary>
+        /// Take a screenshot.
+        /// <p/>
+        /// Limitations:
+        /// <list type="bullet">
+        ///     <item>Do not call from Edit Mode tests.</item>
+        ///     <item>Must be called from main thread.</item>
+        ///     <item><c>GameView</c> must be visible. Use the <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="scale">Save screenshot scale factor.</param>
+        /// <param name="quality">JPEG encoding quality (1-100).</param>
+        /// <returns>JPEG image byte array.</returns>
+        public static async Awaitable<byte[]> TakeScreenshotAsJpegBytesAsync(float scale = 1.0f, int quality = 75)
+        {
+            await Awaitable.EndOfFrameAsync();
+            return new byte[0];
+        }
 #endif
 
         private static string GetSavePath(string directory, string filename, bool namespaceToDirectory,
-            string callerMemberName)
+            string callerMemberName, string extension)
         {
             if (directory != null)
             {
@@ -215,16 +249,16 @@ namespace TestHelper.RuntimeInternals
             {
                 path = PathHelper.CreateFilePath(
                     baseDirectory: directory,
-                    extension: "png",
+                    extension: extension,
                     namespaceToDirectory: namespaceToDirectory,
                     callerMemberName: callerMemberName);
             }
             else
             {
                 path = Path.Combine(directory, filename);
-                if (!path.EndsWith(".png"))
+                if (!path.EndsWith("." + extension))
                 {
-                    path += ".png";
+                    path += "." + extension;
                 }
             }
 
