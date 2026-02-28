@@ -1,10 +1,11 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 #if UNITY_INCLUDE_TESTS
 using NUnit.Framework;
@@ -134,7 +135,7 @@ namespace TestHelper.RuntimeInternals
             }
 
             var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName,
-                format.ToString().ToLower());
+                GetFileExtension(format));
             await File.WriteAllBytesAsync(path, imageBytes);
 
 #if UNITY_INCLUDE_TESTS
@@ -160,43 +161,19 @@ namespace TestHelper.RuntimeInternals
         /// <returns>PNG image byte array.</returns>
         public static async Awaitable<byte[]> TakeScreenshotAsPngBytesAsync(float scale = 1.0f)
         {
-            if (Camera.main)
-            {
-                Camera.main.forceIntoRenderTexture = true;
-            }
-
-            await Awaitable.EndOfFrameAsync(); // Required to take screenshots
+            var (pixelData, graphicsFormat, width, height, fallbackTexture) = await CaptureScreenPixelsAsync(scale);
 
             byte[] png;
-
-            if (SystemInfo.supportsAsyncGPUReadback)
+            if (fallbackTexture != null)
             {
-                var capturedTexture = RenderTexture.GetTemporary(Screen.width, Screen.height);
-                var format = capturedTexture.graphicsFormat;
-                ScreenCapture.CaptureScreenshotIntoRenderTexture(capturedTexture);
-
-                var width = (int)(Screen.width * scale);
-                var height = (int)(Screen.height * scale);
-                var scaledTexture = RenderTexture.GetTemporary(width, height);
-                Graphics.Blit(capturedTexture, scaledTexture, s_blitScale, s_blitOffset); // y-axis flip if needed
-                RenderTexture.ReleaseTemporary(capturedTexture);
-
-                var request = await AsyncGPUReadback.RequestAsync(scaledTexture);
-                RenderTexture.ReleaseTemporary(scaledTexture);
-
-                using var imageBytes = request.GetData<byte>();
-                var imageByteArray = imageBytes.ToArray();
-                // Note: Reason for not using ArrayPool: NativeArray.CopyTo throws "ArgumentException: source and destination length must be the same" in Unity 6000.2.6f1.
-
-                await Awaitable.BackgroundThreadAsync();
-                png = ImageConversion.EncodeArrayToPNG(imageByteArray, format, (uint)width, (uint)height);
-                await Awaitable.MainThreadAsync();
+                png = fallbackTexture.EncodeToPNG();
+                Object.Destroy(fallbackTexture);
             }
             else
             {
-                var texture = ScreenCapture.CaptureScreenshotAsTexture(1);
-                png = texture.EncodeToPNG();
-                Object.Destroy(texture);
+                await Awaitable.BackgroundThreadAsync();
+                png = ImageConversion.EncodeArrayToPNG(pixelData, graphicsFormat, width, height);
+                await Awaitable.MainThreadAsync();
             }
 
             return png;
@@ -225,6 +202,28 @@ namespace TestHelper.RuntimeInternals
         /// <returns>JPEG image byte array.</returns>
         public static async Awaitable<byte[]> TakeScreenshotAsJpegBytesAsync(float scale = 1.0f, int quality = 75)
         {
+            var (pixelData, graphicsFormat, width, height, fallbackTexture) = await CaptureScreenPixelsAsync(scale);
+
+            byte[] jpeg;
+            if (fallbackTexture != null)
+            {
+                jpeg = fallbackTexture.EncodeToJPG(quality);
+                Object.Destroy(fallbackTexture);
+            }
+            else
+            {
+                await Awaitable.BackgroundThreadAsync();
+                jpeg = ImageConversion.EncodeArrayToJPG(pixelData, graphicsFormat, width, height, 0, quality);
+                await Awaitable.MainThreadAsync();
+            }
+
+            return jpeg;
+        }
+
+        private static async
+            Awaitable<(byte[] pixelData, GraphicsFormat graphicsFormat, uint width, uint height, Texture2D
+                fallbackTexture)> CaptureScreenPixelsAsync(float scale)
+        {
             if (Camera.main)
             {
                 Camera.main.forceIntoRenderTexture = true;
@@ -232,12 +231,10 @@ namespace TestHelper.RuntimeInternals
 
             await Awaitable.EndOfFrameAsync(); // Required to take screenshots
 
-            byte[] jpeg;
-
             if (SystemInfo.supportsAsyncGPUReadback)
             {
                 var capturedTexture = RenderTexture.GetTemporary(Screen.width, Screen.height);
-                var format = capturedTexture.graphicsFormat;
+                var graphicsFormat = capturedTexture.graphicsFormat;
                 ScreenCapture.CaptureScreenshotIntoRenderTexture(capturedTexture);
 
                 var width = (int)(Screen.width * scale);
@@ -253,18 +250,23 @@ namespace TestHelper.RuntimeInternals
                 var imageByteArray = imageBytes.ToArray();
                 // Note: Reason for not using ArrayPool: NativeArray.CopyTo throws "ArgumentException: source and destination length must be the same" in Unity 6000.2.6f1.
 
-                await Awaitable.BackgroundThreadAsync();
-                jpeg = ImageConversion.EncodeArrayToJPG(imageByteArray, format, (uint)width, (uint)height, 0, quality);
-                await Awaitable.MainThreadAsync();
+                return (imageByteArray, graphicsFormat, (uint)width, (uint)height, null);
             }
             else
             {
                 var texture = ScreenCapture.CaptureScreenshotAsTexture(1);
-                jpeg = texture.EncodeToJPG(quality);
-                Object.Destroy(texture);
+                return (null, default, 0, 0, texture);
             }
+        }
 
-            return jpeg;
+        private static string GetFileExtension(ImageFormat format)
+        {
+            switch (format)
+            {
+                case ImageFormat.Jpeg: return "jpeg";
+                case ImageFormat.Png: return "png";
+                default: return format.ToString().ToLower();
+            }
         }
 #endif
 
