@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -143,5 +143,149 @@ namespace TestHelper.RuntimeInternals
             return name;
         }
 #endif
+
+        /// <summary>
+        /// Resolves a relative path from the caller file to Unity path format (Assets/ or Packages/).
+        /// </summary>
+        /// <param name="relativePath">Relative path from caller file</param>
+        /// <param name="callerFilePath">Caller file path</param>
+        /// <returns>Unity path format (e.g., "Assets/...", "Packages/...")</returns>
+        internal static string ResolveUnityPath(string relativePath, string callerFilePath)
+        {
+            var callerDirectory = Path.GetDirectoryName(callerFilePath);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
+
+            // First, look for Assets/ (ensure it's a directory, not part of another name)
+            var assetsIndexOf =
+                absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Assets{Path.DirectorySeparatorChar}",
+                    StringComparison.Ordinal);
+            if (assetsIndexOf >= 0)
+            {
+                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf + 1));
+            }
+
+            // Next, look for Packages/ (ensure it's a directory, not part of another name like "LocalPackages")
+            var packageIndexOf =
+                absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Packages{Path.DirectorySeparatorChar}",
+                    StringComparison.Ordinal);
+            if (packageIndexOf >= 0)
+            {
+                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf + 1));
+            }
+
+            // If neither found, it might be an Embedded package
+            // Find project root and convert to Packages/{packageName}/ format
+            var projectRoot = FindProjectRoot(absolutePath);
+            if (projectRoot != null)
+            {
+                var relativeFromRoot = absolutePath.Substring(projectRoot.Length)
+                    .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var unityPath = ConvertToUnityPath(relativeFromRoot, projectRoot);
+                if (unityPath != null)
+                {
+                    return unityPath;
+                }
+            }
+
+            Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
+            return null;
+            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
+
+            string ConvertToUnixPathSeparator(string path)
+            {
+                return path.Replace('\\', '/');
+            }
+        }
+
+        private static string FindProjectRoot(string absolutePath)
+        {
+            var directory = Path.GetDirectoryName(absolutePath);
+            while (!string.IsNullOrEmpty(directory))
+            {
+                // Project root has Assets/ directory or Packages/manifest.json
+                if (Directory.Exists(Path.Combine(directory, "Assets")) ||
+                    File.Exists(Path.Combine(directory, "Packages", "manifest.json")))
+                {
+                    return directory;
+                }
+
+                directory = Path.GetDirectoryName(directory);
+            }
+
+            return null;
+        }
+
+        private static string ConvertToUnityPath(string relativePathFromRoot, string projectRoot)
+        {
+            relativePathFromRoot = relativePathFromRoot.Replace('\\', '/');
+            var segments = relativePathFromRoot.Split('/');
+            if (segments.Length < 2)
+            {
+                return null;
+            }
+
+            // Search for package.json at any depth (from deep to shallow)
+            for (var depth = segments.Length - 1; depth >= 1; depth--)
+            {
+                var packageDirSegments = new string[depth];
+                Array.Copy(segments, 0, packageDirSegments, 0, depth);
+                var packageDirRelative = string.Join("/", packageDirSegments);
+
+                // Use absolute path for File.Exists check
+                var packageJsonPath = Path.Combine(projectRoot, packageDirRelative, "package.json");
+
+                if (File.Exists(packageJsonPath))
+                {
+                    var packageName = GetPackageNameFromJson(packageJsonPath);
+                    if (!string.IsNullOrEmpty(packageName))
+                    {
+                        var remainingSegments = new string[segments.Length - depth];
+                        Array.Copy(segments, depth, remainingSegments, 0, remainingSegments.Length);
+                        return "Packages/" + packageName + "/" + string.Join("/", remainingSegments);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetPackageNameFromJson(string packageJsonPath)
+        {
+            try
+            {
+                var json = File.ReadAllText(packageJsonPath);
+                // Simple JSON parsing to extract "name": "..."
+                var nameIndex = json.IndexOf("\"name\"", StringComparison.Ordinal);
+                if (nameIndex < 0)
+                {
+                    return null;
+                }
+
+                var colonIndex = json.IndexOf(":", nameIndex, StringComparison.Ordinal);
+                if (colonIndex < 0)
+                {
+                    return null;
+                }
+
+                var openQuoteIndex = json.IndexOf("\"", colonIndex, StringComparison.Ordinal);
+                if (openQuoteIndex < 0)
+                {
+                    return null;
+                }
+
+                var closeQuoteIndex = json.IndexOf("\"", openQuoteIndex + 1, StringComparison.Ordinal);
+                if (closeQuoteIndex < 0)
+                {
+                    return null;
+                }
+
+                return json.Substring(openQuoteIndex + 1, closeQuoteIndex - openQuoteIndex - 1);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
