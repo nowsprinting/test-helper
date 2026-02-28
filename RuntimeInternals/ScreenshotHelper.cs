@@ -225,8 +225,46 @@ namespace TestHelper.RuntimeInternals
         /// <returns>JPEG image byte array.</returns>
         public static async Awaitable<byte[]> TakeScreenshotAsJpegBytesAsync(float scale = 1.0f, int quality = 75)
         {
-            await Awaitable.EndOfFrameAsync();
-            return new byte[0];
+            if (Camera.main)
+            {
+                Camera.main.forceIntoRenderTexture = true;
+            }
+
+            await Awaitable.EndOfFrameAsync(); // Required to take screenshots
+
+            byte[] jpeg;
+
+            if (SystemInfo.supportsAsyncGPUReadback)
+            {
+                var capturedTexture = RenderTexture.GetTemporary(Screen.width, Screen.height);
+                var format = capturedTexture.graphicsFormat;
+                ScreenCapture.CaptureScreenshotIntoRenderTexture(capturedTexture);
+
+                var width = (int)(Screen.width * scale);
+                var height = (int)(Screen.height * scale);
+                var scaledTexture = RenderTexture.GetTemporary(width, height);
+                Graphics.Blit(capturedTexture, scaledTexture, s_blitScale, s_blitOffset); // y-axis flip if needed
+                RenderTexture.ReleaseTemporary(capturedTexture);
+
+                var request = await AsyncGPUReadback.RequestAsync(scaledTexture);
+                RenderTexture.ReleaseTemporary(scaledTexture);
+
+                using var imageBytes = request.GetData<byte>();
+                var imageByteArray = imageBytes.ToArray();
+                // Note: Reason for not using ArrayPool: NativeArray.CopyTo throws "ArgumentException: source and destination length must be the same" in Unity 6000.2.6f1.
+
+                await Awaitable.BackgroundThreadAsync();
+                jpeg = ImageConversion.EncodeArrayToJPG(imageByteArray, format, (uint)width, (uint)height, 0, quality);
+                await Awaitable.MainThreadAsync();
+            }
+            else
+            {
+                var texture = ScreenCapture.CaptureScreenshotAsTexture(1);
+                jpeg = texture.EncodeToJPG(quality);
+                Object.Destroy(texture);
+            }
+
+            return jpeg;
         }
 #endif
 
