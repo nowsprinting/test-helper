@@ -106,7 +106,7 @@ namespace TestHelper.RuntimeInternals
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
         /// <param name="filename">Filename to store screenshot.
-        /// If omitted, default filename is <c>TestContext.Test.Name</c> + ".png" when run in test context.
+        /// If omitted, default filename is <c>TestContext.Test.Name</c> with extension determined by <paramref name="format"/> (e.g., ".png" or ".jpeg") when run in test context.
         /// Using <see cref="callerMemberName"/> when called outside a test context.</param>
         /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true and filename omitted.</param>
         /// <param name="scale">Save screenshot scale factor.</param>
@@ -265,7 +265,7 @@ namespace TestHelper.RuntimeInternals
             {
                 case ImageFormat.Jpeg: return "jpeg";
                 case ImageFormat.Png: return "png";
-                default: return format.ToString().ToLower();
+                default: return format.ToString().ToLowerInvariant();
             }
         }
 #endif

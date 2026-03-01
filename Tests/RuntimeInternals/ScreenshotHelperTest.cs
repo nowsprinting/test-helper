@@ -232,6 +232,21 @@ namespace TestHelper.RuntimeInternals
 
         [Test]
         [LoadScene(TestScene)]
+        public async Task TakeScreenshotAsync_WithJpegFormat_SaveToDefaultPath()
+        {
+            var path = Path.Combine(_defaultOutputDirectory, $"{TestContext.CurrentContext.Test.Name}.jpeg");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            await ScreenshotHelper.TakeScreenshotAsync(format: ImageFormat.Jpeg);
+
+            Assert.That(path, Does.Exist.IgnoreDirectories);
+        }
+
+        [Test]
+        [LoadScene(TestScene)]
         public async Task TakeScreenshotAsync_ContinuousCall_SaveToEachFile()
         {
             var paths = new string[5];
