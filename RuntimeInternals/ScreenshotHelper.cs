@@ -1,10 +1,11 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 #if UNITY_INCLUDE_TESTS
 using NUnit.Framework;
@@ -63,7 +64,7 @@ namespace TestHelper.RuntimeInternals
                 yield break;
             }
 
-            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
+            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName, "png");
 
             yield return new WaitForEndOfFrame(); // Required to take screenshots
 
@@ -105,22 +106,37 @@ namespace TestHelper.RuntimeInternals
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
         /// <param name="filename">Filename to store screenshot.
-        /// If omitted, default filename is <c>TestContext.Test.Name</c> + ".png" when run in test context.
+        /// If omitted, default filename is <c>TestContext.Test.Name</c> with extension determined by <paramref name="format"/> (e.g., ".png" or ".jpeg") when run in test context.
         /// Using <see cref="callerMemberName"/> when called outside a test context.</param>
         /// <param name="namespaceToDirectory">Insert subdirectory named from test namespace if true and filename omitted.</param>
         /// <param name="scale">Save screenshot scale factor.</param>
+        /// <param name="format">Image encoding format.</param>
+        /// <param name="quality">JPEG encoding quality (1-100). Only used when <paramref name="format"/> is <see cref="ImageFormat.Jpeg"/>.</param>
         /// <param name="callerMemberName">Used as the default file name when called outside a test context</param>
         public static async Awaitable TakeScreenshotAsync(
             string directory = null,
             string filename = null,
             bool namespaceToDirectory = false,
             float scale = 1.0f,
+            ImageFormat format = ImageFormat.Png,
+            int quality = 75,
             [CallerMemberName] string callerMemberName = null)
         {
-            var png = await TakeScreenshotAsPngBytesAsync(scale);
+            byte[] imageBytes;
+            switch (format)
+            {
+                case ImageFormat.Jpeg:
+                    imageBytes = await TakeScreenshotAsJpegBytesAsync(scale, quality);
+                    break;
+                case ImageFormat.Png:
+                default:
+                    imageBytes = await TakeScreenshotAsPngBytesAsync(scale);
+                    break;
+            }
 
-            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName);
-            await File.WriteAllBytesAsync(path, png);
+            var path = GetSavePath(directory, filename, namespaceToDirectory, callerMemberName,
+                GetFileExtension(format));
+            await File.WriteAllBytesAsync(path, imageBytes);
 
 #if UNITY_INCLUDE_TESTS
             if (TestContext.CurrentTestExecutionContext != null)
@@ -145,6 +161,69 @@ namespace TestHelper.RuntimeInternals
         /// <returns>PNG image byte array.</returns>
         public static async Awaitable<byte[]> TakeScreenshotAsPngBytesAsync(float scale = 1.0f)
         {
+            var (pixelData, graphicsFormat, width, height, fallbackTexture) = await CaptureScreenPixelsAsync(scale);
+
+            byte[] png;
+            if (fallbackTexture != null)
+            {
+                png = fallbackTexture.EncodeToPNG();
+                Object.Destroy(fallbackTexture);
+            }
+            else
+            {
+                await Awaitable.BackgroundThreadAsync();
+                png = ImageConversion.EncodeArrayToPNG(pixelData, graphicsFormat, width, height);
+                await Awaitable.MainThreadAsync();
+            }
+
+            return png;
+        }
+
+        private static readonly Vector2 s_blitScale = SystemInfo.graphicsUVStartsAtTop
+            ? new Vector2(1, -1) // Flip Y-axis
+            : new Vector2(1, 1);
+
+        private static readonly Vector2 s_blitOffset = SystemInfo.graphicsUVStartsAtTop
+            ? new Vector2(0, 1) // Offset Y-axis after flip
+            : new Vector2(0, 0);
+
+        /// <summary>
+        /// Take a screenshot.
+        /// <p/>
+        /// Limitations:
+        /// <list type="bullet">
+        ///     <item>Do not call from Edit Mode tests.</item>
+        ///     <item>Must be called from main thread.</item>
+        ///     <item><c>GameView</c> must be visible. Use the <c>FocusGameViewAttribute</c> or <c>GameViewResolutionAttribute</c> if running on batch mode.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="scale">Save screenshot scale factor.</param>
+        /// <param name="quality">JPEG encoding quality (1-100).</param>
+        /// <returns>JPEG image byte array.</returns>
+        public static async Awaitable<byte[]> TakeScreenshotAsJpegBytesAsync(float scale = 1.0f, int quality = 75)
+        {
+            var (pixelData, graphicsFormat, width, height, fallbackTexture) = await CaptureScreenPixelsAsync(scale);
+
+            byte[] jpeg;
+            if (fallbackTexture != null)
+            {
+                jpeg = fallbackTexture.EncodeToJPG(quality);
+                Object.Destroy(fallbackTexture);
+            }
+            else
+            {
+                await Awaitable.BackgroundThreadAsync();
+                jpeg = ImageConversion.EncodeArrayToJPG(pixelData, graphicsFormat, width, height, 0, quality);
+                await Awaitable.MainThreadAsync();
+            }
+
+            return jpeg;
+        }
+
+        private static async
+            Awaitable<(byte[] pixelData, GraphicsFormat graphicsFormat, uint width, uint height, Texture2D
+                fallbackTexture)> CaptureScreenPixelsAsync(float scale)
+        {
             if (Camera.main)
             {
                 Camera.main.forceIntoRenderTexture = true;
@@ -152,12 +231,10 @@ namespace TestHelper.RuntimeInternals
 
             await Awaitable.EndOfFrameAsync(); // Required to take screenshots
 
-            byte[] png;
-
             if (SystemInfo.supportsAsyncGPUReadback)
             {
                 var capturedTexture = RenderTexture.GetTemporary(Screen.width, Screen.height);
-                var format = capturedTexture.graphicsFormat;
+                var graphicsFormat = capturedTexture.graphicsFormat;
                 ScreenCapture.CaptureScreenshotIntoRenderTexture(capturedTexture);
 
                 var width = (int)(Screen.width * scale);
@@ -173,31 +250,28 @@ namespace TestHelper.RuntimeInternals
                 var imageByteArray = imageBytes.ToArray();
                 // Note: Reason for not using ArrayPool: NativeArray.CopyTo throws "ArgumentException: source and destination length must be the same" in Unity 6000.2.6f1.
 
-                await Awaitable.BackgroundThreadAsync();
-                png = ImageConversion.EncodeArrayToPNG(imageByteArray, format, (uint)width, (uint)height);
-                await Awaitable.MainThreadAsync();
+                return (imageByteArray, graphicsFormat, (uint)width, (uint)height, null);
             }
             else
             {
                 var texture = ScreenCapture.CaptureScreenshotAsTexture(1);
-                png = texture.EncodeToPNG();
-                Object.Destroy(texture);
+                return (null, default, 0, 0, texture);
             }
-
-            return png;
         }
 
-        private static readonly Vector2 s_blitScale = SystemInfo.graphicsUVStartsAtTop
-            ? new Vector2(1, -1) // Flip Y-axis
-            : new Vector2(1, 1);
-
-        private static readonly Vector2 s_blitOffset = SystemInfo.graphicsUVStartsAtTop
-            ? new Vector2(0, 1) // Offset Y-axis after flip
-            : new Vector2(0, 0);
+        private static string GetFileExtension(ImageFormat format)
+        {
+            switch (format)
+            {
+                case ImageFormat.Jpeg: return "jpeg";
+                case ImageFormat.Png: return "png";
+                default: return format.ToString().ToLowerInvariant();
+            }
+        }
 #endif
 
         private static string GetSavePath(string directory, string filename, bool namespaceToDirectory,
-            string callerMemberName)
+            string callerMemberName, string extension)
         {
             if (directory != null)
             {
@@ -215,16 +289,16 @@ namespace TestHelper.RuntimeInternals
             {
                 path = PathHelper.CreateFilePath(
                     baseDirectory: directory,
-                    extension: "png",
+                    extension: extension,
                     namespaceToDirectory: namespaceToDirectory,
                     callerMemberName: callerMemberName);
             }
             else
             {
                 path = Path.Combine(directory, filename);
-                if (!path.EndsWith(".png"))
+                if (!path.EndsWith("." + extension))
                 {
-                    path += ".png";
+                    path += "." + extension;
                 }
             }
 
