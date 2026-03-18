@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -22,7 +22,7 @@ namespace TestHelper.Editor
     /// </remarks>
     internal static class TemporaryCopyAssetsForPlayer
     {
-        internal const string ResourcesRoot = "Assets/com.nowsprinting.test-helper";
+        internal const string ResourcesParent = "Assets/com.nowsprinting.test-helper";
 
         private static IEnumerable<T> FindAttributesOnFields<T>() where T : Attribute
         {
@@ -50,16 +50,16 @@ namespace TestHelper.Editor
         {
             foreach (var attribute in FindAttributesOnFields<LoadAssetAttribute>())
             {
-                var destFileName = Path.Combine(ResourcesRoot, "Resources", attribute.AssetPath);
-                var destDir = Path.GetDirectoryName(destFileName);
+                var destFilePath = Path.Combine(ResourcesParent, "Resources", attribute.ResourcePath);
+                var destDir = Path.GetDirectoryName(destFilePath);
                 if (destDir != null && !Directory.Exists(destDir))
                 {
                     Directory.CreateDirectory(destDir);
                 }
 
-                if (!AssetDatabase.CopyAsset(attribute.AssetPath, destFileName))
+                if (!AssetDatabase.CopyAsset(attribute.AssetPath, destFilePath))
                 {
-                    Debug.LogError($"Failed to copy asset file from '{attribute.AssetPath}' to '{destFileName}'");
+                    Debug.LogError($"Failed to copy asset file from '{attribute.AssetPath}' to '{destFilePath}'");
                 }
             }
         }

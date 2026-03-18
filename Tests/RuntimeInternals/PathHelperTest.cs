@@ -1,9 +1,10 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.IO;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace TestHelper.RuntimeInternals
 {
@@ -207,6 +208,25 @@ namespace TestHelper.RuntimeInternals
 
             PathHelper.CreateFilePath(baseDirectory: baseDirectory, createDirectory: false);
             Assert.That(baseDirectory, Does.Not.Exist);
+        }
+
+        [TestCase("Assets/AbsolutePath/Scene.unity",
+            "Assets/Tests/Runtime/Caller.cs",
+            "Assets/AbsolutePath/Scene.unity")] // equals relative path
+        [TestCase("Packages/com.nowsprinting.test-helper/AbsolutePath/Scene.unity",
+            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Caller.cs",
+            "Packages/com.nowsprinting.test-helper/AbsolutePath/Scene.unity")] // equals relative path
+        [TestCase("./Scene.unity",
+            "Assets/Tests/Runtime/Caller.cs",
+            "Assets/Tests/Runtime/Scene.unity")] // relative path
+        [TestCase("../../BadPath/../Scenes/Scene.unity",
+            "Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Caller.cs",
+            "Packages/com.nowsprinting.test-helper/Tests/Scenes/Scene.unity")] // relative path need normalization
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        public void ResolveUnityPath(string relativePath, string callerFilePath, string expected)
+        {
+            var actual = PathHelper.ResolveUnityPath(relativePath, callerFilePath);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         #endregion

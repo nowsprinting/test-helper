@@ -42,9 +42,9 @@ namespace TestHelper.Editor
             }
 
             // Delete temporary copied asset files for running play mode tests on player.
-            if (Directory.Exists(TemporaryCopyAssetsForPlayer.ResourcesRoot))
+            if (Directory.Exists(TemporaryCopyAssetsForPlayer.ResourcesParent))
             {
-                AssetDatabase.DeleteAsset(TemporaryCopyAssetsForPlayer.ResourcesRoot);
+                AssetDatabase.DeleteAsset(TemporaryCopyAssetsForPlayer.ResourcesParent);
                 // Note: delete with .meta file.
             }
         }
