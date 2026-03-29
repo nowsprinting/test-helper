@@ -1,11 +1,11 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -16,7 +16,10 @@ namespace TestHelper.Attributes
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class LoadAssetAttribute : Attribute
     {
+#if UNITY_EDITOR
         internal string AssetPath { get; private set; }
+#endif
+        internal string ResourcePath { get; private set; }
 
         /// <summary>
         /// Loads an asset file at the specified path into the field.
@@ -38,46 +41,63 @@ namespace TestHelper.Attributes
         /// </param>
         /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>
-        /// When running tests on the player, it temporarily copies asset files to the <c>Resources</c> folder by <see cref="TestHelper.Editor.TemporaryCopyAssetsForPlayer"/>.
+        /// When running tests on the player, it temporarily copies asset files to the <c>Resources</c> folder by <see cref="Editor.TemporaryCopyAssetsForPlayer"/>.
         /// </remarks>
         public LoadAssetAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
-            if (path.StartsWith("."))
+#if UNITY_EDITOR
+            if (path != null && path.StartsWith("."))
             {
-                AssetPath = GetAbsolutePath(path, callerFilePath);
+                AssetPath = PathHelper.ResolveUnityPath(path, callerFilePath);
             }
             else
             {
-                AssetPath = path;
+                AssetPath = PathHelper.ResolveUnityPath(path);
+            }
+#endif
+            if (path != null && path.StartsWith("."))
+            {
+                ResourcePath = BuildResourcePath(path, callerFilePath);
+            }
+            else
+            {
+                ResourcePath = BuildResourcePath(path);
             }
         }
 
-        internal static string GetAbsolutePath(string relativePath, string callerFilePath)
+        private static string BuildResourcePath(string relativePath, string callerFilePath)
         {
             var callerDirectory = Path.GetDirectoryName(callerFilePath);
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
+            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory!, relativePath));
 
-            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
-            if (assetsIndexOf > 0)
+            var assetsIndexOf = absolutePath.IndexOf(
+                $"{Path.DirectorySeparatorChar}Assets{Path.DirectorySeparatorChar}",
+                StringComparison.Ordinal);
+            if (assetsIndexOf >= 0)
             {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf));
+                return BuildResourcePath(absolutePath.Substring(assetsIndexOf + 1));
             }
 
-            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
-            if (packageIndexOf > 0)
+            // Next, look for Packages/ (ensure it's a directory, not part of another name like "LocalPackages")
+            var packageIndexOf =
+                absolutePath.IndexOf($"{Path.DirectorySeparatorChar}Packages{Path.DirectorySeparatorChar}",
+                    StringComparison.Ordinal);
+            if (packageIndexOf >= 0)
             {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf));
+                return BuildResourcePath(absolutePath.Substring(packageIndexOf + 1));
             }
 
-            Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
-            return null;
-            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
+            return BuildResourcePath(absolutePath);
+        }
 
-            string ConvertToUnixPathSeparator(string path)
-            {
-                return path.Replace('\\', '/'); // Normalize path separator
-            }
+        private static string BuildResourcePath(string absolutePath)
+        {
+            // Convert to resource path (remove extension)
+            var directoryName = Path.Join("com.nowsprinting.test-helper", Path.GetDirectoryName(absolutePath)); // TODO: Path.Join
+            var filenameWithoutExtension = Path.GetFileNameWithoutExtension(absolutePath);
+            return string.IsNullOrEmpty(directoryName)
+                ? filenameWithoutExtension
+                : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
         }
 
         /// <summary>
@@ -107,28 +127,21 @@ namespace TestHelper.Attributes
                 }
 #if UNITY_EDITOR
                 var asset = AssetDatabase.LoadAssetAtPath(attribute.AssetPath, field.FieldType);
-#else
-                var resourcePath = GetResourcePath(attribute.AssetPath);
-                var asset = Resources.Load(resourcePath, field.FieldType);
-#endif
                 if (asset == null)
                 {
                     Debug.LogError($"Failed to load asset at path: {attribute.AssetPath} type: {field.FieldType}");
                     continue;
                 }
-
+#else
+                var asset = Resources.Load(attribute.ResourcePath, field.FieldType);
+                if (asset == null)
+                {
+                    Debug.LogError($"Failed to load asset at path: {attribute.ResourcePath} type: {field.FieldType}");
+                    continue;
+                }
+#endif
                 field.SetValue(testClassInstance, asset);
             }
-        }
-
-        [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        private static string GetResourcePath(string assetPath)
-        {
-            var directoryName = Path.GetDirectoryName(assetPath);
-            var filenameWithoutExtension = Path.GetFileNameWithoutExtension(assetPath);
-            return string.IsNullOrEmpty(directoryName)
-                ? filenameWithoutExtension
-                : $"{directoryName.Replace('\\', '/')}/{filenameWithoutExtension}";
         }
     }
 }
