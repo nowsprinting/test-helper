@@ -1,7 +1,7 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
-#if ENABLE_INSTANT_REPLAY
+#if ENABLE_INSTANT_REPLAY && !EXCLUDE_INSTANTREPLAY
 using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
