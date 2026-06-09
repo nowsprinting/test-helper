@@ -43,9 +43,9 @@ jobs:
         unityVersion: # Available versions see: https://game.ci/docs/docker/versions
           - 2019.4.41f2
           - 2022.3.62f3 # Non-Enterprise LTS
-          - 6000.0.67f1
-          - 6000.3.11f1
-          - &latest_unity_version 6000.4.0f1
+          - 6000.0.75f1
+          - 6000.3.16f1
+          - &latest_unity_version 6000.4.8f1
         testMode:
           - All # run tests in editor
         include:
@@ -57,7 +57,7 @@ jobs:
 
     steps:
       - name: Create project for test
-        uses: nowsprinting/create-unity-project-action@e6a2ccac5eaa666d219b4bee94781bfb3b768c86 # v3
+        uses: nowsprinting/create-unity-project-action@95f60602e491564583a15ee611a21c23c2f5d5d4 # v4
         with:
           project-path: .
 
@@ -69,7 +69,7 @@ jobs:
           # As a workaround, I have made it into an embedded package.
 
       - name: Checkout repository as embedded package
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           submodules: false
           lfs: false
@@ -95,7 +95,7 @@ jobs:
         if: ${{ matrix.octocov }}
 
       - name: Restore cache
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: ${{ env.CREATED_PROJECT_PATH }}/Library
           key: Library-${{ runner.os }}-${{ matrix.unityVersion }}-${{ hashFiles(format('{0}/package.json', env.PACKAGE_PATH)) }}
@@ -139,13 +139,13 @@ jobs:
         if: ${{ matrix.octocov }}
 
       - name: Run octocov
-        uses: k1LoW/octocov-action@73d561f65d59e66899ed5c87e4621a913b5d5c20 # v1
+        uses: k1LoW/octocov-action@b3b6ee60482a667950f87553abf1df63217235d9 # v1
         env:
           OCTOCOV_GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.OCTOCOV_GOOGLE_APPLICATION_CREDENTIALS_JSON }}
         if: ${{ matrix.octocov }}
 
       - name: Upload test results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: TestResults-Unity${{ matrix.unityVersion }}-${{ matrix.testMode }}
           path: |
