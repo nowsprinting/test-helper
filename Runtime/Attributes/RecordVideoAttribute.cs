@@ -9,7 +9,6 @@ using InstantReplay;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using TestHelper.RuntimeInternals;
-using UniEnc;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -106,26 +105,13 @@ namespace TestHelper.Attributes
 
         private RealtimeEncodingOptions CreateOptions()
         {
-            return new RealtimeEncodingOptions
-            {
-                VideoOptions = new VideoEncoderOptions
-                {
-                    Width = Math.Min(_width, (uint)Screen.width),
-                    Height = Math.Min(_height, (uint)Screen.height),
-                    FpsHint = _fpsHint,
-                    Bitrate = 2500000 // 2.5 Mbps
-                },
-                AudioOptions = new AudioEncoderOptions
-                {
-                    SampleRate = 44100,
-                    Channels = 2,
-                    Bitrate = 128000 // 128 kbps
-                },
-                MaxMemoryUsageBytes = 20 * 1024 * 1024, // 20 MiB
-                FixedFrameRate = 30.0, // null if not using fixed frame rate
-                VideoInputQueueSize = 5, // Maximum number of raw frames to keep before encoding
-                AudioInputQueueSize = 60, // Maximum number of raw audio sample frames to keep before encoding
-            };
+            var options = RealtimeEncodingOptions.Default;
+            var videoOptions = options.VideoOptions;
+            videoOptions.Width = Math.Min(_width, (uint)Screen.width);
+            videoOptions.Height = Math.Min(_height, (uint)Screen.height);
+            videoOptions.FpsHint = _fpsHint;
+            options.VideoOptions = videoOptions;
+            return options;
         }
     }
 }
