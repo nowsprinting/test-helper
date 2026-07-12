@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -54,30 +55,7 @@ namespace TestHelper.Attributes
 
         internal static string GetAbsolutePath(string relativePath, string callerFilePath)
         {
-            var callerDirectory = Path.GetDirectoryName(callerFilePath);
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));
-
-            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
-            if (assetsIndexOf > 0)
-            {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf));
-            }
-
-            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
-            if (packageIndexOf > 0)
-            {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf));
-            }
-
-            Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
-            return null;
-            // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
-
-            string ConvertToUnixPathSeparator(string path)
-            {
-                return path.Replace('\\', '/'); // Normalize path separator
-            }
+            return AssetPathHelper.GetAssetPath(relativePath, callerFilePath);
         }
 
         /// <summary>

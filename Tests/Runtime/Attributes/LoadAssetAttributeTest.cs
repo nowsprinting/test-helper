@@ -3,8 +3,10 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace TestHelper.Attributes
 {
@@ -89,6 +91,22 @@ namespace TestHelper.Attributes
         {
             var actual = LoadAssetAttribute.GetAbsolutePath(relativePath, callerFilePath);
             Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        private static string GetCallerFilePath([CallerFilePath] string callerFilePath = null)
+        {
+            return callerFilePath;
+        }
+
+        [Test]
+        [Category("Internal")]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        // Note: Resolving a real caller file path of a package placed outside the project works only in the editor.
+        public void GetAbsolutePath_RealCallerFilePath_ReturnsPackagesPath()
+        {
+            var actual = LoadAssetAttribute.GetAbsolutePath("./Foo.txt", GetCallerFilePath());
+
+            Assert.That(actual, Is.EqualTo("Packages/com.nowsprinting.test-helper/Tests/Runtime/Attributes/Foo.txt"));
         }
 
         #endregion
