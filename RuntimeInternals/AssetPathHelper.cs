@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -13,6 +14,13 @@ namespace TestHelper.RuntimeInternals
     /// </summary>
     internal static class AssetPathHelper
     {
+        /// <summary>
+        /// Loader of the asset-root mapping used on the player. Injection seam: tests replace it with a stub
+        /// returning fixed entries and restore it afterward.
+        /// </summary>
+        internal static IAssetRootMappingLoader MappingLoader { get; set; } =
+            new ResourcesAssetRootMappingLoader();
+
         /// <summary>
         /// Convert a relative path based on the caller's file location into a Unity asset path.
         /// </summary>
@@ -31,13 +39,26 @@ namespace TestHelper.RuntimeInternals
             {
                 return resolvedPath;
             }
+#else
+            // On the player, source files do not exist on the device, so the filesystem-based resolution can
+            // not work. Instead, use the asset-root mapping written at player-build time by
+            // TestHelper.Editor.TemporaryCopyAssetsForPlayer.
+            var mapping = MappingLoader != null ? MappingLoader.Load() : null;
+            if (mapping != null)
+            {
+                var mappedPath = mapping.Resolve(absolutePath);
+                if (mappedPath != null)
+                {
+                    return mappedPath;
+                }
+            }
 #endif
 
             // Fallback: naive substring search for the "Assets"/"Packages" path segment.
             // This can not resolve packages placed outside the project (e.g., local packages referenced by
             // `file:`, and packages compiled from Library/PackageCache) because their real paths contain no
-            // such segment, but it is kept for the run on player: source files do not exist on the device,
-            // so the filesystem-based resolution above is not available there.
+            // such segment, but it is kept for synthetic caller paths and for the run on player without the
+            // asset-root mapping.
             var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
             if (assetsIndexOf > 0)
             {
@@ -55,12 +76,46 @@ namespace TestHelper.RuntimeInternals
             // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
         }
 
-        private static string ConvertToUnixPathSeparator(string path)
+        internal static string ConvertToUnixPathSeparator(string path)
         {
             return path.Replace('\\', '/'); // Normalize path separator
         }
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// Get the project's Assets folder as a forward-slash full path.
+        /// Note: Application.dataPath is usable here because all editor call sites run on the main thread.
+        /// </summary>
+        internal static string GetAssetsRootPath()
+        {
+            return ConvertToUnixPathSeparator(Path.GetFullPath(Application.dataPath));
+        }
+
+        /// <summary>
+        /// Get the innermost UPM package root (the directory containing a package.json with a valid `name`)
+        /// containing <paramref name="callerDirectory"/>.
+        /// </summary>
+        /// <param name="callerDirectory">Directory of a caller file path baked by <c>CallerFilePathAttribute</c></param>
+        /// <param name="physicalRoot">Package root as a forward-slash full path without a trailing slash,
+        /// walked up from the caller path string as-is (preserves the compiler-baked root)</param>
+        /// <param name="assetRoot">Unity asset root path in `Packages/&lt;name&gt;` format</param>
+        /// <returns>false if <paramref name="callerDirectory"/> does not exist (synthetic caller paths guard)
+        /// or no package root is found.</returns>
+        internal static bool TryGetPackageRoot(string callerDirectory, out string physicalRoot,
+            out string assetRoot)
+        {
+            foreach (var candidate in EnumeratePackageRootCandidates(callerDirectory))
+            {
+                physicalRoot = candidate.PhysicalRoot;
+                assetRoot = "Packages/" + candidate.PackageName;
+                return true;
+            }
+
+            physicalRoot = null;
+            assetRoot = null;
+            return false;
+        }
+
         /// <summary>
         /// Resolve a Unity asset path from the real filesystem layout: a path under the project's Assets
         /// folder, or a path under a UPM package root (the directory containing package.json).
@@ -77,36 +132,52 @@ namespace TestHelper.RuntimeInternals
             var normalizedAbsolutePath = ConvertToUnixPathSeparator(absolutePath);
 
             // Check Assets before the package.json walk; Asset Store plugins may ship package.json under Assets.
-            // Note: Application.dataPath is usable here because all editor call sites run on the main thread.
-            var assetsRoot = ConvertToUnixPathSeparator(Path.GetFullPath(Application.dataPath));
+            var assetsRoot = GetAssetsRootPath();
             if (normalizedAbsolutePath.StartsWith(assetsRoot + "/", StringComparison.OrdinalIgnoreCase))
             {
                 return "Assets" + normalizedAbsolutePath.Substring(assetsRoot.Length);
             }
 
+            foreach (var candidate in EnumeratePackageRootCandidates(callerDirectory))
+            {
+                // Prefix guard: skip package roots that do not contain the target (the relative path escapes
+                // this package); an outer package root may still contain it.
+                if (normalizedAbsolutePath.StartsWith(candidate.PhysicalRoot + "/", StringComparison.Ordinal))
+                {
+                    return "Packages/" + candidate.PackageName +
+                           normalizedAbsolutePath.Substring(candidate.PhysicalRoot.Length);
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Enumerate UPM package root candidates (directories containing a package.json with a valid `name`)
+        /// from <paramref name="callerDirectory"/> upward, innermost first.
+        /// </summary>
+        private static IEnumerable<(string PhysicalRoot, string PackageName)> EnumeratePackageRootCandidates(
+            string callerDirectory)
+        {
             if (!Directory.Exists(callerDirectory))
             {
-                // Synthetic caller paths (e.g., specified in unit tests) fall through to the fallback;
-                // walking up from a non-existent directory could find an unrelated package.json in an
-                // ancestor directory (e.g., a npm monorepo root above the project).
-                return null;
+                // Synthetic caller paths (e.g., specified in unit tests) get no candidates; walking up from a
+                // non-existent directory could find an unrelated package.json in an ancestor directory
+                // (e.g., a npm monorepo root above the project).
+                yield break;
             }
 
             var directory = new DirectoryInfo(Path.GetFullPath(callerDirectory));
             while (directory != null)
             {
                 var packageName = GetUpmPackageName(directory.FullName);
-                var packageRoot = ConvertToUnixPathSeparator(directory.FullName);
-                if (packageName != null &&
-                    normalizedAbsolutePath.StartsWith(packageRoot + "/", StringComparison.Ordinal))
+                if (packageName != null)
                 {
-                    return "Packages/" + packageName + normalizedAbsolutePath.Substring(packageRoot.Length);
+                    yield return (ConvertToUnixPathSeparator(directory.FullName), packageName);
                 }
 
                 directory = directory.Parent;
             }
-
-            return null;
         }
 
         private static string GetUpmPackageName(string directory)

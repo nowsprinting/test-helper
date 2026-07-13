@@ -19,6 +19,8 @@ namespace TestHelper.Attributes
     {
         internal string AssetPath { get; private set; }
 
+        internal string CallerFilePath { get; private set; }
+
         /// <summary>
         /// Loads an asset file at the specified path into the field.
         /// Tests that use this attribute must call the <see cref="LoadAssets"/> static method from the <c>OneTimeSetUp</c> method.
@@ -43,6 +45,10 @@ namespace TestHelper.Attributes
         /// </remarks>
         public LoadAssetAttribute(string path, [CallerFilePath] string callerFilePath = null)
         {
+            // Retained unconditionally (even for `Assets/...`-style paths): the caller's package root is a
+            // mapping source for TestHelper.Editor.AssetRootMappingBuilder regardless of this path's format.
+            CallerFilePath = callerFilePath;
+
             if (path.StartsWith("."))
             {
                 AssetPath = GetAbsolutePath(path, callerFilePath);

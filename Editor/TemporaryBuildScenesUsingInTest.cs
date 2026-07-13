@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -21,44 +21,11 @@ namespace TestHelper.Editor
     /// </summary>
     public class TemporaryBuildScenesUsingInTest : ITestPlayerBuildModifier
     {
-        private static IEnumerable<T> FindAttributesOnAssemblies<T>() where T : Attribute
-        {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var attribute in assemblies
-                         .Select(assembly => assembly.GetCustomAttributes(typeof(T), false))
-                         .SelectMany(attributes => attributes))
-            {
-                yield return attribute as T;
-            }
-        }
-
-        private static IEnumerable<T> FindAttributesOnTypes<T>() where T : Attribute
-        {
-            var symbols = TypeCache.GetTypesWithAttribute<T>();
-            foreach (var attribute in symbols
-                         .Select(symbol => symbol.GetCustomAttributes(typeof(T), false))
-                         .SelectMany(attributes => attributes))
-            {
-                yield return attribute as T;
-            }
-        }
-
-        private static IEnumerable<T> FindAttributesOnMethods<T>() where T : Attribute
-        {
-            var symbols = TypeCache.GetMethodsWithAttribute<T>();
-            foreach (var attribute in symbols
-                         .Select(symbol => symbol.GetCustomAttributes(typeof(T), false))
-                         .SelectMany(attributes => attributes))
-            {
-                yield return attribute as T;
-            }
-        }
-
         internal static IEnumerable<string> GetScenesUsingInTest()
         {
-            var attributes = FindAttributesOnAssemblies<BuildSceneAttribute>()
-                .Concat(FindAttributesOnTypes<BuildSceneAttribute>())
-                .Concat(FindAttributesOnMethods<BuildSceneAttribute>());
+            var attributes = AttributeFinder.FindOnAssemblies<BuildSceneAttribute>()
+                .Concat(AttributeFinder.FindOnTypes<BuildSceneAttribute>())
+                .Concat(AttributeFinder.FindOnMethods<BuildSceneAttribute>());
             foreach (var attribute in attributes)
             {
                 string scenePath;
@@ -93,6 +60,9 @@ namespace TestHelper.Editor
         {
             // Temporarily copy asset files specified by LoadAssetAttribute to the Resources folder
             TemporaryCopyAssetsForPlayer.CopyAssetFiles();
+
+            // Write the asset-root mapping used by AssetPathHelper to resolve relative paths on the player
+            TemporaryCopyAssetsForPlayer.WriteAssetRootMappingFile();
 
             // Temporarily build scenes specified by LoadSceneAttribute
             var scenesInBuild = new List<string>(playerOptions.scenes);

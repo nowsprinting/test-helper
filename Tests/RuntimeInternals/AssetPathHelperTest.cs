@@ -122,5 +122,59 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(actual, Is.EqualTo("Packages/com.nowsprinting.test-helper/Tests/RuntimeInternals/Foo.txt"));
         }
+
+#if UNITY_EDITOR
+        // Note: TryGetPackageRoot is compiled only in the editor (it is inside #if UNITY_EDITOR), so these
+        //  tests must be excluded from the player build; the UnityPlatform attribute alone can not do that.
+
+        [Test]
+        public void TryGetPackageRoot_CallerUnderPackage_ReturnsTrueWithForwardSlashRootAndPackagesAssetRoot()
+        {
+            var callerDirectory = Path.Combine(_fakePackageRoot, "Tests", "Runtime");
+
+            var actual = AssetPathHelper.TryGetPackageRoot(callerDirectory, out var physicalRoot, out var assetRoot);
+
+            Assert.That(actual, Is.True, "return value");
+            Assert.That(physicalRoot, Is.EqualTo(_fakePackageRoot.Replace('\\', '/')), "physicalRoot");
+            Assert.That(assetRoot, Is.EqualTo("Packages/com.example.fakepackage"), "assetRoot");
+        }
+
+        [Test]
+        public void TryGetPackageRoot_CallerDirectoryDoesNotExist_ReturnsFalse()
+        {
+            var callerDirectory = Path.Combine(_fakePackageRoot, "NotExistDirectory");
+            Assume.That(callerDirectory, Does.Not.Exist);
+
+            var actual = AssetPathHelper.TryGetPackageRoot(callerDirectory, out _, out _);
+
+            Assert.That(actual, Is.False);
+        }
+
+        [Test]
+        public void TryGetPackageRoot_NoPackageJsonInAncestors_ReturnsFalse()
+        {
+            var callerDirectory = Path.Combine(_baseDirectory, "NoPackageJson");
+            Directory.CreateDirectory(callerDirectory);
+
+            var actual = AssetPathHelper.TryGetPackageRoot(callerDirectory, out _, out _);
+
+            Assert.That(actual, Is.False);
+        }
+
+        [Test]
+        public void TryGetPackageRoot_NamelessPackageJsonBelowNamedRoot_ReturnsOuterPackageRoot()
+        {
+            var namelessPackageRoot = CreateFakePackage("com.example.nameless.trygetpackageroot",
+                "com.example.namelesspackage2");
+            File.WriteAllText(Path.Combine(namelessPackageRoot, "Tests", "package.json"), "{\"foo\":\"bar\"}");
+            var callerDirectory = Path.Combine(namelessPackageRoot, "Tests", "Runtime");
+
+            var actual = AssetPathHelper.TryGetPackageRoot(callerDirectory, out var physicalRoot, out var assetRoot);
+
+            Assert.That(actual, Is.True, "return value");
+            Assert.That(physicalRoot, Is.EqualTo(namelessPackageRoot.Replace('\\', '/')), "physicalRoot");
+            Assert.That(assetRoot, Is.EqualTo("Packages/com.example.namelesspackage2"), "assetRoot");
+        }
+#endif
     }
 }

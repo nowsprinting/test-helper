@@ -74,6 +74,15 @@ namespace TestHelper.Attributes
 
         #region internal methods tests
 
+        [Test]
+        [Category("Internal")]
+        public void Constructor_WithCallerFilePath_RetainsCallerFilePath()
+        {
+            var sut = new LoadAssetAttribute("Assets/Tests/Prefabs/Foo.prefab", "Assets/Tests/Runtime/Caller.cs");
+
+            Assert.That(sut.CallerFilePath, Is.EqualTo("Assets/Tests/Runtime/Caller.cs"));
+        }
+
         private static IEnumerable<TestCaseData> GetAbsolutePathTestCases()
         {
             yield return new TestCaseData("./Foo.txt",
