@@ -200,6 +200,7 @@ namespace TestHelper.RuntimeInternals
 #if UNITY_2023_1_OR_NEWER
         [Test]
         [GameViewResolution(GameViewResolution.VGA)]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         [LoadScene(TestScene)]
         public async Task TakeScreenshotAsPngBytesAsync_ReturnsPngBytes()
         {
@@ -308,6 +309,7 @@ namespace TestHelper.RuntimeInternals
 
         [Test]
         [GameViewResolution(GameViewResolution.VGA)]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         [GizmosShowOnGameView(false)]
         [LoadScene(TestScene)]
         public async Task TakeScreenshotAsync_WithScale_ImagesMatch()
@@ -330,6 +332,7 @@ namespace TestHelper.RuntimeInternals
 
         [Test]
         [GameViewResolution(GameViewResolution.VGA)]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         [LoadScene(TestScene)]
         public async Task TakeScreenshotAsJpegBytesAsync_ReturnsJpegBytes()
         {
