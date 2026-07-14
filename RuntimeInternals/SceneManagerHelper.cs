@@ -91,6 +91,10 @@ namespace TestHelper.RuntimeInternals
             if (path.StartsWith("."))
             {
                 path = GetAbsolutePath(path, callerFilePath);
+                if (path == null)
+                {
+                    return null; // GetAbsolutePath already logged the error.
+                }
             }
 
             if (!ValidatePath(path))

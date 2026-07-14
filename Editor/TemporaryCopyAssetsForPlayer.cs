@@ -53,7 +53,10 @@ namespace TestHelper.Editor
         /// </summary>
         private static string PrepareDestFileName(string relativePath)
         {
-            var destFileName = Path.Combine(ResourcesRoot, "Resources", relativePath);
+            // Path.Combine emits the OS-native separator (backslash on Windows); AssetDatabase APIs
+            // require Unity asset paths with forward slashes, so normalize before returning.
+            var destFileName = AssetPathHelper.ConvertToUnixPathSeparator(
+                Path.Combine(ResourcesRoot, "Resources", relativePath));
             var destDir = Path.GetDirectoryName(destFileName);
             if (destDir != null && !Directory.Exists(destDir))
             {

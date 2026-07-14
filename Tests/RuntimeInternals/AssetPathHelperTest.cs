@@ -123,6 +123,24 @@ namespace TestHelper.RuntimeInternals
             Assert.That(actual, Is.EqualTo("Packages/com.nowsprinting.test-helper/Tests/RuntimeInternals/Foo.txt"));
         }
 
+        [Test]
+        public void GetAssetPath_CallerFilePathIsNull_OutputLogErrorAndReturnsNull()
+        {
+            var actual = AssetPathHelper.GetAssetPath("./Foo.txt", null);
+
+            Assert.That(actual, Is.Null);
+            LogAssert.Expect(LogType.Error, new Regex("Can not resolve absolute path"));
+        }
+
+        [Test]
+        public void GetAssetPath_CallerFilePathIsEmpty_OutputLogErrorAndReturnsNull()
+        {
+            var actual = AssetPathHelper.GetAssetPath("./Foo.txt", string.Empty);
+
+            Assert.That(actual, Is.Null);
+            LogAssert.Expect(LogType.Error, new Regex("Can not resolve absolute path"));
+        }
+
 #if UNITY_EDITOR
         // Note: TryGetPackageRoot is compiled only in the editor (it is inside #if UNITY_EDITOR), so these
         //  tests must be excluded from the player build; the UnityPlatform attribute alone can not do that.

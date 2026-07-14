@@ -29,6 +29,15 @@ namespace TestHelper.RuntimeInternals
         /// <returns>Unity asset path starting with `Assets/` or `Packages/`. Returns null if it can not be resolved.</returns>
         internal static string GetAssetPath(string relativePath, string callerFilePath)
         {
+            if (string.IsNullOrEmpty(callerFilePath))
+            {
+                // Guard here (rather than only at the final fallback below) so both the editor's
+                // filesystem resolution and the player's mapping lookup are skipped up front;
+                // Path.GetDirectoryName/Path.Combine below throw on null/empty input.
+                Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
+                return null;
+            }
+
             var callerDirectory = Path.GetDirectoryName(callerFilePath);
             // ReSharper disable once AssignNullToNotNullAttribute
             var absolutePath = Path.GetFullPath(Path.Combine(callerDirectory, relativePath));

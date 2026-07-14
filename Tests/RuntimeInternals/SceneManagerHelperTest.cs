@@ -98,6 +98,15 @@ namespace TestHelper.RuntimeInternals
             LogAssert.Expect(LogType.Error, $"Scene `{path}` is not found in AssetDatabase");
         }
 
+        [Test]
+        public void GetExistScenePath_UnresolvableRelativePath_OutputLogErrorAndReturnsNull()
+        {
+            var actual = SceneManagerHelper.GetExistScenePath("./NotExist.unity", null);
+
+            Assert.That(actual, Is.Null);
+            LogAssert.Expect(LogType.Error, new Regex("Can not resolve absolute path"));
+        }
+
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity")]
         public void GetExistScenePathOnPlayer_GotSceneName(string path)
         {
