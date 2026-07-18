@@ -55,7 +55,17 @@ namespace TestHelper.RuntimeInternals
             var mapping = MappingLoader != null ? MappingLoader.Load() : null;
             if (mapping != null)
             {
-                var mappedPath = mapping.Resolve(absolutePath);
+                // absolutePath above was combined via Path.GetFullPath, which ignores the process's current
+                // working directory only when its input is already rooted. Both branches of this #if need some
+                // notion of "project root" to combine a relative caller: the editor branch gets it for free
+                // because its working directory is documented to equal the project root; the player has no such
+                // guarantee (its working directory bears no relation to the dev machine), so a project-root-
+                // relative [CallerFilePath] (baked for packages living inside the dev machine's project
+                // directory tree - see AssetRootMapping.ResolveRelativeCallerPath remarks) makes absolutePath
+                // above meaningless here. Re-root the combination on the mapping's own Assets entry instead.
+                var mappedPath = Path.IsPathRooted(callerFilePath)
+                    ? mapping.Resolve(absolutePath)
+                    : mapping.ResolveRelativeCallerPath(callerDirectory, relativePath);
                 if (mappedPath != null)
                 {
                     return mappedPath;
@@ -63,26 +73,50 @@ namespace TestHelper.RuntimeInternals
             }
 #endif
 
-            // Fallback: naive substring search for the "Assets"/"Packages" path segment.
+            // Fallback: naive search for the "Assets"/"Packages" path segment.
             // This can not resolve packages placed outside the project (e.g., local packages referenced by
             // `file:`, and packages compiled from Library/PackageCache) because their real paths contain no
             // such segment, but it is kept for synthetic caller paths and for the run on player without the
             // asset-root mapping.
-            var assetsIndexOf = absolutePath.IndexOf("Assets", StringComparison.Ordinal);
-            if (assetsIndexOf > 0)
+            var normalizedPath = ConvertToUnixPathSeparator(absolutePath);
+            var assetsIndexOf = FindPathSegmentIndex(normalizedPath, "Assets");
+            if (assetsIndexOf >= 0)
             {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(assetsIndexOf));
+                return normalizedPath.Substring(assetsIndexOf);
             }
 
-            var packageIndexOf = absolutePath.IndexOf("Packages", StringComparison.Ordinal);
-            if (packageIndexOf > 0)
+            var packageIndexOf = FindPathSegmentIndex(normalizedPath, "Packages");
+            if (packageIndexOf >= 0)
             {
-                return ConvertToUnixPathSeparator(absolutePath.Substring(packageIndexOf));
+                return normalizedPath.Substring(packageIndexOf);
             }
 
             Debug.LogError($"Can not resolve absolute path. relative: {relativePath}, caller: {callerFilePath}");
             return null;
             // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
+        }
+
+        /// <summary>
+        /// Find <paramref name="segment"/> as a whole '/'-separated path segment in <paramref name="normalizedPath"/>
+        /// (which must already use '/' separators) rather than as a mere substring, which would false-match a
+        /// name that only contains the segment as part of a longer word (e.g., "Packages" inside
+        /// "...InLocalPackages.unity").
+        /// </summary>
+        /// <returns>Index of the segment, or -1 if not found.</returns>
+        private static int FindPathSegmentIndex(string normalizedPath, string segment)
+        {
+            var offset = 0;
+            foreach (var part in normalizedPath.Split('/'))
+            {
+                if (part == segment)
+                {
+                    return offset;
+                }
+
+                offset += part.Length + 1;
+            }
+
+            return -1;
         }
 
         internal static string ConvertToUnixPathSeparator(string path)

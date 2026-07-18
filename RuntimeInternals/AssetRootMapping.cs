@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace TestHelper.RuntimeInternals
 {
@@ -103,6 +104,60 @@ namespace TestHelper.RuntimeInternals
         private static string NormalizeRoot(string path)
         {
             return AssetPathHelper.ConvertToUnixPathSeparator(path).TrimEnd('/');
+        }
+
+        /// <summary>
+        /// Resolve a caller directory and relative path when the compiler-baked <c>[CallerFilePath]</c> itself
+        /// is relative (not rooted). This happens for packages that live inside the dev machine's project
+        /// directory tree (e.g., embedded packages, or a `file:` local package under the project root) rather
+        /// than referenced from outside it; Unity then bakes a path relative to the project root instead of an
+        /// absolute one.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="Path.GetFullPath(string)"/> only ignores the caller process's current working directory
+        /// when its input is already rooted; on the player, the working directory bears no relation to the dev
+        /// machine, so a relative caller can not be combined directly (unlike <see cref="Resolve"/>, which is
+        /// used for the already-rooted case). This method re-roots the combination on the dev-machine project
+        /// root, derived from the always-present <c>Assets</c> entry (whose <c>physicalRoot</c> is
+        /// `&lt;projectRoot&gt;/Assets`), before delegating to <see cref="Resolve"/>.
+        /// </remarks>
+        /// <param name="callerDirectory">Directory portion of a relative (not rooted) caller file path</param>
+        /// <param name="relativePath">Relative path from the caller's file location</param>
+        /// <returns>Unity asset path starting with `Assets/` or `Packages/`. Returns null if it can not be resolved.</returns>
+        internal string ResolveRelativeCallerPath(string callerDirectory, string relativePath)
+        {
+            var projectRoot = GetProjectRoot();
+            if (projectRoot == null)
+            {
+                return null;
+            }
+
+            var absolutePath = Path.GetFullPath(Path.Combine(projectRoot, callerDirectory ?? string.Empty,
+                relativePath ?? string.Empty));
+            return Resolve(absolutePath);
+        }
+
+        /// <summary>
+        /// Derive the dev-machine project root (parent of the Assets folder) from the mapping's Assets entry.
+        /// Pure string manipulation only (no filesystem access), so it is safe to call with the process's
+        /// current working directory being unrelated to the dev machine (i.e., on the player).
+        /// </summary>
+        private string GetProjectRoot()
+        {
+            // Entries may come from a hand-edited or corrupted JSON; Find returning null is handled below
+            // instead of throwing.
+            var assetsEntry = entries?.Find(entry =>
+                entry != null && entry.assetRoot == "Assets" && !string.IsNullOrEmpty(entry.physicalRoot));
+            if (assetsEntry == null)
+            {
+                return null;
+            }
+
+            const string assetsSuffix = "/Assets";
+            var assetsRoot = NormalizeRoot(assetsEntry.physicalRoot);
+            return assetsRoot.EndsWith(assetsSuffix, StringComparison.Ordinal)
+                ? assetsRoot.Substring(0, assetsRoot.Length - assetsSuffix.Length)
+                : null;
         }
     }
 }

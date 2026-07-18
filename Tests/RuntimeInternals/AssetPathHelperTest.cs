@@ -141,6 +141,17 @@ namespace TestHelper.RuntimeInternals
             LogAssert.Expect(LogType.Error, new Regex("Can not resolve absolute path"));
         }
 
+        [Test]
+        public void GetAssetPath_RelativePathContainsPackagesSubstringNotAtSegmentBoundary_OutputLogErrorAndReturnsNull()
+        {
+            // "SceneInLocalPackages.unity" contains "Packages" as a substring (inside "LocalPackages"), not as
+            // a path segment; the naive fallback must not mistake it for the Packages folder segment.
+            var actual = AssetPathHelper.GetAssetPath("./SceneInLocalPackages.unity", "/dev/nonpackage/Caller.cs");
+
+            Assert.That(actual, Is.Null);
+            LogAssert.Expect(LogType.Error, new Regex("Can not resolve absolute path"));
+        }
+
 #if UNITY_EDITOR
         // Note: TryGetPackageRoot is compiled only in the editor (it is inside #if UNITY_EDITOR), so these
         //  tests must be excluded from the player build; the UnityPlatform attribute alone can not do that.

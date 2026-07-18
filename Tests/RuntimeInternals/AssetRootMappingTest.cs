@@ -157,5 +157,63 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(sut.entries, Has.Count.EqualTo(1));
         }
+
+        [TestCase("./LocalPkgs/MyPkg/Tests", "./Bar.txt",
+            "Packages/com.example.mypkg/Tests/Bar.txt")] // direct relative path
+        [TestCase("./LocalPkgs/MyPkg/Tests/Runtime", "../../DummyDirectory/../Foo/Bar.txt",
+            "Packages/com.example.mypkg/Foo/Bar.txt")] // upstream relative path
+        public void ResolveRelativeCallerPath_CallerUnderPackageInsideProject_ReturnsPackagesPath(
+            string callerDirectory, string relativePath, string expected)
+        {
+            var sut = new AssetRootMapping();
+            sut.entries.Add(new AssetRootMapping.Entry { physicalRoot = "/dev/project/Assets", assetRoot = "Assets" });
+            sut.entries.Add(new AssetRootMapping.Entry
+            {
+                physicalRoot = "/dev/project/LocalPkgs/MyPkg", assetRoot = "Packages/com.example.mypkg"
+            });
+
+            var actual = sut.ResolveRelativeCallerPath(callerDirectory, relativePath);
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ResolveRelativeCallerPath_NoAssetsEntry_ReturnsNull()
+        {
+            var sut = new AssetRootMapping();
+            sut.entries.Add(new AssetRootMapping.Entry
+            {
+                physicalRoot = "/dev/project/LocalPkgs/MyPkg", assetRoot = "Packages/com.example.mypkg"
+            });
+
+            var actual = sut.ResolveRelativeCallerPath("./LocalPkgs/MyPkg/Tests", "./Bar.txt");
+
+            Assert.That(actual, Is.Null);
+        }
+
+        [Test]
+        public void ResolveRelativeCallerPath_AssetsEntryPhysicalRootMalformed_ReturnsNull()
+        {
+            var sut = new AssetRootMapping();
+            sut.entries.Add(new AssetRootMapping.Entry
+            {
+                physicalRoot = "/dev/project/NotAssetsFolder", assetRoot = "Assets"
+            });
+
+            var actual = sut.ResolveRelativeCallerPath("./LocalPkgs/MyPkg/Tests", "./Bar.txt");
+
+            Assert.That(actual, Is.Null);
+        }
+
+        [Test]
+        public void ResolveRelativeCallerPath_CallerOutsideAnyMappedRoot_ReturnsNull()
+        {
+            var sut = new AssetRootMapping();
+            sut.entries.Add(new AssetRootMapping.Entry { physicalRoot = "/dev/project/Assets", assetRoot = "Assets" });
+
+            var actual = sut.ResolveRelativeCallerPath("./LocalPkgs/MyPkg/Tests", "./Bar.txt");
+
+            Assert.That(actual, Is.Null);
+        }
     }
 }
