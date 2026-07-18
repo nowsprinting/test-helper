@@ -3,6 +3,8 @@
 
 using System.IO;
 using NUnit.Framework;
+using TestHelper.RuntimeInternals;
+using UnityEngine;
 
 namespace TestHelper.Editor
 {
@@ -26,6 +28,22 @@ namespace TestHelper.Editor
             Assert.That(Path.Combine(BasePath, "Sphere.prefab"), Does.Exist);
             Assert.That(Path.Combine(BasePath, "Capsule.prefab"), Does.Exist);
             Assert.That(Path.Combine(BasePath, "Cylinder.prefab"), Does.Exist);
+        }
+
+        public void WriteAssetRootMappingFile_Invoked_WritesMappingJsonContainingAssetsEntry()
+        {
+            var mappingFilePath = Path.Combine(TemporaryCopyAssetsForPlayer.ResourcesRoot, "Resources",
+                AssetRootMapping.ResourcePath + ".json");
+            Assume.That(mappingFilePath, Does.Not.Exist);
+
+            TemporaryCopyAssetsForPlayer.WriteAssetRootMappingFile();
+            // Note: Once run, it will not revert until the test is finished.
+
+            Assert.That(mappingFilePath, Does.Exist, "mapping file written");
+            var mapping = JsonUtility.FromJson<AssetRootMapping>(File.ReadAllText(mappingFilePath));
+            var expectedAssetsRoot = Path.GetFullPath(Application.dataPath).Replace('\\', '/');
+            Assert.That(mapping.entries, Has.Some.Matches<AssetRootMapping.Entry>(x =>
+                x.physicalRoot == expectedAssetsRoot && x.assetRoot == "Assets"), "contains Assets entry");
         }
     }
 }

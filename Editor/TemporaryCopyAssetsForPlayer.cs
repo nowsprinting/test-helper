@@ -1,16 +1,11 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using TestHelper.Attributes;
+using TestHelper.RuntimeInternals;
 using UnityEditor;
 using UnityEngine;
-#if !UNITY_2020_1_OR_NEWER
-using System.Reflection;
-#endif
 
 namespace TestHelper.Editor
 {
@@ -24,44 +19,51 @@ namespace TestHelper.Editor
     {
         internal const string ResourcesRoot = "Assets/com.nowsprinting.test-helper";
 
-        private static IEnumerable<T> FindAttributesOnFields<T>() where T : Attribute
+        /// <summary>
+        /// Write the asset-root mapping file used by <c>AssetPathHelper</c> on the player.
+        /// Always writes, even if only the Assets folder entry exists.
+        /// </summary>
+        /// <remarks>
+        /// Deleting the written file is in <see cref="TestRunnerCallbacks.RunFinished"/> method
+        /// (the whole <see cref="ResourcesRoot"/> folder is deleted).
+        /// </remarks>
+        internal static void WriteAssetRootMappingFile()
         {
-#if UNITY_2020_1_OR_NEWER
-            var symbols = TypeCache.GetFieldsWithAttribute<T>();
-            var attributes = symbols.SelectMany(symbol => symbol.GetCustomAttributes(typeof(T), false));
-            foreach (var attribute in attributes)
-            {
-                yield return attribute as T;
-            }
-#else
-            foreach (var attribute in AppDomain.CurrentDomain.GetAssemblies()
-                         .SelectMany(x => x.GetTypes())
-                         .SelectMany(x => x.GetFields(
-                             BindingFlags.Public | BindingFlags.NonPublic |
-                             BindingFlags.Instance | BindingFlags.Static))
-                         .SelectMany(symbol => symbol.GetCustomAttributes(typeof(T), false)))
-            {
-                yield return attribute as T;
-            }
-#endif
+            var mapping = AssetRootMappingBuilder.Build();
+            var destFileName = PrepareDestFileName(AssetRootMapping.ResourcePath + ".json");
+            File.WriteAllText(destFileName, JsonUtility.ToJson(mapping));
+            AssetDatabase.ImportAsset(destFileName); // Make it a TextAsset before the player build.
         }
 
         internal static void CopyAssetFiles()
         {
-            foreach (var attribute in FindAttributesOnFields<LoadAssetAttribute>())
+            foreach (var attribute in AttributeFinder.FindOnFields<LoadAssetAttribute>())
             {
-                var destFileName = Path.Combine(ResourcesRoot, "Resources", attribute.AssetPath);
-                var destDir = Path.GetDirectoryName(destFileName);
-                if (destDir != null && !Directory.Exists(destDir))
-                {
-                    Directory.CreateDirectory(destDir);
-                }
-
+                var destFileName = PrepareDestFileName(attribute.AssetPath);
                 if (!AssetDatabase.CopyAsset(attribute.AssetPath, destFileName))
                 {
                     Debug.LogError($"Failed to copy asset file from '{attribute.AssetPath}' to '{destFileName}'");
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the destination file path under the temporary Resources folder, creating the parent
+        /// directory if necessary.
+        /// </summary>
+        private static string PrepareDestFileName(string relativePath)
+        {
+            // Path.Combine emits the OS-native separator (backslash on Windows); AssetDatabase APIs
+            // require Unity asset paths with forward slashes, so normalize before returning.
+            var destFileName = AssetPathHelper.ConvertToUnixPathSeparator(
+                Path.Combine(ResourcesRoot, "Resources", relativePath));
+            var destDir = Path.GetDirectoryName(destFileName);
+            if (destDir != null && !Directory.Exists(destDir))
+            {
+                Directory.CreateDirectory(destDir);
+            }
+
+            return destFileName;
         }
     }
 }

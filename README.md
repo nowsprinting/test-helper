@@ -53,8 +53,11 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]  
+> [!NOTE]\
 > If you want to load the scene before the test, use [LoadSceneAttribute](#loadscene) instead.
+
+> [!NOTE]\
+> When running Play Mode tests on the player, a mapping file used to resolve the relative scene path is copied into the "Assets/com.nowsprinting.test-helper/Resources" folder and included in the build.
 
 
 #### CreateScene
@@ -87,13 +90,13 @@ public class MyTestClass
 }
 ```
 
-> [!TIP]  
+> [!TIP]\
 > If you want to unload other scenes, specify the `unloadOthers` option.
 
-> [!NOTE]  
+> [!NOTE]\
 > This process runs after `OneTimeSetUp` and before `SetUp`
 
-> [!NOTE]  
+> [!NOTE]\
 > Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
 
 
@@ -119,7 +122,7 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]  
+> [!NOTE]\
 > In batchmode, open `GameView` window.
 
 
@@ -147,11 +150,11 @@ public class MyTestClass
 }
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > Wait for one frame to apply resolution.
 > However, if used with [CreateSceneAttribute](#createscene) or [LoadSceneAttribute](#loadscene), wait is not necessary.
 
-> [!NOTE]  
+> [!NOTE]\
 > In batchmode, open `GameView` window.
 
 
@@ -177,7 +180,7 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]  
+> [!NOTE]\
 > In batchmode, open `GameView` window.
 
 
@@ -268,20 +271,20 @@ public class MyTestClass
 }
 ```
 
-> [!IMPORTANT]  
-> Tests that use this attribute must call the `LoadAssets` static method from the `OneTimeSetUp`.
+> [!IMPORTANT]\
+> Tests that use this attribute must call the `LoadAssetAttribute.LoadAssets` static method from the `OneTimeSetUp`.
 
-> [!NOTE]  
+> [!TIP]\
 > Properties are not supported. You can place attributes in fields by specifying `[field: LoadAsset]`.
 
-> [!NOTE]  
-> The Resources folder copied to run tests on the player is deleted after the run finishes.
-> However, if post-processing is not performed, such as if the Unity editor crashes, the "Assets/com.nowsprinting.test-helper/Resources" folder will remain.
-> Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
-
-> [!NOTE]  
+> [!NOTE]\
 > Loads asset with `AssetDatabase.LoadAssetAtPath(string,Type)` in the editor, and `Resources.Load(string,Type)` on the player.
 > Asset settings such as image format will conform to the .meta file.
+
+> [!NOTE]\
+> The Resources folder copied to run Play Mode tests on the player is deleted after the run finishes.
+> However, if post-processing is not performed, such as if the Unity editor crashes, the "Assets/com.nowsprinting.test-helper/Resources" folder will remain.
+> Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
 
 
 #### LoadScene
@@ -320,11 +323,11 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]  
+> [!NOTE]\
 > This process runs after `OneTimeSetUp` and before `SetUp`.
 > If you want to load during `SetUp` and testing, use [BuildSceneAttribute](#buildscene) and [SceneManagerHelper](#scenemanagerhelper) method instead.
 
-> [!NOTE]  
+> [!NOTE]\
 > If you use the Raycaster in your tests, you must delay one frame after loading the scene.
 
 
@@ -354,13 +357,13 @@ public class MyTestClass
 }
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > `RecordVideoAttribute` is an optional functionality. To use it, you need to install the [Instant Replay for Unity](https://github.com/CyberAgentGameEntertainment/InstantReplay) package v1.0.0 or newer separately via the Package Manager window.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > Do not place on Edit Mode tests.
 
 
@@ -390,16 +393,16 @@ public class MyTestClass
 }
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > Do not place on Edit Mode tests.
 
-> [!NOTE]  
+> [!NOTE]\
 > If you want to take screenshots at any time, use the [ScreenshotHelper](#screenshothelper) class.
 
-> [!NOTE]  
+> [!NOTE]\
 > When using MacOS with Metal Graphics API, the following warning appears at runtime. It seems that we should just ignore it.
 > see: https://stackoverflow.com/questions/66062201/unity-warning-ignoring-depth-surface-load-action-as-it-is-memoryless
 > - Ignoring depth surface load action as it is memoryless
@@ -485,7 +488,7 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]  
+> [!NOTE]\
 > When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
 
 
@@ -520,7 +523,7 @@ public class MyTestClass
 }
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
 > Also, add scripting define symbol `ENABLE_FLIP_BINDING` if not installed via OpenUPM (UnityNuGet).
 
@@ -564,11 +567,11 @@ public class MyTestClass
 
 `TestHelper.Statistics` namespace provides utilities for statistical testing, including assertions for pseudo-random number generators (PRNG) and statistical summary tools.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > This feature is experimental.
 > It is possible to make breaking changes without respecting SemVer.
 
-> [!NOTE]  
+> [!NOTE]\
 > This feature is **NOT** statistical hypothesis testing tool.
 
 
@@ -681,7 +684,7 @@ Right: generated by weak (short period) PRNG:
 <img src="Documentation~/PixelPlotShortPeriod.png" alt="Short period LCG" width="256" style="background-color:white;"/>
 </p>
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > Can plot only for samples with value type.
 
 
@@ -690,7 +693,7 @@ Right: generated by weak (short period) PRNG:
 
 The classes in the `TestHelper.RuntimeInternals` assembly can be used from the runtime code because it does not depend on `com.unity.test-framework`.
 
-> [!TIP]  
+> [!TIP]\
 > The "Define Constraints" is set to `UNITY_INCLUDE_TESTS || INCLUDE_COM_NOWSPRINTING_TEST_HELPER` in this assembly definition files, so it is generally excluded from release builds.
 > To use the feature in release builds, add `INCLUDE_COM_NOWSPRINTING_TEST_HELPER` to the "Define Symbols" at build time.  
 > How to set custom scripting symbols, see below:  
@@ -736,7 +739,7 @@ public class MyTestClass
 }
 ```
 
-> [!TIP]  
+> [!TIP]\
 > When loading the scene that is not in "Scenes in Build", use [BuildSceneAttribute](#buildscene).
 
 
@@ -778,21 +781,21 @@ public class MyTestClass
 }
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > `GameView` must be visible. Use [FocusGameViewAttribute](#focusgameview) or [GameViewResolutionAttribute](#gameviewresolution) if running on batchmode.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > Do not place on Edit Mode tests.
 > And must be called from main thread.
 
-> [!TIP]  
+> [!TIP]\
 > When using [UniTask](https://github.com/Cysharp/UniTask), you also need a coroutine-runner (any `MonoBehaviour` instance) because the `TakeScreenshot` method uses `WaitForEndOfFrame` internally.
 > See more information: https://github.com/Cysharp/UniTask#ienumeratortounitask-limitation
 
-> [!NOTE]  
+> [!NOTE]\
 > If you take multiple screenshots in one method, a counter is inserted to prevent overwriting.
 
-> [!NOTE]  
+> [!NOTE]\
 > When using `TakeScreenshot` method on MacOS with Metal Graphics API, the following warning appears at runtime. It seems that we should just ignore it.
 > see: https://stackoverflow.com/questions/66062201/unity-warning-ignoring-depth-surface-load-action-as-it-is-memoryless
 > - Ignoring depth surface load action as it is memoryless
@@ -856,7 +859,7 @@ Select menu item **Window > Test Helper > Open Temporary Cache Directory**, whic
 
 If you specify path with `-testHelperJUnitResults` command line option, the test result will be written in JUnit XML format when the tests are finished.
 
-> [!NOTE]  
+> [!NOTE]\
 > The JUnit XML format is the so-called "Legacy." It does not support the "Open Test Reporting format" introduced in JUnit 5.
 
 #### GameView resolution
@@ -895,7 +898,7 @@ Or, you can specify width and height with `-testHelperGameViewWidth` and `-testH
 1. Open your test assembly definition file (.asmdef) in the Inspector window
 2. Add **TestHelper** into **Assembly Definition References**
 
-> [!NOTE]  
+> [!NOTE]\
 > Add **TestHelper.RuntimeInternals** into **Assembly Definition References** if you use the [Runtime APIs](#runtime apis).
 
 
@@ -935,10 +938,10 @@ make create_project
 UNITY_VERSION=2019.4.40f1 make -k test
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]\
 > You must select "Input Manager (Old)" or "Both" in the **Project Settings > Player > Active Input Handling** for running tests.
 
-> [!TIP]  
+> [!TIP]\
 > To run all tests, you need to install the following packages in your project:
 > - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or newer.
 > - [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
@@ -955,13 +958,13 @@ The release process is as follows:
 Then, will do the release process automatically by [Release](.github/workflows/release.yml) workflow.
 After tagging, [OpenUPM](https://openupm.com/) retrieves the tag and updates it.
 
-> [!CAUTION]  
+> [!CAUTION]\
 > Do **NOT** manually operation the following operations:
 > - Create a release tag
 > - Publish draft releases
 
-> [!CAUTION]  
+> [!CAUTION]\
 > You must modify the package name to publish a forked package.
 
-> [!TIP]  
+> [!TIP]\
 > If you want to specify the version number to be released, change the version number of the draft release before running the "Create release pull request" workflow.

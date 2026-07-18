@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2024 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
@@ -35,6 +36,22 @@ namespace TestHelper.RuntimeInternals
         {
             var actual = SceneManagerHelper.GetAbsolutePath(relativePath, callerFilePath);
             Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        private static string GetCallerFilePath([CallerFilePath] string callerFilePath = null)
+        {
+            return callerFilePath;
+        }
+
+        [Test]
+        [Category("Internal")]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        // Note: Resolving a real caller file path of a package placed outside the project works only in the editor.
+        public void GetAbsolutePath_RealCallerFilePath_ReturnsPackagesPath()
+        {
+            var actual = SceneManagerHelper.GetAbsolutePath("./Foo.txt", GetCallerFilePath());
+
+            Assert.That(actual, Is.EqualTo("Packages/com.nowsprinting.test-helper/Tests/RuntimeInternals/Foo.txt"));
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity")]
@@ -79,6 +96,15 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(actual, Is.Null);
             LogAssert.Expect(LogType.Error, $"Scene `{path}` is not found in AssetDatabase");
+        }
+
+        [Test]
+        public void GetExistScenePath_UnresolvableRelativePath_OutputLogErrorAndReturnsNull()
+        {
+            var actual = SceneManagerHelper.GetExistScenePath("./NotExist.unity", null);
+
+            Assert.That(actual, Is.Null);
+            LogAssert.Expect(LogType.Error, new Regex("Can not resolve absolute path"));
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotInScenesInBuild.unity")]
