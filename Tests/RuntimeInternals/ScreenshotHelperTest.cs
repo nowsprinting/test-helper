@@ -66,6 +66,10 @@ namespace TestHelper.RuntimeInternals
         [SetUp]
         public void SetUp()
         {
+            // Reset the counter every attempt so a retry re-takes the screenshot under the base
+            // name instead of drifting to `_2`, which this test's reconstructed base-name path can't find.
+            PathHelper.ResetCounter();
+
             var textObject = GameObject.Find("Text");
             Assume.That(textObject, Is.Not.Null);
 
