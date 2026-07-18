@@ -14,12 +14,12 @@ namespace TestHelper.RuntimeInternals
     /// </summary>
     internal static class AssetPathHelper
     {
+#if !UNITY_EDITOR
         /// <summary>
-        /// Loader of the asset-root mapping used on the player. Injection seam: tests replace it with a stub
-        /// returning fixed entries and restore it afterward.
+        /// Loader of the asset-root mapping used on the player.
         /// </summary>
-        internal static IAssetRootMappingLoader MappingLoader { get; set; } =
-            new ResourcesAssetRootMappingLoader();
+        private static readonly ResourcesAssetRootMappingLoader s_mappingLoader = new ResourcesAssetRootMappingLoader();
+#endif
 
         /// <summary>
         /// Convert a relative path based on the caller's file location into a Unity asset path.
@@ -52,7 +52,7 @@ namespace TestHelper.RuntimeInternals
             // On the player, source files do not exist on the device, so the filesystem-based resolution can
             // not work. Instead, use the asset-root mapping written at player-build time by
             // TestHelper.Editor.TemporaryCopyAssetsForPlayer.
-            var mapping = MappingLoader != null ? MappingLoader.Load() : null;
+            var mapping = s_mappingLoader.Load();
             if (mapping != null)
             {
                 // absolutePath above was combined via Path.GetFullPath, which ignores the process's current

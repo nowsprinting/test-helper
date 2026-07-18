@@ -9,15 +9,16 @@ namespace TestHelper.RuntimeInternals
     /// <summary>
     /// Loads <see cref="AssetRootMapping"/> from the Resources at <see cref="AssetRootMapping.ResourcePath"/>.
     /// Loads lazily and only once; the result (including the negative result: not found or malformed) is cached
-    /// in instance fields, so re-assigning a new instance to <see cref="AssetPathHelper.MappingLoader"/>
-    /// effectively resets the cache.
+    /// in instance fields.
     /// </summary>
-    internal class ResourcesAssetRootMappingLoader : IAssetRootMappingLoader
+    internal class ResourcesAssetRootMappingLoader
     {
         private bool _loaded;
         private AssetRootMapping _mapping;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Returns the mapping, or null if unavailable. Never throws.
+        /// </summary>
         public AssetRootMapping Load()
         {
             if (_loaded)
