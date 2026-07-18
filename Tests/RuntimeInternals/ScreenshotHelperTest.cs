@@ -36,7 +36,7 @@ namespace TestHelper.RuntimeInternals
         //      - Advanced > Read/Write: on
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
-        [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // Full HD
+        [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // VGA
 #elif UNITY_STANDALONE_LINUX
         [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshot_ImagesMatch) + ".png")]   // VGA
 #elif UNITY_ANDROID
