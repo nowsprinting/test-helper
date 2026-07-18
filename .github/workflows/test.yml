@@ -64,6 +64,23 @@ jobs:
           il2cpp-code-generation: 1   # Optimize for code size and build time
           managed-stripping-level: 3  # High
 
+      - name: Create link.xml to preserve FileInfo.Length under IL2CPP high stripping
+        # Has.Length asserts resolve FileInfo.Length via reflection at runtime; High stripping
+        # removes the getter and NUnit throws "Property Length was not found". Preserve it here
+        # instead of rewriting the idiomatic Has.Length assertions in the test code.
+        run: |
+          mkdir -p "$CREATED_PROJECT_PATH/Assets"
+          cat > "$CREATED_PROJECT_PATH/Assets/link.xml" <<'EOF'
+          <linker>
+            <assembly fullname="mscorlib">
+              <type fullname="System.IO.FileInfo">
+                <method name="get_Length" />
+              </type>
+            </assembly>
+          </linker>
+          EOF
+        if: matrix.testMode == 'Standalone'
+
       - name: Get package checkout path
         run: |
           name=com.$(echo "${GITHUB_REPOSITORY}" | sed 's/\//\./g')
