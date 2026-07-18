@@ -30,34 +30,30 @@ namespace TestHelper.RuntimeInternals
 
 #if ENABLE_FLIP_BINDING
         [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // VGA
-        private Texture2D _expectedTakeScreenshotImagesMatch;                             // in Editor
+        private readonly Texture2D _expectedTakeScreenshotImagesMatch;
         // Note: In the image inspector window, set the following:
         //      - Advanced > Non-Power of 2: None
         //      - Advanced > Read/Write: on
 
-#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
-        [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // Full HD
-#elif UNITY_STANDALONE_LINUX
-        [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshot_ImagesMatch) + ".png")]   // VGA
+#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX
+        [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // VGA
 #elif UNITY_ANDROID
         [LoadAsset("../Images/Android/Pixel6a/" + nameof(TakeScreenshot_ImagesMatch) + ".png")] // 1080x2400
 #endif
-        private Texture2D _expectedTakeScreenshotImagesMatchOnPlayer;
+        private readonly Texture2D _expectedTakeScreenshotImagesMatchOnPlayer;
 
         [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // VGA
-        private Texture2D _expectedTakeScreenshotAsyncImagesMatch;                             // in Editor
+        private readonly Texture2D _expectedTakeScreenshotAsyncImagesMatch;
 
-#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
-        [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // Full HD
-#elif UNITY_STANDALONE_LINUX
-        [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")]  // VGA
+#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX
+        [LoadAsset("../Images/OSXPlayer/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // VGA
 #elif UNITY_ANDROID
         [LoadAsset("../Images/Android/Pixel6a/" + nameof(TakeScreenshotAsync_ImagesMatch) + ".png")] // 1080x2400
 #endif
-        private Texture2D _expectedTakeScreenshotAsyncImagesMatchOnPlayer;
+        private readonly Texture2D _expectedTakeScreenshotAsyncImagesMatchOnPlayer;
 
         [LoadAsset("../Images/OSXEditor/" + nameof(TakeScreenshotAsync_WithScale_ImagesMatch) + ".png")]
-        private Texture2D _expectedTakeScreenshotAsyncWithScaleImagesMatch; // in Editor only
+        private readonly Texture2D _expectedTakeScreenshotAsyncWithScaleImagesMatch;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -70,6 +66,10 @@ namespace TestHelper.RuntimeInternals
         [SetUp]
         public void SetUp()
         {
+            // Reset the counter every attempt so a retry re-takes the screenshot under the base
+            // name instead of drifting to `_2`, which this test's reconstructed base-name path can't find.
+            PathHelper.ResetCounter();
+
             var textObject = GameObject.Find("Text");
             Assume.That(textObject, Is.Not.Null);
 
