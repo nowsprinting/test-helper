@@ -56,6 +56,9 @@ public class MyTestClass
 > [!NOTE]  
 > If you want to load the scene before the test, use [LoadSceneAttribute](#loadscene) instead.
 
+> [!NOTE]  
+> When running Play Mode tests on the player, a mapping file used to resolve the relative scene path is copied into the "Assets/com.nowsprinting.test-helper/Resources" folder and included in the build.
+
 
 #### CreateScene
 
@@ -269,19 +272,19 @@ public class MyTestClass
 ```
 
 > [!IMPORTANT]  
-> Tests that use this attribute must call the `LoadAssets` static method from the `OneTimeSetUp`.
+> Tests that use this attribute must call the `LoadAssetAttribute.LoadAssets` static method from the `OneTimeSetUp`.
 
-> [!NOTE]  
+> [!TIP]  
 > Properties are not supported. You can place attributes in fields by specifying `[field: LoadAsset]`.
-
-> [!NOTE]  
-> The Resources folder copied to run tests on the player is deleted after the run finishes.
-> However, if post-processing is not performed, such as if the Unity editor crashes, the "Assets/com.nowsprinting.test-helper/Resources" folder will remain.
-> Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
 
 > [!NOTE]  
 > Loads asset with `AssetDatabase.LoadAssetAtPath(string,Type)` in the editor, and `Resources.Load(string,Type)` on the player.
 > Asset settings such as image format will conform to the .meta file.
+
+> [!NOTE]  
+> The Resources folder copied to run Play Mode tests on the player is deleted after the run finishes.
+> However, if post-processing is not performed, such as if the Unity editor crashes, the "Assets/com.nowsprinting.test-helper/Resources" folder will remain.
+> Recommend adding "/Assets/com.nowsprinting.test-helper*" to your project .gitignore file.
 
 
 #### LoadScene
