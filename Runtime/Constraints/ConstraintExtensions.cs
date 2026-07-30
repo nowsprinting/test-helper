@@ -29,7 +29,9 @@ namespace TestHelper.Constraints
         /// <returns>constraint to <see cref="RectTransform"/> within the screen</returns>
         public static WithinScreenConstraint WithinScreen(this ConstraintExpression expression)
         {
-            return default;
+            var constraint = new WithinScreenConstraint();
+            expression.Append(constraint);
+            return constraint;
         }
 
         /// <summary>
@@ -41,7 +43,9 @@ namespace TestHelper.Constraints
         /// <returns>constraint to <see cref="RectTransform"/> fully within <paramref name="container"/></returns>
         public static FullyWithinConstraint FullyWithin(this ConstraintExpression expression, RectTransform container)
         {
-            return default;
+            var constraint = new FullyWithinConstraint(container);
+            expression.Append(constraint);
+            return constraint;
         }
 
         /// <summary>
@@ -52,7 +56,9 @@ namespace TestHelper.Constraints
         /// <returns>constraint to a collection of <see cref="RectTransform"/> where any pair overlaps</returns>
         public static OverlappingConstraint Overlapping(this ConstraintExpression expression)
         {
-            return default;
+            var constraint = new OverlappingConstraint();
+            expression.Append(constraint);
+            return constraint;
         }
 
         /// <summary>
@@ -63,7 +69,9 @@ namespace TestHelper.Constraints
         /// <returns>constraint to text overflowing its own <see cref="RectTransform"/></returns>
         public static TextOverflowingConstraint TextOverflowing(this ConstraintExpression expression)
         {
-            return default;
+            var constraint = new TextOverflowingConstraint();
+            expression.Append(constraint);
+            return constraint;
         }
     }
 }

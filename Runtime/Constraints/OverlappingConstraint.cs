@@ -1,8 +1,11 @@
 // Copyright (c) 2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework.Constraints;
+using UnityEngine;
 
 namespace TestHelper.Constraints
 {
@@ -12,7 +15,9 @@ namespace TestHelper.Constraints
     /// </summary>
     public class OverlappingConstraint : Constraint
     {
-        private float _tolerance;
+        private const float DefaultTolerance = 0.5f;
+        private readonly List<IEnumerable> _ignoredGroups = new List<IEnumerable>();
+        private float _tolerance = DefaultTolerance;
 
         public OverlappingConstraint(params object[] args) : base(args)
         {
@@ -25,10 +30,16 @@ namespace TestHelper.Constraints
         /// </summary>
         /// <param name="ignoredGroup">Group of elements whose internal pairs are excluded.</param>
         /// <returns>this</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="ignoredGroup"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="ignoredGroup"/> is null.</exception>
         public OverlappingConstraint Ignoring(IEnumerable ignoredGroup)
         {
-            return default;
+            if (ignoredGroup == null)
+            {
+                throw new ArgumentNullException(nameof(ignoredGroup));
+            }
+
+            _ignoredGroups.Add(ignoredGroup);
+            return this;
         }
 
         /// <summary>
@@ -38,16 +49,111 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public OverlappingConstraint Within(float tolerance)
         {
-            return default;
+            _tolerance = Mathf.Max(0f, tolerance);
+            return this;
         }
 
         /// <inheritdoc/>
-        public override string Description => default;
+        public override string Description => "any pair of RectTransforms overlapping";
 
         /// <inheritdoc/>
         public override ConstraintResult ApplyTo(object actual)
         {
-            return default;
+            if (actual == null)
+            {
+                return new ReportingConstraintResult(this, null, false);
+            }
+
+            // Checked before the general IEnumerable branch: RectTransform (a Transform) enumerates its
+            // children, so a single element passed directly would otherwise be misread as a collection.
+            if (actual is RectTransform || actual is GameObject || actual is Component)
+            {
+                RectTransformResolver.TryResolve(actual, out var singleRectTransform, out var singleFailureReason);
+                var message = singleRectTransform != null
+                    ? $"{ConstraintMessageFormatter.Quote(singleRectTransform)} is a single RectTransform, not a collection"
+                    : singleFailureReason;
+                return new ReportingConstraintResult(this, new ConstraintReport(message), false);
+            }
+
+            // string implements IEnumerable<char>; special-cased so it doesn't get misread as a collection
+            // of per-character "elements".
+            if (!(actual is IEnumerable) || actual is string)
+            {
+                var message = $"{ConstraintMessageFormatter.DescribeActual(actual)} is not a collection of RectTransforms";
+                return new ReportingConstraintResult(this, new ConstraintReport(message), false);
+            }
+
+            var elements = new List<RectTransform>();
+            var index = 0;
+            foreach (var item in (IEnumerable)actual)
+            {
+                if (!RectTransformResolver.TryResolve(item, out var rectTransform, out var failureReason))
+                {
+                    var message = $"element at index {index}: {failureReason}";
+                    return new ReportingConstraintResult(this, new ConstraintReport(message), false);
+                }
+
+                elements.Add(rectTransform);
+                index++;
+            }
+
+            var ignoredSets = new List<HashSet<RectTransform>>();
+            foreach (var rawGroup in _ignoredGroups)
+            {
+                var set = new HashSet<RectTransform>();
+                var groupIndex = 0;
+                foreach (var item in rawGroup)
+                {
+                    if (!RectTransformResolver.TryResolve(item, out var rectTransform, out var failureReason))
+                    {
+                        var message = $"ignored group member at index {groupIndex}: {failureReason}";
+                        return new ReportingConstraintResult(this, new ConstraintReport(message), false);
+                    }
+
+                    set.Add(rectTransform);
+                    groupIndex++;
+                }
+
+                ignoredSets.Add(set);
+            }
+
+            var overlappingPairs = new List<KeyValuePair<RectTransform, RectTransform>>();
+            for (var i = 0; i < elements.Count; i++)
+            {
+                for (var j = i + 1; j < elements.Count; j++)
+                {
+                    var a = elements[i];
+                    var b = elements[j];
+                    if (ignoredSets.Exists(set => set.Contains(a) && set.Contains(b)))
+                    {
+                        continue;
+                    }
+
+                    var rectA = ScreenRectHelper.GetScreenRect(a);
+                    var rectB = ScreenRectHelper.GetScreenRect(b);
+                    if (RectGeometry.Overlaps(rectA, rectB, _tolerance))
+                    {
+                        overlappingPairs.Add(new KeyValuePair<RectTransform, RectTransform>(a, b));
+                    }
+                }
+            }
+
+            if (overlappingPairs.Count > 0)
+            {
+                var first = overlappingPairs[0];
+                var pairMessage =
+                    $"{ConstraintMessageFormatter.Quote(first.Key)} {ConstraintMessageFormatter.Format(ScreenRectHelper.GetScreenRect(first.Key))}" +
+                    $" overlaps {ConstraintMessageFormatter.Quote(first.Value)} {ConstraintMessageFormatter.Format(ScreenRectHelper.GetScreenRect(first.Value))}";
+                if (overlappingPairs.Count > 1)
+                {
+                    pairMessage += $" (and {overlappingPairs.Count - 1} more overlapping pairs)";
+                }
+
+                return new ReportingConstraintResult(this, new ConstraintReport(pairMessage), true);
+            }
+
+            var noOverlapMessage = $"no overlapping pair among {elements.Count} RectTransforms";
+            return new ReportingConstraintResult(this, new ConstraintReport(noOverlapMessage), false);
         }
     }
 }

@@ -23,6 +23,6 @@ namespace TestHelper.Constraints
         internal bool SizeExceeded;
         internal Vector2 Excess;
 
-        internal bool IsOverflowing => default;
+        internal bool IsOverflowing => SizeExceeded || CharactersTruncated || NotLaidOut;
     }
 }

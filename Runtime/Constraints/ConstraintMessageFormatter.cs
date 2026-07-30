@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System.Globalization;
 using UnityEngine;
 
 namespace TestHelper.Constraints
@@ -13,32 +14,45 @@ namespace TestHelper.Constraints
     {
         internal static string Format(Rect rect)
         {
-            return default;
+            return $"({Format(rect.x)}, {Format(rect.y)}, {Format(rect.width)}, {Format(rect.height)})";
         }
 
+        /// <summary>
+        /// Formats a rect with whole-number components, e.g. "(0, 0, 960, 540)" for the screen bounds.
+        /// </summary>
         internal static string FormatIntegral(Rect rect)
         {
-            return default;
+            return $"({FormatIntegral(rect.x)}, {FormatIntegral(rect.y)}, {FormatIntegral(rect.width)}, {FormatIntegral(rect.height)})";
         }
 
         internal static string Format(Vector2 vector)
         {
-            return default;
+            return $"({Format(vector.x)}, {Format(vector.y)})";
         }
 
         internal static string Format(float value)
         {
-            return default;
+            return value.ToString("F1", CultureInfo.InvariantCulture);
+        }
+
+        private static string FormatIntegral(float value)
+        {
+            return Mathf.RoundToInt(value).ToString(CultureInfo.InvariantCulture);
         }
 
         internal static string Quote(Object obj)
         {
-            return default;
+            return $"\"{obj.name}\"";
         }
 
+        /// <summary>
+        /// Describes an actual value that could not be resolved to a supported type. Not a call to
+        /// <c>MsgUtils.FormatValue</c> (internal in this NUnit build) or <c>ToString()</c> because the
+        /// value could be arbitrarily large or locale-dependent; only its type name is reported.
+        /// </summary>
         internal static string DescribeActual(object actual)
         {
-            return default;
+            return actual == null ? "null" : $"<{actual.GetType().FullName}>";
         }
     }
 }

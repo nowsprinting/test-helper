@@ -12,13 +12,16 @@ namespace TestHelper.Constraints
     /// </remarks>
     internal sealed class ConstraintReport
     {
+        private readonly string _message;
+
         internal ConstraintReport(string message)
         {
+            _message = message;
         }
 
         public override string ToString()
         {
-            return default;
+            return _message;
         }
     }
 }

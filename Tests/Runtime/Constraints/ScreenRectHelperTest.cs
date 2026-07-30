@@ -33,6 +33,20 @@ namespace TestHelper.Constraints
             return canvas;
         }
 
+        // Real Camera projection (used by Screen Space - Camera / World Space) round-trips world<->screen
+        // through a projection matrix, which introduces sub-pixel floating-point noise (~1e-5) even for
+        // "round number" inputs — an inherent property of the math, not a defect. Screen Space - Overlay
+        // and the no-Canvas-ancestor path bypass the camera entirely and stay exact (see the other tests
+        // in this fixture using Is.EqualTo without tolerance).
+        private static void AssertApproximatelyEqual(Rect actual, Rect expected)
+        {
+            const float Tolerance = 0.001f;
+            Assert.That(actual.x, Is.EqualTo(expected.x).Within(Tolerance), "x");
+            Assert.That(actual.y, Is.EqualTo(expected.y).Within(Tolerance), "y");
+            Assert.That(actual.width, Is.EqualTo(expected.width).Within(Tolerance), "width");
+            Assert.That(actual.height, Is.EqualTo(expected.height).Within(Tolerance), "height");
+        }
+
         private static Camera CreatePerspectiveCamera()
         {
             var gameObject = new GameObject("Camera", typeof(Camera));
@@ -98,7 +112,7 @@ namespace TestHelper.Constraints
 
             var actual = ScreenRectHelper.GetScreenRect(element);
 
-            Assert.That(actual, Is.EqualTo(new Rect(10f, 20f, 100f, 50f)));
+            AssertApproximatelyEqual(actual, new Rect(10f, 20f, 100f, 50f));
         }
 
         [Test]
@@ -113,7 +127,7 @@ namespace TestHelper.Constraints
 
             var actual = ScreenRectHelper.GetScreenRect(element);
 
-            Assert.That(actual, Is.EqualTo(new Rect(10f, 20f, 100f, 50f)));
+            AssertApproximatelyEqual(actual, new Rect(10f, 20f, 100f, 50f));
         }
 
         [Test]
@@ -151,12 +165,21 @@ namespace TestHelper.Constraints
             var rootCanvas = CreateScreenSpaceCameraCanvas(camera);
             var nestedCanvasGameObject = new GameObject("NestedCanvas", typeof(Canvas));
             nestedCanvasGameObject.transform.SetParent(rootCanvas.transform, worldPositionStays: false);
+            // A freshly added RectTransform defaults to a point anchor with a fixed 100x100 size, not a
+            // stretch to fill its parent; stretch it explicitly so this nested canvas is a transparent
+            // passthrough over its parent's full rect — otherwise it introduces its own (irrelevant to
+            // this test) offset unrelated to the screen-space-camera conversion under test.
+            var nestedRectTransform = (RectTransform)nestedCanvasGameObject.transform;
+            nestedRectTransform.anchorMin = Vector2.zero;
+            nestedRectTransform.anchorMax = Vector2.one;
+            nestedRectTransform.offsetMin = Vector2.zero;
+            nestedRectTransform.offsetMax = Vector2.zero;
             var element = CreateElement(nestedCanvasGameObject.transform, new Vector2(10f, 20f), new Vector2(100f, 50f));
             await Awaitable.NextFrameAsync();
 
             var actual = ScreenRectHelper.GetScreenRect(element);
 
-            Assert.That(actual, Is.EqualTo(new Rect(10f, 20f, 100f, 50f)));
+            AssertApproximatelyEqual(actual, new Rect(10f, 20f, 100f, 50f));
         }
 
         [Test]

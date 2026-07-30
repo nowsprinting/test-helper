@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using NUnit.Framework.Constraints;
+using UnityEngine;
 
 namespace TestHelper.Constraints
 {
@@ -10,7 +11,8 @@ namespace TestHelper.Constraints
     /// </summary>
     public class WithinScreenConstraint : Constraint
     {
-        private float _tolerance;
+        private const float DefaultTolerance = 0.5f;
+        private float _tolerance = DefaultTolerance;
 
         public WithinScreenConstraint(params object[] args) : base(args)
         {
@@ -23,16 +25,36 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public WithinScreenConstraint Within(float tolerance)
         {
-            return default;
+            _tolerance = Mathf.Max(0f, tolerance);
+            return this;
         }
 
         /// <inheritdoc/>
-        public override string Description => default;
+        public override string Description =>
+            $"RectTransform within screen {ConstraintMessageFormatter.FormatIntegral(ScreenBounds)}";
+
+        private static Rect ScreenBounds => new Rect(0f, 0f, Screen.width, Screen.height);
 
         /// <inheritdoc/>
         public override ConstraintResult ApplyTo(object actual)
         {
-            return default;
+            if (actual == null)
+            {
+                return new ReportingConstraintResult(this, null, false);
+            }
+
+            if (!RectTransformResolver.TryResolve(actual, out var rectTransform, out var failureReason))
+            {
+                return new ReportingConstraintResult(this, new ConstraintReport(failureReason), false);
+            }
+
+            var screenRect = ScreenRectHelper.GetScreenRect(rectTransform);
+            var overshoot = RectGeometry.GetOvershoot(screenRect, ScreenBounds, RectAxes.Both, _tolerance);
+            var elementText =
+                $"{ConstraintMessageFormatter.Quote(rectTransform)} {ConstraintMessageFormatter.Format(screenRect)}";
+            var message = overshoot == null ? elementText : $"{elementText} {overshoot}";
+
+            return new ReportingConstraintResult(this, new ConstraintReport(message), overshoot == null);
         }
     }
 }

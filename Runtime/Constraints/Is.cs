@@ -17,22 +17,22 @@ namespace TestHelper.Constraints
         /// <summary>
         /// Create constraint to <see cref="RectTransform"/> within the screen.
         /// </summary>
-        public static WithinScreenConstraint WithinScreen => default;
+        public static WithinScreenConstraint WithinScreen => new WithinScreenConstraint();
 
         /// <summary>
         /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
         /// </summary>
         /// <param name="container">Container to check containment against.</param>
-        public static FullyWithinConstraint FullyWithin(RectTransform container) => default;
+        public static FullyWithinConstraint FullyWithin(RectTransform container) => new FullyWithinConstraint(container);
 
         /// <summary>
         /// Create constraint to a collection of <see cref="RectTransform"/> where any pair overlaps.
         /// </summary>
-        public static OverlappingConstraint Overlapping => default;
+        public static OverlappingConstraint Overlapping => new OverlappingConstraint();
 
         /// <summary>
         /// Create constraint to text overflowing its own <see cref="RectTransform"/>.
         /// </summary>
-        public static TextOverflowingConstraint TextOverflowing => default;
+        public static TextOverflowingConstraint TextOverflowing => new TextOverflowingConstraint();
     }
 }

@@ -19,6 +19,7 @@ namespace TestHelper.Constraints
 
         public override void WriteActualValueTo(MessageWriter writer)
         {
+            writer.Write(ActualValue == null ? "null" : ActualValue.ToString());
         }
     }
 }

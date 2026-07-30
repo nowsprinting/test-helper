@@ -12,11 +12,14 @@ namespace TestHelper.Constraints
     /// </summary>
     public class FullyWithinConstraint : Constraint
     {
+        private const float DefaultTolerance = 0.5f;
+        private readonly RectTransform _container;
         private RectAxes _axes;
-        private float _tolerance;
+        private float _tolerance = DefaultTolerance;
 
         public FullyWithinConstraint(RectTransform container) : base(container)
         {
+            _container = container;
         }
 
         /// <summary>
@@ -25,7 +28,8 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public FullyWithinConstraint Horizontally()
         {
-            return default;
+            _axes |= RectAxes.Horizontal;
+            return this;
         }
 
         /// <summary>
@@ -34,7 +38,8 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public FullyWithinConstraint Vertically()
         {
-            return default;
+            _axes |= RectAxes.Vertical;
+            return this;
         }
 
         /// <summary>
@@ -44,16 +49,59 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public FullyWithinConstraint Within(float tolerance)
         {
-            return default;
+            _tolerance = Mathf.Max(0f, tolerance);
+            return this;
         }
 
         /// <inheritdoc/>
-        public override string Description => default;
+        public override string Description
+        {
+            get
+            {
+                if (_container == null)
+                {
+                    return "RectTransform fully within null or destroyed container";
+                }
+
+                // Both explicitly narrowed axes (Horizontally().Vertically()) are treated the same as
+                // unnarrowed: only a SINGLE narrowed axis gets called out in the description.
+                var axisWord = _axes == RectAxes.Horizontal ? "horizontally "
+                    : _axes == RectAxes.Vertical ? "vertically "
+                    : string.Empty;
+                var containerRect = ScreenRectHelper.GetScreenRect(_container);
+                return
+                    $"RectTransform {axisWord}fully within {ConstraintMessageFormatter.Quote(_container)} {ConstraintMessageFormatter.Format(containerRect)}";
+            }
+        }
 
         /// <inheritdoc/>
         public override ConstraintResult ApplyTo(object actual)
         {
-            return default;
+            if (_container == null)
+            {
+                return new ReportingConstraintResult(this, new ConstraintReport("container is null or destroyed"),
+                    false);
+            }
+
+            if (actual == null)
+            {
+                return new ReportingConstraintResult(this, null, false);
+            }
+
+            if (!RectTransformResolver.TryResolve(actual, out var rectTransform, out var failureReason))
+            {
+                return new ReportingConstraintResult(this, new ConstraintReport(failureReason), false);
+            }
+
+            var elementRect = ScreenRectHelper.GetScreenRect(rectTransform);
+            var containerRect = ScreenRectHelper.GetScreenRect(_container);
+            var effectiveAxes = _axes == RectAxes.None ? RectAxes.Both : _axes;
+            var overshoot = RectGeometry.GetOvershoot(elementRect, containerRect, effectiveAxes, _tolerance);
+            var elementText =
+                $"{ConstraintMessageFormatter.Quote(rectTransform)} {ConstraintMessageFormatter.Format(elementRect)}";
+            var message = overshoot == null ? elementText : $"{elementText} {overshoot}";
+
+            return new ReportingConstraintResult(this, new ConstraintReport(message), overshoot == null);
         }
     }
 }
