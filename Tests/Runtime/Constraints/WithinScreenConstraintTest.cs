@@ -312,13 +312,12 @@ namespace TestHelper.Constraints
 
         [Test]
         [Category("Acceptance")]
-        // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
-        // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
-        [SuppressMessage("Assertion", "NUnit2007:The actual value should not be a constant")]
         public void IsWithinScreen_UnsupportedActualType_Failure()
         {
             Assert.That(() =>
             {
+                // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
+                // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
                 Assert.That("not a RectTransform", Is.WithinScreen);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +

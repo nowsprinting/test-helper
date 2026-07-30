@@ -89,7 +89,6 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task GetScreenRect_ScreenSpaceOverlayCanvas_ReturnsScreenSpaceRect()
         {
             var canvas = CreateOverlayCanvas();
@@ -104,7 +103,6 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task GetScreenRect_ScreenSpaceCameraCanvas_ReturnsScreenSpaceRect()
         {
             var camera = CreatePerspectiveCamera();
@@ -120,7 +118,6 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task GetScreenRect_WorldSpaceCanvas_ReturnsScreenSpaceRect()
         {
             var camera = CreateOrthographicCamera();
@@ -162,7 +159,6 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task GetScreenRect_NestedCanvasUnderScreenSpaceCameraRootCanvas_ReturnsScreenSpaceRect()
         {
             var camera = CreatePerspectiveCamera();

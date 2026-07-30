@@ -380,13 +380,12 @@ namespace TestHelper.Constraints
 
         [Test]
         [Category("Acceptance")]
-        // Not a swapped actual/expected: this constant IS the actual value under test, deliberately a
-        // non-collection, to exercise the "not a collection of RectTransforms" failure path.
-        [SuppressMessage("Assertion", "NUnit2007:The actual value should not be a constant")]
         public void IsOverlapping_NonCollectionActual_Failure()
         {
             Assert.That(() =>
             {
+                // Not a swapped actual/expected: this constant IS the actual value under test, deliberately a
+                // non-collection, to exercise the "not a collection of RectTransforms" failure path.
                 Assert.That("not a collection", Is.Overlapping);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: any pair of RectTransforms overlapping{Environment.NewLine}" +
