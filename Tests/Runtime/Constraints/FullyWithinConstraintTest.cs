@@ -1,0 +1,324 @@
+// Copyright (c) 2026 Koji Hasegawa.
+// This software is released under the MIT License.
+
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using NUnit.Framework;
+using TestHelper.Attributes;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace TestHelper.Constraints
+{
+    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
+    public class FullyWithinConstraintTest
+    {
+        public enum ActualKind
+        {
+            RectTransform,
+            GameObject,
+            Component,
+        }
+
+        public enum ContainerState
+        {
+            Null,
+            Destroyed,
+        }
+
+        private static readonly Vector2 ContainerPosition = new Vector2(10f, 10f);
+        private static readonly Vector2 ContainerSize = new Vector2(200f, 150f);
+
+        private static Rect ContainerScreenRect => new Rect(ContainerPosition, ContainerSize);
+
+        private static RectTransform CreateContainer()
+        {
+            var canvasGameObject = new GameObject("Canvas", typeof(Canvas));
+            canvasGameObject.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+
+            var gameObject = new GameObject("Viewport", typeof(RectTransform));
+            var rectTransform = (RectTransform)gameObject.transform;
+            rectTransform.SetParent(canvasGameObject.transform, worldPositionStays: false);
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.anchorMax = Vector2.zero;
+            rectTransform.pivot = Vector2.zero;
+            rectTransform.anchoredPosition = ContainerPosition;
+            rectTransform.sizeDelta = ContainerSize;
+            return rectTransform;
+        }
+
+        private static RectTransform CreateElement(string name, RectTransform container, Vector2 localPosition,
+            Vector2 size)
+        {
+            var gameObject = new GameObject(name, typeof(RectTransform));
+            var rectTransform = (RectTransform)gameObject.transform;
+            rectTransform.SetParent(container, worldPositionStays: false);
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.anchorMax = Vector2.zero;
+            rectTransform.pivot = Vector2.zero;
+            rectTransform.anchoredPosition = localPosition;
+            rectTransform.sizeDelta = size;
+            return rectTransform;
+        }
+
+        private static Rect ElementScreenRect(Vector2 localPosition, Vector2 size) =>
+            new Rect(ContainerPosition + localPosition, size);
+
+        private static object AsActual(RectTransform rectTransform, ActualKind kind)
+        {
+            switch (kind)
+            {
+                case ActualKind.GameObject:
+                    return rectTransform.gameObject;
+                case ActualKind.Component:
+                    return rectTransform.gameObject.AddComponent<Image>();
+                default:
+                    return rectTransform;
+            }
+        }
+
+        private static RectTransform ContainerFor(ContainerState state)
+        {
+            if (state == ContainerState.Null)
+            {
+                return null;
+            }
+
+            var container = CreateContainer();
+            GameObject.DestroyImmediate(container.gameObject);
+            return container;
+        }
+
+        private static string FormatFloat(float value) => value.ToString("F1", CultureInfo.InvariantCulture);
+
+        private static string FormatRect(Rect rect) =>
+            $"({FormatFloat(rect.x)}, {FormatFloat(rect.y)}, {FormatFloat(rect.width)}, {FormatFloat(rect.height)})";
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_ElementInsideContainer_Success()
+        {
+            var container = CreateContainer();
+            var actual = CreateElement("Element", container, new Vector2(20f, 20f), new Vector2(100f, 80f));
+
+            Assert.That(actual, Is.FullyWithin(container));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_AcceptedActualTypes_Success([Values] ActualKind kind)
+        {
+            var container = CreateContainer();
+            var rectTransform = CreateElement("Element", container, new Vector2(20f, 20f), new Vector2(100f, 80f));
+            var actual = AsActual(rectTransform, kind);
+
+            Assert.That(actual, Is.FullyWithin(container));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_ElementExceedsContainerRightEdge_Failure()
+        {
+            const float Overshoot = 30f;
+            var container = CreateContainer();
+            var localPosition = new Vector2(ContainerSize.x - 50f + Overshoot, 20f);
+            var size = new Vector2(50f, 60f);
+            var element = CreateElement("CardView", container, localPosition, size);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.FullyWithin(container));
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: RectTransform fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  \"CardView\" {FormatRect(ElementScreenRect(localPosition, size))} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_Horizontally_ElementExceedsVerticalBoundsOnly_Success()
+        {
+            var container = CreateContainer();
+            var actual = CreateElement("Element", container, new Vector2(20f, -100f), new Vector2(100f, 500f));
+
+            Assert.That(actual, Is.FullyWithin(container).Horizontally());
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_Horizontally_ElementExceedsHorizontalBounds_Failure()
+        {
+            const float Overshoot = 30f;
+            var container = CreateContainer();
+            var localPosition = new Vector2(ContainerSize.x - 50f + Overshoot, 20f);
+            var size = new Vector2(50f, 60f);
+            var element = CreateElement("CardView", container, localPosition, size);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.FullyWithin(container).Horizontally());
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: RectTransform horizontally fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  \"CardView\" {FormatRect(ElementScreenRect(localPosition, size))} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_Vertically_ElementExceedsHorizontalBoundsOnly_Success()
+        {
+            var container = CreateContainer();
+            var actual = CreateElement("Element", container, new Vector2(-100f, 20f), new Vector2(500f, 80f));
+
+            Assert.That(actual, Is.FullyWithin(container).Vertically());
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_Vertically_ElementExceedsVerticalBounds_Failure()
+        {
+            const float Overshoot = 15f;
+            var container = CreateContainer();
+            var localPosition = new Vector2(20f, ContainerSize.y - 60f + Overshoot);
+            var size = new Vector2(50f, 60f);
+            var element = CreateElement("CardView", container, localPosition, size);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.FullyWithin(container).Vertically());
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: RectTransform vertically fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  \"CardView\" {FormatRect(ElementScreenRect(localPosition, size))} exceeds the top edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_HorizontallyAndVertically_ElementExceedsVerticalBounds_Failure()
+        {
+            const float Overshoot = 15f;
+            var container = CreateContainer();
+            var localPosition = new Vector2(20f, ContainerSize.y - 60f + Overshoot);
+            var size = new Vector2(50f, 60f);
+            var element = CreateElement("CardView", container, localPosition, size);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.FullyWithin(container).Horizontally().Vertically());
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: RectTransform fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  \"CardView\" {FormatRect(ElementScreenRect(localPosition, size))} exceeds the top edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+        }
+
+        [TestCase(0.0f)]
+        [TestCase(0.5f)]
+        [CreateScene]
+        public void IsFullyWithin_OvershootWithinDefaultTolerance_Success(float overshoot)
+        {
+            var container = CreateContainer();
+            var actual = CreateElement("Element", container, new Vector2(ContainerSize.x - 50f + overshoot, 20f),
+                new Vector2(50f, 60f));
+
+            Assert.That(actual, Is.FullyWithin(container));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_OvershootWithinSpecifiedTolerance_Success()
+        {
+            const float Overshoot = 1.5f;
+            var container = CreateContainer();
+            var actual = CreateElement("Element", container, new Vector2(ContainerSize.x - 50f + Overshoot, 20f),
+                new Vector2(50f, 60f));
+
+            Assert.That(actual, Is.FullyWithin(container).Within(2f));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_NullOrDestroyedContainer_Failure([Values] ContainerState state)
+        {
+            var container = ContainerFor(state);
+            var element = CreateElement("Element", CreateContainer(), Vector2.zero, Vector2.zero);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.FullyWithin(container));
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: RectTransform fully within null or destroyed container{Environment.NewLine}" +
+                $"  But was:  container is null or destroyed{Environment.NewLine}"));
+        }
+
+        [Test]
+        [CreateScene]
+        public void IsFullyWithin_Null_Failure()
+        {
+            var container = CreateContainer();
+
+            Assert.That(() =>
+            {
+                Assert.That(null, Is.FullyWithin(container));
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: RectTransform fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  null{Environment.NewLine}"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotFullyWithin_ElementExceedsContainer_Success()
+        {
+            const float Overshoot = 30f;
+            var container = CreateContainer();
+            var actual = CreateElement("Element", container, new Vector2(ContainerSize.x - 50f + Overshoot, 20f),
+                new Vector2(50f, 60f));
+
+            Assert.That(actual, Is.Not.FullyWithin(container)); // Note: Use it in method style when with operators
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotFullyWithin_ElementInsideContainer_Failure()
+        {
+            var container = CreateContainer();
+            var localPosition = new Vector2(20f, 20f);
+            var size = new Vector2(100f, 80f);
+            var element = CreateElement("Element", container, localPosition, size);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.Not.FullyWithin(container)); // Note: Use it in method style when with operators
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: not RectTransform fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  <\"Element\" {FormatRect(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotFullyWithin_ChainedAxisAndToleranceModifiers_Failure()
+        {
+            var container = CreateContainer();
+            var localPosition = new Vector2(20f, -100f); // vertically out of bounds, horizontally fine
+            var size = new Vector2(100f, 500f);
+            var element = CreateElement("Element", container, localPosition, size);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.Not.FullyWithin(container).Horizontally().Within(2f));
+                // Note: Use it in method style when with operators
+            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
+                $"  Expected: not RectTransform horizontally fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  <\"Element\" {FormatRect(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));
+        }
+    }
+}
