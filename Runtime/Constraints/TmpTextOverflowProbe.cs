@@ -21,7 +21,7 @@ namespace TestHelper.Constraints
                 return false;
             }
 
-            detection = new TextOverflowDetection { ComponentTypeName = "TMP_Text" };
+            detection = new TextOverflowDetection();
 
             if (text.text.Length == 0)
             {

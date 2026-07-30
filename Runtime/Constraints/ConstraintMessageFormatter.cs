@@ -22,7 +22,8 @@ namespace TestHelper.Constraints
         /// </summary>
         internal static string FormatIntegral(Rect rect)
         {
-            return $"({FormatIntegral(rect.x)}, {FormatIntegral(rect.y)}, {FormatIntegral(rect.width)}, {FormatIntegral(rect.height)})";
+            return
+                $"({FormatIntegral(rect.x)}, {FormatIntegral(rect.y)}, {FormatIntegral(rect.width)}, {FormatIntegral(rect.height)})";
         }
 
         internal static string Format(Vector2 vector)

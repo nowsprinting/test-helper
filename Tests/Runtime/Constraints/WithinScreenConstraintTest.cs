@@ -64,6 +64,8 @@ namespace TestHelper.Constraints
         {
             switch (kind)
             {
+                case ActualKind.RectTransform:
+                    return rectTransform;
                 case ActualKind.GameObject:
                     return rectTransform.gameObject;
                 case ActualKind.Component:
@@ -89,13 +91,10 @@ namespace TestHelper.Constraints
                 case VisibilityFactor.InactiveInHierarchy:
                     element.gameObject.SetActive(false);
                     break;
+                default:
+                    break;
             }
         }
-
-        private static string FormatFloat(float value) => value.ToString("F1", CultureInfo.InvariantCulture);
-
-        private static string FormatRect(Rect rect) =>
-            $"({FormatFloat(rect.x)}, {FormatFloat(rect.y)}, {FormatFloat(rect.width)}, {FormatFloat(rect.height)})";
 
         private static string ExpectedWithinScreenLine =>
             $"RectTransform within screen (0, 0, {Screen.width}, {Screen.height})";
@@ -139,7 +138,7 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.WithinScreen);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(elementScreenRect)} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(elementScreenRect)} exceeds the right edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -157,8 +156,8 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.WithinScreen);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(elementScreenRect)} exceeds the left edge by {FormatFloat(12f)}px" +
-                $" and the top edge by {FormatFloat(7f)}px{Environment.NewLine}"));
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(elementScreenRect)} exceeds the left edge by {ConstraintMessageFormatter.Format(12f)}px" +
+                $" and the top edge by {ConstraintMessageFormatter.Format(7f)}px{Environment.NewLine}"));
         }
 
         [TestCase(0.0f)]
@@ -189,7 +188,7 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.WithinScreen);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(elementScreenRect)} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(elementScreenRect)} exceeds the right edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -220,7 +219,7 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.WithinScreen.Within(2f));
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(elementScreenRect)} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(elementScreenRect)} exceeds the right edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -239,7 +238,7 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.WithinScreen.Within(-5f));
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(elementScreenRect)} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(elementScreenRect)} exceeds the right edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -260,7 +259,7 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.WithinScreen);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(elementScreenRect)} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(elementScreenRect)} exceeds the right edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -280,7 +279,7 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.WithinScreen);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(elementScreenRect)} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(elementScreenRect)} exceeds the right edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -313,6 +312,9 @@ namespace TestHelper.Constraints
 
         [Test]
         [Category("Acceptance")]
+        // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
+        // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
+        [SuppressMessage("Assertion", "NUnit2007:The actual value should not be a constant")]
         public void IsWithinScreen_UnsupportedActualType_Failure()
         {
             Assert.That(() =>
@@ -366,7 +368,7 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.Not.WithinScreen()); // Note: Use it in method style when with operators
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  <\"Element\" {FormatRect(elementScreenRect)}>{Environment.NewLine}"));
+                $"  But was:  <\"Element\" {ConstraintMessageFormatter.Format(elementScreenRect)}>{Environment.NewLine}"));
         }
 
         [Test]

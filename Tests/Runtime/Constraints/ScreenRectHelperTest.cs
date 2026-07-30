@@ -89,6 +89,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task GetScreenRect_ScreenSpaceOverlayCanvas_ReturnsScreenSpaceRect()
         {
             var canvas = CreateOverlayCanvas();
@@ -103,6 +104,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task GetScreenRect_ScreenSpaceCameraCanvas_ReturnsScreenSpaceRect()
         {
             var camera = CreatePerspectiveCamera();
@@ -118,6 +120,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task GetScreenRect_WorldSpaceCanvas_ReturnsScreenSpaceRect()
         {
             var camera = CreateOrthographicCamera();
@@ -159,6 +162,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task GetScreenRect_NestedCanvasUnderScreenSpaceCameraRootCanvas_ReturnsScreenSpaceRect()
         {
             var camera = CreatePerspectiveCamera();
@@ -174,7 +178,8 @@ namespace TestHelper.Constraints
             nestedRectTransform.anchorMax = Vector2.one;
             nestedRectTransform.offsetMin = Vector2.zero;
             nestedRectTransform.offsetMax = Vector2.zero;
-            var element = CreateElement(nestedCanvasGameObject.transform, new Vector2(10f, 20f), new Vector2(100f, 50f));
+            var element = CreateElement(nestedCanvasGameObject.transform, new Vector2(10f, 20f),
+                new Vector2(100f, 50f));
             await Awaitable.NextFrameAsync();
 
             var actual = ScreenRectHelper.GetScreenRect(element);

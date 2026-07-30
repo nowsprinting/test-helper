@@ -11,7 +11,6 @@ namespace TestHelper.Constraints
     /// </summary>
     internal class TextOverflowDetection
     {
-        internal string ComponentTypeName;
         internal Vector2 PreferredSize;
         internal Vector2 RectSize;
         internal bool WidthChecked;

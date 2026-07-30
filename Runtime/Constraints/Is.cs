@@ -23,7 +23,8 @@ namespace TestHelper.Constraints
         /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
         /// </summary>
         /// <param name="container">Container to check containment against.</param>
-        public static FullyWithinConstraint FullyWithin(RectTransform container) => new FullyWithinConstraint(container);
+        public static FullyWithinConstraint FullyWithin(RectTransform container) =>
+            new FullyWithinConstraint(container);
 
         /// <summary>
         /// Create constraint to a collection of <see cref="RectTransform"/> where any pair overlaps.

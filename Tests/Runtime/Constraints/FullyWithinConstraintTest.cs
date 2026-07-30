@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
@@ -69,6 +68,8 @@ namespace TestHelper.Constraints
         {
             switch (kind)
             {
+                case ActualKind.RectTransform:
+                    return rectTransform;
                 case ActualKind.GameObject:
                     return rectTransform.gameObject;
                 case ActualKind.Component:
@@ -89,11 +90,6 @@ namespace TestHelper.Constraints
             GameObject.DestroyImmediate(container.gameObject);
             return container;
         }
-
-        private static string FormatFloat(float value) => value.ToString("F1", CultureInfo.InvariantCulture);
-
-        private static string FormatRect(Rect rect) =>
-            $"({FormatFloat(rect.x)}, {FormatFloat(rect.y)}, {FormatFloat(rect.width)}, {FormatFloat(rect.height)})";
 
         [Test]
         [CreateScene]
@@ -133,8 +129,8 @@ namespace TestHelper.Constraints
             {
                 Assert.That(element, Is.FullyWithin(container));
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: RectTransform fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(ElementScreenRect(localPosition, size))} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  Expected: RectTransform fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))} exceeds the right edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -163,8 +159,8 @@ namespace TestHelper.Constraints
             {
                 Assert.That(element, Is.FullyWithin(container).Horizontally());
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: RectTransform horizontally fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(ElementScreenRect(localPosition, size))} exceeds the right edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  Expected: RectTransform horizontally fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))} exceeds the right edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -193,8 +189,8 @@ namespace TestHelper.Constraints
             {
                 Assert.That(element, Is.FullyWithin(container).Vertically());
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: RectTransform vertically fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(ElementScreenRect(localPosition, size))} exceeds the top edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  Expected: RectTransform vertically fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))} exceeds the top edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [Test]
@@ -212,8 +208,8 @@ namespace TestHelper.Constraints
             {
                 Assert.That(element, Is.FullyWithin(container).Horizontally().Vertically());
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: RectTransform fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
-                $"  But was:  \"CardView\" {FormatRect(ElementScreenRect(localPosition, size))} exceeds the top edge by {FormatFloat(Overshoot)}px{Environment.NewLine}"));
+                $"  Expected: RectTransform fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  \"CardView\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))} exceeds the top edge by {ConstraintMessageFormatter.Format(Overshoot)}px{Environment.NewLine}"));
         }
 
         [TestCase(0.0f)]
@@ -267,7 +263,7 @@ namespace TestHelper.Constraints
             {
                 Assert.That(null, Is.FullyWithin(container));
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: RectTransform fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  Expected: RectTransform fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
                 $"  But was:  null{Environment.NewLine}"));
         }
 
@@ -298,8 +294,8 @@ namespace TestHelper.Constraints
             {
                 Assert.That(element, Is.Not.FullyWithin(container)); // Note: Use it in method style when with operators
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: not RectTransform fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
-                $"  But was:  <\"Element\" {FormatRect(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));
+                $"  Expected: not RectTransform fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  <\"Element\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));
         }
 
         [Test]
@@ -317,8 +313,8 @@ namespace TestHelper.Constraints
                 Assert.That(element, Is.Not.FullyWithin(container).Horizontally().Within(2f));
                 // Note: Use it in method style when with operators
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: not RectTransform horizontally fully within \"Viewport\" {FormatRect(ContainerScreenRect)}{Environment.NewLine}" +
-                $"  But was:  <\"Element\" {FormatRect(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));
+                $"  Expected: not RectTransform horizontally fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
+                $"  But was:  <\"Element\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));
         }
     }
 }

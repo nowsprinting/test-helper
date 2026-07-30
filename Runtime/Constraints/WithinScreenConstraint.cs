@@ -38,14 +38,10 @@ namespace TestHelper.Constraints
         /// <inheritdoc/>
         public override ConstraintResult ApplyTo(object actual)
         {
-            if (actual == null)
+            var failure = RectTransformResolver.TryResolveOrFail(actual, this, out var rectTransform);
+            if (failure != null)
             {
-                return new ReportingConstraintResult(this, null, false);
-            }
-
-            if (!RectTransformResolver.TryResolve(actual, out var rectTransform, out var failureReason))
-            {
-                return new ReportingConstraintResult(this, new ConstraintReport(failureReason), false);
+                return failure;
             }
 
             var screenRect = ScreenRectHelper.GetScreenRect(rectTransform);

@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
@@ -56,6 +55,8 @@ namespace TestHelper.Constraints
         {
             switch (kind)
             {
+                case ActualKind.RectTransform:
+                    return rectTransform;
                 case ActualKind.GameObject:
                     return rectTransform.gameObject;
                 case ActualKind.Component:
@@ -64,11 +65,6 @@ namespace TestHelper.Constraints
                     return rectTransform;
             }
         }
-
-        private static string FormatFloat(float value) => value.ToString("F1", CultureInfo.InvariantCulture);
-
-        private static string FormatRect(Rect rect) =>
-            $"({FormatFloat(rect.x)}, {FormatFloat(rect.y)}, {FormatFloat(rect.width)}, {FormatFloat(rect.height)})";
 
         [Test]
         [CreateScene]
@@ -116,7 +112,7 @@ namespace TestHelper.Constraints
                 Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  <\"TestCard (3)\" {FormatRect(new Rect(120f, 40f, 100f, 100f))} overlaps \"TestCard (4)\" {FormatRect(new Rect(200f, 40f, 100f, 100f))}>{Environment.NewLine}"));
+                $"  But was:  <\"TestCard (3)\" {ConstraintMessageFormatter.Format(new Rect(120f, 40f, 100f, 100f))} overlaps \"TestCard (4)\" {ConstraintMessageFormatter.Format(new Rect(200f, 40f, 100f, 100f))}>{Environment.NewLine}"));
         }
 
         [Test]
@@ -138,7 +134,7 @@ namespace TestHelper.Constraints
                 Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  <\"TestCard (0)\" {FormatRect(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {FormatRect(new Rect(20f, 20f, 100f, 100f))} (and 2 more overlapping pairs)>{Environment.NewLine}"));
+                $"  But was:  <\"TestCard (0)\" {ConstraintMessageFormatter.Format(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {ConstraintMessageFormatter.Format(new Rect(20f, 20f, 100f, 100f))} (and 2 more overlapping pairs)>{Environment.NewLine}"));
         }
 
         [Test]
@@ -210,7 +206,7 @@ namespace TestHelper.Constraints
                 Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  <\"TestCard (0)\" {FormatRect(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {FormatRect(new Rect(100f - OverlapExtent, 0f, 100f, 100f))}>{Environment.NewLine}"));
+                $"  But was:  <\"TestCard (0)\" {ConstraintMessageFormatter.Format(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {ConstraintMessageFormatter.Format(new Rect(100f - OverlapExtent, 0f, 100f, 100f))}>{Environment.NewLine}"));
         }
 
         [Test]
@@ -290,7 +286,7 @@ namespace TestHelper.Constraints
                 Assert.That(actual, Is.Not.Overlapping().Ignoring(ignoredGroup));
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  <\"TestCard (0)\" {FormatRect(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {FormatRect(new Rect(20f, 20f, 100f, 100f))}>{Environment.NewLine}"));
+                $"  But was:  <\"TestCard (0)\" {ConstraintMessageFormatter.Format(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {ConstraintMessageFormatter.Format(new Rect(20f, 20f, 100f, 100f))}>{Environment.NewLine}"));
         }
 
         [Test]
@@ -347,7 +343,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsNotOverlapping_IgnoredGroupContainsNull_Failure()
+        public void IsOverlapping_IgnoredGroupContainsNull_Failure()
         {
             var canvas = CreateCanvas();
             var element0 = CreateElement(canvas.transform, "TestCard (0)", new Vector2(0f, 0f),
@@ -355,7 +351,7 @@ namespace TestHelper.Constraints
             var element1 = CreateElement(canvas.transform, "TestCard (1)", new Vector2(60f, 0f),
                 new Vector2(50f, 50f));
             var actual = new[] { element0, element1 };
-            var ignoredGroup = new RectTransform[] { element0, null };
+            var ignoredGroup = new[] { element0, null };
 
             Assert.That(() =>
             {
@@ -368,7 +364,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsNotOverlapping_SingleElementActual_Failure([Values] ActualKind kind)
+        public void IsOverlapping_SingleElementActual_Failure([Values] ActualKind kind)
         {
             var canvas = CreateCanvas();
             var rectTransform = CreateElement(canvas.transform, "Element", Vector2.zero, new Vector2(50f, 50f));
@@ -384,7 +380,10 @@ namespace TestHelper.Constraints
 
         [Test]
         [Category("Acceptance")]
-        public void IsNotOverlapping_NonCollectionActual_Failure()
+        // Not a swapped actual/expected: this constant IS the actual value under test, deliberately a
+        // non-collection, to exercise the "not a collection of RectTransforms" failure path.
+        [SuppressMessage("Assertion", "NUnit2007:The actual value should not be a constant")]
+        public void IsOverlapping_NonCollectionActual_Failure()
         {
             Assert.That(() =>
             {
@@ -397,7 +396,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsNotOverlapping_CollectionContainsElementWithoutRectTransform_Failure()
+        public void IsOverlapping_CollectionContainsElementWithoutRectTransform_Failure()
         {
             var canvas = CreateCanvas();
             var element0 = CreateElement(canvas.transform, "TestCard (0)", Vector2.zero, new Vector2(50f, 50f));
@@ -414,11 +413,11 @@ namespace TestHelper.Constraints
 
         [Test]
         [CreateScene]
-        public void IsNotOverlapping_CollectionContainsNullElement_Failure()
+        public void IsOverlapping_CollectionContainsNullElement_Failure()
         {
             var canvas = CreateCanvas();
             var element0 = CreateElement(canvas.transform, "TestCard (0)", Vector2.zero, new Vector2(50f, 50f));
-            var actual = new RectTransform[] { element0, null };
+            var actual = new[] { element0, null };
 
             Assert.That(() =>
             {

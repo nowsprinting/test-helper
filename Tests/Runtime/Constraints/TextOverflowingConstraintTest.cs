@@ -82,6 +82,8 @@ namespace TestHelper.Constraints
         {
             switch (kind)
             {
+                case ActualKind.RectTransform:
+                    return rectTransform;
                 case ActualKind.GameObject:
                     return rectTransform.gameObject;
                 case ActualKind.Component:
@@ -94,6 +96,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiTextFitsRect_Success()
         {
             var canvas = CreateCanvas();
@@ -108,6 +111,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_AcceptedActualTypes_Success([Values] ActualKind kind)
         {
             var canvas = CreateCanvas();
@@ -123,6 +127,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsTextOverflowing_UguiTextFitsRect_Failure()
         {
             var canvas = CreateCanvas();
@@ -143,6 +148,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiPreferredSizeExceedsRect_Failure()
         {
             var canvas = CreateCanvas();
@@ -165,6 +171,7 @@ namespace TestHelper.Constraints
         [TestCase(0.5f)]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiExcessWithinDefaultTolerance_Success(float excess)
         {
             var canvas = CreateCanvas();
@@ -184,6 +191,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiExcessWithinSpecifiedTolerance_Success()
         {
             const float Excess = 1.5f;
@@ -204,6 +212,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiBestFitEnabledAndPreferredSizeExceedsRect_Success()
         {
             var canvas = CreateCanvas();
@@ -219,6 +228,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsTextOverflowing_UguiBestFitEnabled_Failure()
         {
             var canvas = CreateCanvas();
@@ -239,6 +249,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiWrapAndUnwrappedPreferredWidthExceedsRectWidth_Success()
         {
             var canvas = CreateCanvas();
@@ -254,6 +265,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsTextOverflowing_UguiWrapAndTextFitsRect_Failure()
         {
             var canvas = CreateCanvas();
@@ -275,6 +287,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiWrapAndPreferredHeightExceedsRectHeight_Failure()
         {
             var canvas = CreateCanvas();
@@ -295,6 +308,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiHorizontalOverflowAndPreferredWidthExceedsRectWidth_Failure()
         {
             var canvas = CreateCanvas();
@@ -315,6 +329,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiTruncateAndCharactersTruncated_Failure()
         {
             var canvas = CreateCanvas();
@@ -336,6 +351,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiVerticalOverflowAndTextSpillsBeyondRect_Failure()
         {
             var canvas = CreateCanvas();
@@ -376,6 +392,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_UguiEmptyText_Success()
         {
             var canvas = CreateCanvas();
@@ -390,6 +407,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_ScaledTextFitsLocalRect_Success()
         {
             var canvas = CreateCanvas();
@@ -405,6 +423,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_TmpTextFitsRect_Success()
         {
             var canvas = CreateCanvas();
@@ -419,6 +438,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_TmpPreferredHeightExceedsRectHeight_Failure()
         {
             var canvas = CreateCanvas();
@@ -439,6 +459,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_TmpAutoSizingEnabledAndPreferredHeightExceedsRectHeight_Success()
         {
             var canvas = CreateCanvas();
@@ -455,6 +476,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_TmpPreferredWidthExceedsRectWidth_Success()
         {
             var canvas = CreateCanvas();
@@ -470,6 +492,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_TmpCharactersNotRendered_Failure()
         {
             var canvas = CreateCanvas();
@@ -491,6 +514,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [SuppressMessage("ReSharper", "AsyncMethodNamingHighlighting")]
         public async Task IsNotTextOverflowing_BothUguiTextAndTmpTextPresentAndOnlyTmpOverflows_Success()
         {
             // Note: a uGUI Text and a TMP_Text cannot coexist on the same GameObject (both derive from
@@ -503,7 +527,7 @@ namespace TestHelper.Constraints
             Assume.That(uguiText.font, Is.Not.Null);
             var tmpText = CreateTmpText(canvas.transform, "OtherLabel",
                 "A very very very long single line of overflowing text content that exceeds the rect",
-                new Vector2(5f, 5f), TextWrappingModes.NoWrap, false, TextOverflowModes.Overflow);
+                new Vector2(5f, 5f), TextWrappingModes.NoWrap);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
             await Awaitable.NextFrameAsync();

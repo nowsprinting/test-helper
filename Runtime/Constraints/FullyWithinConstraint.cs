@@ -83,20 +83,17 @@ namespace TestHelper.Constraints
                     false);
             }
 
-            if (actual == null)
+            var failure = RectTransformResolver.TryResolveOrFail(actual, this, out var rectTransform);
+            if (failure != null)
             {
-                return new ReportingConstraintResult(this, null, false);
-            }
-
-            if (!RectTransformResolver.TryResolve(actual, out var rectTransform, out var failureReason))
-            {
-                return new ReportingConstraintResult(this, new ConstraintReport(failureReason), false);
+                return failure;
             }
 
             var elementRect = ScreenRectHelper.GetScreenRect(rectTransform);
             var containerRect = ScreenRectHelper.GetScreenRect(_container);
-            var effectiveAxes = _axes == RectAxes.None ? RectAxes.Both : _axes;
-            var overshoot = RectGeometry.GetOvershoot(elementRect, containerRect, effectiveAxes, _tolerance);
+
+            // RectAxes.None is treated the same as Both by RectGeometry.GetOvershoot, so no conversion needed.
+            var overshoot = RectGeometry.GetOvershoot(elementRect, containerRect, _axes, _tolerance);
             var elementText =
                 $"{ConstraintMessageFormatter.Quote(rectTransform)} {ConstraintMessageFormatter.Format(elementRect)}";
             var message = overshoot == null ? elementText : $"{elementText} {overshoot}";

@@ -21,7 +21,7 @@ namespace TestHelper.Constraints
                 return false;
             }
 
-            detection = new TextOverflowDetection { ComponentTypeName = "Text" };
+            detection = new TextOverflowDetection();
 
             if (text.text.Length == 0)
             {
@@ -43,7 +43,7 @@ namespace TestHelper.Constraints
             // Truncation only removes characters under VerticalWrapMode.Truncate; under Overflow all
             // characters exist and merely spill, which only the size comparison below can detect.
             detection.CharactersTruncated = text.verticalOverflow == VerticalWrapMode.Truncate &&
-                                             generator.characterCountVisible < text.text.Length;
+                                            generator.characterCountVisible < text.text.Length;
             if (detection.CharactersTruncated)
             {
                 detection.TruncationDetail =
