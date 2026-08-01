@@ -6,7 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TestHelper.Attributes;
+#if ENABLE_TMP
 using TMPro;
+#endif
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,6 +57,7 @@ namespace TestHelper.Constraints
             return uguiText;
         }
 
+#if ENABLE_TMP
         private static TMP_Text CreateTmpText(Transform parent, string name, string text, Vector2 size,
             TextWrappingModes wrappingMode = TextWrappingModes.Normal, bool enableAutoSizing = false,
             TextOverflowModes overflowMode = TextOverflowModes.Overflow)
@@ -77,6 +80,7 @@ namespace TestHelper.Constraints
             tmpText.overflowMode = overflowMode;
             return tmpText;
         }
+#endif
 
         private static object AsActual(RectTransform rectTransform, ActualKind kind)
         {
@@ -424,6 +428,7 @@ namespace TestHelper.Constraints
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
 
+#if ENABLE_TMP
         [Test]
         [CreateScene]
         [Category("Acceptance")]
@@ -562,6 +567,7 @@ namespace TestHelper.Constraints
 
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
+#endif
 
         [Test]
         [CreateScene]
