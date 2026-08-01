@@ -240,7 +240,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsFullyWithin_NullOrDestroyedContainer_Failure([Values] ContainerState state)
+        public void IsFullyWithin_NullOrDestroyedContainer_ThrowsArgumentNullException([Values] ContainerState state)
         {
             var container = ContainerFor(state);
             var element = CreateElement("Element", CreateContainer(), Vector2.zero, Vector2.zero);
@@ -248,23 +248,69 @@ namespace TestHelper.Constraints
             Assert.That(() =>
             {
                 Assert.That(element, Is.FullyWithin(container));
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: RectTransform fully within null or destroyed container{Environment.NewLine}" +
-                $"  But was:  container is null or destroyed{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("container"));
         }
 
         [Test]
         [CreateScene]
-        public void IsFullyWithin_Null_Failure()
+        public void IsFullyWithin_Null_ThrowsArgumentNullException()
         {
             var container = CreateContainer();
 
             Assert.That(() =>
             {
                 Assert.That(null, Is.FullyWithin(container));
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: RectTransform fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
-                $"  But was:  null{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_DestroyedGameObject_ThrowsArgumentException()
+        {
+            var container = CreateContainer();
+            var element = CreateElement("Element", container, Vector2.zero, Vector2.zero);
+            GameObject.DestroyImmediate(element.gameObject);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.FullyWithin(container));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("destroyed UnityEngine.Object"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_UnsupportedActualType_ThrowsArgumentException()
+        {
+            var container = CreateContainer();
+
+            Assert.That(() =>
+            {
+                // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
+                // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
+                Assert.That("not a RectTransform", Is.FullyWithin(container));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("is not a RectTransform, GameObject, or Component"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsFullyWithin_GameObjectWithoutRectTransform_ThrowsArgumentException()
+        {
+            var container = CreateContainer();
+            var gameObject = new GameObject("PlainObject");
+
+            Assert.That(() =>
+            {
+                Assert.That(gameObject, Is.FullyWithin(container));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("has no RectTransform component"));
         }
 
         [Test]
@@ -296,6 +342,32 @@ namespace TestHelper.Constraints
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not RectTransform fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
                 $"  But was:  <\"Element\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotFullyWithin_NullActual_ThrowsArgumentNullException()
+        {
+            var container = CreateContainer();
+
+            Assert.That(() =>
+            {
+                Assert.That(null, Is.Not.FullyWithin(container)); // Note: Use it in method style when with operators
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotFullyWithin_NullContainer_ThrowsArgumentNullException()
+        {
+            var element = CreateElement("Element", CreateContainer(), Vector2.zero, Vector2.zero);
+
+            Assert.That(() =>
+            {
+                Assert.That(element, Is.Not.FullyWithin(null)); // Note: Use it in method style when with operators
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("container"));
         }
 
         [Test]

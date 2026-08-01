@@ -284,20 +284,18 @@ namespace TestHelper.Constraints
 
         [Test]
         [Category("Acceptance")]
-        public void IsWithinScreen_Null_Failure()
+        public void IsWithinScreen_Null_ThrowsArgumentNullException()
         {
             Assert.That(() =>
             {
                 Assert.That(null, Is.WithinScreen);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  null{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
         }
 
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsWithinScreen_DestroyedGameObject_Failure()
+        public void IsWithinScreen_DestroyedGameObject_ThrowsArgumentException()
         {
             var element = CreateElement("CardView", Vector2.zero, Vector2.zero);
             GameObject.DestroyImmediate(element.gameObject);
@@ -305,38 +303,38 @@ namespace TestHelper.Constraints
             Assert.That(() =>
             {
                 Assert.That(element, Is.WithinScreen);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  destroyed UnityEngine.Object{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("destroyed UnityEngine.Object"));
         }
 
         [Test]
         [Category("Acceptance")]
-        public void IsWithinScreen_UnsupportedActualType_Failure()
+        public void IsWithinScreen_UnsupportedActualType_ThrowsArgumentException()
         {
             Assert.That(() =>
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
                 // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
                 Assert.That("not a RectTransform", Is.WithinScreen);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  <System.String> is not a RectTransform, GameObject, or Component{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("is not a RectTransform, GameObject, or Component"));
         }
 
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsWithinScreen_GameObjectWithoutRectTransform_Failure()
+        public void IsWithinScreen_GameObjectWithoutRectTransform_ThrowsArgumentException()
         {
             var gameObject = new GameObject("PlainObject");
 
             Assert.That(() =>
             {
                 Assert.That(gameObject, Is.WithinScreen);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: {ExpectedWithinScreenLine}{Environment.NewLine}" +
-                $"  But was:  \"PlainObject\" has no RectTransform component{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("has no RectTransform component"));
         }
 
         [Test]
@@ -372,9 +370,12 @@ namespace TestHelper.Constraints
 
         [Test]
         [Category("Acceptance")]
-        public void IsNotWithinScreen_Null_Success()
+        public void IsNotWithinScreen_Null_ThrowsArgumentNullException()
         {
-            Assert.That(null, Is.Not.WithinScreen()); // Note: Use it in method style when with operators
+            Assert.That(() =>
+            {
+                Assert.That(null, Is.Not.WithinScreen()); // Note: Use it in method style when with operators
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
         }
     }
 }

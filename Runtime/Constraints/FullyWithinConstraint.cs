@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using NUnit.Framework.Constraints;
 using UnityEngine;
 
@@ -75,19 +76,18 @@ namespace TestHelper.Constraints
         }
 
         /// <inheritdoc/>
+        /// <exception cref="ArgumentNullException">The container passed to the constructor is null or
+        /// destroyed, or <paramref name="actual"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="actual"/> cannot be resolved to a
+        /// <see cref="RectTransform"/>.</exception>
         public override ConstraintResult ApplyTo(object actual)
         {
             if (_container == null)
             {
-                return new ReportingConstraintResult(this, new ConstraintReport("container is null or destroyed"),
-                    false);
+                throw new ArgumentNullException("container");
             }
 
-            var failure = RectTransformResolver.TryResolveOrFail(actual, this, out var rectTransform);
-            if (failure != null)
-            {
-                return failure;
-            }
+            var rectTransform = RectTransformResolver.ResolveOrThrow(actual, nameof(actual));
 
             var elementRect = ScreenRectHelper.GetScreenRect(rectTransform);
             var containerRect = ScreenRectHelper.GetScreenRect(_container);

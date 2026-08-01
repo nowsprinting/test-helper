@@ -338,6 +338,26 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        public async Task IsNotTextOverflowing_UguiTruncateAndLineAfterEmbeddedNewlineNotRendered_Failure()
+        {
+            var canvas = CreateCanvas();
+            var uguiText = CreateUguiText(canvas.transform, "Label", "Overflowing sentence\nSecond line",
+                new Vector2(130f, 55f), HorizontalWrapMode.Wrap, VerticalWrapMode.Truncate);
+            Assume.That(uguiText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await Awaitable.NextFrameAsync();
+
+            Assert.That(() =>
+            {
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            }, Throws.TypeOf<AssertionException>()
+                .With.Message.Contains("\"Label\"")
+                .And.Message.Contains("are rendered"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
         public async Task IsNotTextOverflowing_UguiVerticalOverflowAndTextSpillsBeyondRect_Failure()
         {
             var canvas = CreateCanvas();
@@ -531,14 +551,68 @@ namespace TestHelper.Constraints
         }
 
         [Test]
-        public void IsNotTextOverflowing_Null_Failure()
+        public void IsTextOverflowing_Null_ThrowsArgumentNullException()
         {
             Assert.That(() =>
             {
                 Assert.That(null, Is.TextOverflowing);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: text overflowing its RectTransform{Environment.NewLine}" +
-                $"  But was:  null{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+        }
+
+        [Test]
+        public void IsNotTextOverflowing_Null_ThrowsArgumentNullException()
+        {
+            Assert.That(() =>
+            {
+                Assert.That(null, Is.Not.TextOverflowing());
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsTextOverflowing_DestroyedGameObject_ThrowsArgumentException()
+        {
+            var canvas = CreateCanvas();
+            var uguiText = CreateUguiText(canvas.transform, "Label", "Hi", new Vector2(300f, 100f));
+            var rectTransform = uguiText.GetComponent<RectTransform>();
+            GameObject.DestroyImmediate(uguiText.gameObject);
+
+            Assert.That(() =>
+            {
+                Assert.That(rectTransform, Is.TextOverflowing);
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("destroyed UnityEngine.Object"));
+        }
+
+        [Test]
+        [Category("Acceptance")]
+        public void IsTextOverflowing_UnsupportedActualType_ThrowsArgumentException()
+        {
+            Assert.That(() =>
+            {
+                // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
+                // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
+                Assert.That("not a RectTransform", Is.TextOverflowing);
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("is not a RectTransform, GameObject, or Component"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsTextOverflowing_GameObjectWithoutRectTransform_ThrowsArgumentException()
+        {
+            var gameObject = new GameObject("PlainObject");
+
+            Assert.That(() =>
+            {
+                Assert.That(gameObject, Is.TextOverflowing);
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("has no RectTransform component"));
         }
     }
 }

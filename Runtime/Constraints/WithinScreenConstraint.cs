@@ -36,13 +36,12 @@ namespace TestHelper.Constraints
         private static Rect ScreenBounds => new Rect(0f, 0f, Screen.width, Screen.height);
 
         /// <inheritdoc/>
+        /// <exception cref="System.ArgumentNullException"><paramref name="actual"/> is null.</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="actual"/> cannot be resolved to a
+        /// <see cref="RectTransform"/>.</exception>
         public override ConstraintResult ApplyTo(object actual)
         {
-            var failure = RectTransformResolver.TryResolveOrFail(actual, this, out var rectTransform);
-            if (failure != null)
-            {
-                return failure;
-            }
+            var rectTransform = RectTransformResolver.ResolveOrThrow(actual, nameof(actual));
 
             var screenRect = ScreenRectHelper.GetScreenRect(rectTransform);
             var overshoot = RectGeometry.GetOvershoot(screenRect, ScreenBounds, RectAxes.Both, _tolerance);

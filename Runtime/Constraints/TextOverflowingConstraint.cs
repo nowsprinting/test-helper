@@ -36,13 +36,12 @@ namespace TestHelper.Constraints
         public override string Description => "text overflowing its RectTransform";
 
         /// <inheritdoc/>
+        /// <exception cref="System.ArgumentNullException"><paramref name="actual"/> is null.</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="actual"/> cannot be resolved to a
+        /// <see cref="RectTransform"/>.</exception>
         public override ConstraintResult ApplyTo(object actual)
         {
-            var failure = RectTransformResolver.TryResolveOrFail(actual, this, out var rectTransform);
-            if (failure != null)
-            {
-                return failure;
-            }
+            var rectTransform = RectTransformResolver.ResolveOrThrow(actual, nameof(actual));
 
             var detection = Detect(rectTransform);
             if (detection == null)

@@ -57,46 +57,43 @@ namespace TestHelper.Constraints
         public override string Description => "any pair of RectTransforms overlapping";
 
         /// <inheritdoc/>
+        /// <exception cref="ArgumentNullException"><paramref name="actual"/>, or an element within it (or
+        /// within an <see cref="Ignoring"/> group), is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="actual"/> is not a single resolvable element
+        /// or a collection of RectTransforms, or an element within it (or within an <see cref="Ignoring"/>
+        /// group) cannot be resolved to a <see cref="RectTransform"/>.</exception>
         public override ConstraintResult ApplyTo(object actual)
         {
             if (actual == null)
             {
-                return new ReportingConstraintResult(this, null, false);
+                throw new ArgumentNullException(nameof(actual));
             }
 
             // Checked before the general IEnumerable branch: RectTransform (a Transform) enumerates its
             // children, so a single element passed directly would otherwise be misread as a collection.
             if (RectTransformResolver.IsResolvableSingle(actual))
             {
-                RectTransformResolver.TryResolve(actual, out var singleRectTransform, out var singleFailureReason);
-                var message = singleRectTransform != null
-                    ? $"{ConstraintMessageFormatter.Quote(singleRectTransform)} is a single RectTransform, not a collection"
-                    : singleFailureReason;
-                return new ReportingConstraintResult(this, new ConstraintReport(message), false);
+                var singleRectTransform = RectTransformResolver.ResolveOrThrow(actual, nameof(actual));
+                throw new ArgumentException(
+                    $"{ConstraintMessageFormatter.Quote(singleRectTransform)} is a single RectTransform, not a collection",
+                    nameof(actual));
             }
 
             // string implements IEnumerable<char>; special-cased so it doesn't get misread as a collection
             // of per-character "elements".
             if (!(actual is IEnumerable) || actual is string)
             {
-                var message =
-                    $"{ConstraintMessageFormatter.DescribeActual(actual)} is not a collection of RectTransforms";
-                return new ReportingConstraintResult(this, new ConstraintReport(message), false);
+                throw new ArgumentException(
+                    $"{ConstraintMessageFormatter.DescribeActual(actual)} is not a collection of RectTransforms",
+                    nameof(actual));
             }
 
-            if (!TryResolveAll((IEnumerable)actual, "element", out var elements, out var elementsFailure))
-            {
-                return elementsFailure;
-            }
+            var elements = ResolveAll((IEnumerable)actual, "element");
 
             var ignoredSets = new List<HashSet<RectTransform>>();
             foreach (var rawGroup in _ignoredGroups)
             {
-                if (!TryResolveAll(rawGroup, "ignored group member", out var groupMembers, out var groupFailure))
-                {
-                    return groupFailure;
-                }
-
+                var groupMembers = ResolveAll(rawGroup, "ignored group member");
                 ignoredSets.Add(new HashSet<RectTransform>(groupMembers));
             }
 
@@ -146,31 +143,25 @@ namespace TestHelper.Constraints
         }
 
         /// <summary>
-        /// Resolves every item in <paramref name="source"/> to a <see cref="RectTransform"/>. On the first
-        /// unresolvable item, returns false with <paramref name="failure"/> set to a ready failure result
-        /// whose message is prefixed with <paramref name="label"/> and the item's index (shared by both the
-        /// checked-elements loop and each ignored-group loop, which differ only in that prefix).
+        /// Resolves every item in <paramref name="source"/> to a <see cref="RectTransform"/>, throwing on the
+        /// first unresolvable item. The reported parameter name is prefixed with <paramref name="label"/> and
+        /// the item's index (shared by both the checked-elements loop and each ignored-group loop, which
+        /// differ only in that prefix).
         /// </summary>
-        private bool TryResolveAll(IEnumerable source, string label, out List<RectTransform> resolved,
-            out ConstraintResult failure)
+        /// <exception cref="ArgumentNullException">An item in <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentException">An item in <paramref name="source"/> cannot be resolved to a
+        /// <see cref="RectTransform"/>.</exception>
+        private static List<RectTransform> ResolveAll(IEnumerable source, string label)
         {
-            resolved = new List<RectTransform>();
+            var resolved = new List<RectTransform>();
             var index = 0;
             foreach (var item in source)
             {
-                if (!RectTransformResolver.TryResolve(item, out var rectTransform, out var failureReason))
-                {
-                    var message = $"{label} at index {index}: {failureReason}";
-                    failure = new ReportingConstraintResult(this, new ConstraintReport(message), false);
-                    return false;
-                }
-
-                resolved.Add(rectTransform);
+                resolved.Add(RectTransformResolver.ResolveOrThrow(item, $"{label} at index {index}"));
                 index++;
             }
 
-            failure = null;
-            return true;
+            return resolved;
         }
 
         private readonly struct OverlappingPair

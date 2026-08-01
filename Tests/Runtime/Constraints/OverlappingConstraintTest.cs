@@ -343,7 +343,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsOverlapping_IgnoredGroupContainsNull_Failure()
+        public void IsOverlapping_IgnoredGroupContainsNull_ThrowsArgumentNullException()
         {
             var canvas = CreateCanvas();
             var element0 = CreateElement(canvas.transform, "TestCard (0)", new Vector2(0f, 0f),
@@ -356,15 +356,14 @@ namespace TestHelper.Constraints
             Assert.That(() =>
             {
                 Assert.That(actual, Is.Overlapping.Ignoring(ignoredGroup));
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  ignored group member at index 1: null{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName")
+                .EqualTo("ignored group member at index 1"));
         }
 
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsOverlapping_SingleElementActual_Failure([Values] ActualKind kind)
+        public void IsOverlapping_SingleElementActual_ThrowsArgumentException([Values] ActualKind kind)
         {
             var canvas = CreateCanvas();
             var rectTransform = CreateElement(canvas.transform, "Element", Vector2.zero, new Vector2(50f, 50f));
@@ -373,29 +372,29 @@ namespace TestHelper.Constraints
             Assert.That(() =>
             {
                 Assert.That(actual, Is.Overlapping);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  \"Element\" is a single RectTransform, not a collection{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("is a single RectTransform, not a collection"));
         }
 
         [Test]
         [Category("Acceptance")]
-        public void IsOverlapping_NonCollectionActual_Failure()
+        public void IsOverlapping_NonCollectionActual_ThrowsArgumentException()
         {
             Assert.That(() =>
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately a
                 // non-collection, to exercise the "not a collection of RectTransforms" failure path.
                 Assert.That("not a collection", Is.Overlapping);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  <System.String> is not a collection of RectTransforms{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("is not a collection of RectTransforms"));
         }
 
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsOverlapping_CollectionContainsElementWithoutRectTransform_Failure()
+        public void IsOverlapping_CollectionContainsElementWithoutRectTransform_ThrowsArgumentException()
         {
             var canvas = CreateCanvas();
             var element0 = CreateElement(canvas.transform, "TestCard (0)", Vector2.zero, new Vector2(50f, 50f));
@@ -405,14 +404,14 @@ namespace TestHelper.Constraints
             Assert.That(() =>
             {
                 Assert.That(actual, Is.Overlapping);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  element at index 1: \"PlainObject\" has no RectTransform component{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("element at index 1")
+                .And.Message.Contains("has no RectTransform component"));
         }
 
         [Test]
         [CreateScene]
-        public void IsOverlapping_CollectionContainsNullElement_Failure()
+        public void IsOverlapping_CollectionContainsNullElement_ThrowsArgumentNullException()
         {
             var canvas = CreateCanvas();
             var element0 = CreateElement(canvas.transform, "TestCard (0)", Vector2.zero, new Vector2(50f, 50f));
@@ -421,9 +420,27 @@ namespace TestHelper.Constraints
             Assert.That(() =>
             {
                 Assert.That(actual, Is.Overlapping);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: any pair of RectTransforms overlapping{Environment.NewLine}" +
-                $"  But was:  element at index 1: null{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("element at index 1"));
+        }
+
+        [Test]
+        [Category("Acceptance")]
+        public void IsOverlapping_Null_ThrowsArgumentNullException()
+        {
+            Assert.That(() =>
+            {
+                Assert.That(null, Is.Overlapping);
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+        }
+
+        [Test]
+        [Category("Acceptance")]
+        public void IsNotOverlapping_Null_ThrowsArgumentNullException()
+        {
+            Assert.That(() =>
+            {
+                Assert.That(null, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
         }
     }
 }
