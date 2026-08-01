@@ -536,7 +536,7 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsNotTextOverflowing_NoTextComponent_Failure()
+        public void IsTextOverflowing_NoTextComponent_ThrowsArgumentException()
         {
             var canvas = CreateCanvas();
             var gameObject = new GameObject("PlainObject", typeof(RectTransform));
@@ -545,9 +545,26 @@ namespace TestHelper.Constraints
             Assert.That(() =>
             {
                 Assert.That(gameObject.GetComponent<RectTransform>(), Is.TextOverflowing);
-            }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
-                $"  Expected: text overflowing its RectTransform{Environment.NewLine}" +
-                $"  But was:  \"PlainObject\" has no Text or TMP_Text component{Environment.NewLine}"));
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("has no Text or TMP_Text component"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotTextOverflowing_NoTextComponent_ThrowsArgumentException()
+        {
+            var canvas = CreateCanvas();
+            var gameObject = new GameObject("PlainObject", typeof(RectTransform));
+            gameObject.transform.SetParent(canvas.transform, worldPositionStays: false);
+
+            Assert.That(() =>
+            {
+                Assert.That(gameObject.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains("has no Text or TMP_Text component"));
         }
 
         [Test]

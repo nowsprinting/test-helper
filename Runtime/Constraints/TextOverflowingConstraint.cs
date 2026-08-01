@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework.Constraints;
 using UnityEngine;
@@ -36,9 +37,9 @@ namespace TestHelper.Constraints
         public override string Description => "text overflowing its RectTransform";
 
         /// <inheritdoc/>
-        /// <exception cref="System.ArgumentNullException"><paramref name="actual"/> is null.</exception>
-        /// <exception cref="System.ArgumentException"><paramref name="actual"/> cannot be resolved to a
-        /// <see cref="RectTransform"/>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="actual"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="actual"/> cannot be resolved to a
+        /// <see cref="RectTransform"/>, or its GameObject has no Text or TMP_Text component.</exception>
         public override ConstraintResult ApplyTo(object actual)
         {
             var rectTransform = RectTransformResolver.ResolveOrThrow(actual, nameof(actual));
@@ -46,8 +47,9 @@ namespace TestHelper.Constraints
             var detection = Detect(rectTransform);
             if (detection == null)
             {
-                var message = $"{ConstraintMessageFormatter.Quote(rectTransform)} has no Text or TMP_Text component";
-                return new ReportingConstraintResult(this, new ConstraintReport(message), false);
+                throw new ArgumentException(
+                    $"{ConstraintMessageFormatter.Quote(rectTransform)} has no Text or TMP_Text component",
+                    nameof(actual));
             }
 
             EvaluateSize(detection);
