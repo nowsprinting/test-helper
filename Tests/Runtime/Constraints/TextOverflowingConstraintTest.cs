@@ -455,7 +455,8 @@ namespace TestHelper.Constraints
                 Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
-                .And.Message.Contains("exceeds rect"));
+                .And.Message.Contains("exceeds rect")
+                .And.Message.Not.Contains("are not rendered"));
         }
 
         [Test]
@@ -508,6 +509,35 @@ namespace TestHelper.Constraints
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("are not rendered (overflowMode: Truncate)"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public async Task IsNotTextOverflowing_TmpEmptyText_Success()
+        {
+            var canvas = CreateCanvas();
+            var tmpText = CreateTmpText(canvas.transform, "Label", string.Empty, new Vector2(5f, 5f));
+            Assume.That(tmpText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await Awaitable.NextFrameAsync();
+
+            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotTextOverflowing_TmpTextNotLaidOut_Success()
+        {
+            var canvas = CreateCanvas();
+            var tmpText = CreateTmpText(canvas.transform, "Label", "Some text", new Vector2(200f, 50f));
+            Assume.That(tmpText.font, Is.Not.Null);
+            // Note: intentionally skip Canvas.ForceUpdateCanvases()/frame wait, unlike the uGUI equivalent
+            // test: TMP_Text.preferredWidth/preferredHeight compute the layout on demand rather than
+            // depending on a prior OnPopulateMesh pass, so there is no "not laid out" state to detect here.
+
+            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
 
         [Test]
