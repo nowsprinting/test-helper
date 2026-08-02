@@ -13,7 +13,7 @@ namespace TestHelper.Constraints
     /// An NUnit test constraint class to a collection of <see cref="UnityEngine.RectTransform"/> where any
     /// pair overlaps.
     /// </summary>
-    public class OverlappingConstraint : Constraint
+    public class OverlappingConstraint : TestHelperConstraint
     {
         private const float DefaultTolerance = 0.5f;
         private readonly List<IEnumerable> _ignoredGroups = new List<IEnumerable>();

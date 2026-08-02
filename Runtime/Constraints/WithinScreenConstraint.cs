@@ -9,7 +9,7 @@ namespace TestHelper.Constraints
     /// <summary>
     /// An NUnit test constraint class to a <see cref="UnityEngine.RectTransform"/> within the screen.
     /// </summary>
-    public class WithinScreenConstraint : Constraint
+    public class WithinScreenConstraint : TestHelperConstraint
     {
         private const float DefaultTolerance = 0.5f;
         private float _tolerance = DefaultTolerance;

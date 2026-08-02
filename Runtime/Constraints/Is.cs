@@ -10,6 +10,19 @@ namespace TestHelper.Constraints
     public class Is : UnityEngine.TestTools.Constraints.Is
     {
         /// <summary>
+        /// Negates the constraint that follows. Hides <see cref="NUnit.Framework.Is.Not"/> so this package's
+        /// custom constraints (<see cref="TestHelperConstraintExpression"/>) can follow in property style,
+        /// e.g., <c>Is.Not.Destroyed</c>.
+        /// </summary>
+        public new static TestHelperConstraintExpression Not => new TestHelperConstraintExpression().Not;
+
+        /// <summary>
+        /// Requires the constraint that follows to be satisfied by every item of a collection. Hides
+        /// <see cref="NUnit.Framework.Is.All"/> for the same reason as <see cref="Not"/>.
+        /// </summary>
+        public new static TestHelperConstraintExpression All => new TestHelperConstraintExpression().All;
+
+        /// <summary>
         /// Create constraint to destroyed GameObject.
         /// </summary>
         public static DestroyedConstraint Destroyed => new DestroyedConstraint();

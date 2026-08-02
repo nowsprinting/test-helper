@@ -488,9 +488,6 @@ public class MyTestClass
 }
 ```
 
-> [!NOTE]\
-> When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
-
 #### WithinScreen
 
 `WithinScreenConstraint` tests that a `RectTransform` (or a `GameObject`/`Component` with one) is fully within the screen.
@@ -518,9 +515,6 @@ Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., 
 > [!IMPORTANT]\
 > This constraint is intended for scenes and prefabs authored by coding agents.
 > Do not use it where the layout intentionally overflows the screen.
-
-> [!NOTE]\
-> When used with operators, use it in method style. e.g., `Is.Not.WithinScreen()`
 
 #### FullyWithin
 
@@ -568,7 +562,7 @@ public class MyTestClass
     {
         var cards = GameObject.Find("CardGrid").GetComponentsInChildren<Image>();
 
-        Assert.That(cards, Is.Not.Overlapping());
+        Assert.That(cards, Is.Not.Overlapping);
     }
 }
 ```
@@ -577,15 +571,12 @@ Chain `.Ignoring(group)` to exclude pairs where both members belong to `group` (
 
 ```csharp
 // SkipButton must not overlap any card, but cards overlapping each other is a different test's concern.
-Assert.That(cards.Prepend(skipButton), Is.Not.Overlapping().Ignoring(cards));
+Assert.That(cards.Prepend(skipButton), Is.Not.Overlapping.Ignoring(cards));
 ```
 
 > [!IMPORTANT]\
 > This constraint is intended for scenes and prefabs authored by coding agents.
 > Do not use it where the layout intentionally allows elements to overlap.
-
-> [!NOTE]\
-> When used with operators, use it in method style. e.g., `Is.Not.Overlapping()`
 
 #### TextOverflowing (optional)
 
@@ -604,22 +595,19 @@ public class MyTestClass
     {
         var flavorText = GameObject.Find("Flavor Text");
 
-        Assert.That(flavorText, Is.Not.TextOverflowing());
+        Assert.That(flavorText, Is.Not.TextOverflowing);
     }
 }
 ```
 
-Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.Not.TextOverflowing().Within(1f)`.
-
-> [!IMPORTANT]\
-> `TextOverflowingConstraint` is an optional functionality. It supports uGUI `Text` and TextMeshPro `TMP_Text`, both optional dependencies of this package ([com.unity.ugui](https://docs.unity3d.com/Packages/com.unity.ugui@latest), [com.unity.textmeshpro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@latest) — or `com.unity.ugui` 2.0.0+ alone, which bundles TextMeshPro).
+Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.Not.TextOverflowing.Within(1f)`.
 
 > [!IMPORTANT]\
 > This constraint is intended for scenes and prefabs authored by coding agents.
 > Do not use it where the layout intentionally lets text overflow its container.
 
 > [!NOTE]\
-> When used with operators, use it in method style. e.g., `Is.Not.TextOverflowing()`
+> `TextOverflowingConstraint` is an optional functionality. It supports uGUI `Text` and TextMeshPro `TMP_Text`, both optional dependencies of this package ([com.unity.ugui](https://docs.unity3d.com/Packages/com.unity.ugui@latest), [com.unity.textmeshpro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@latest) — or `com.unity.ugui` 2.0.0+ alone, which bundles TextMeshPro).
 
 
 

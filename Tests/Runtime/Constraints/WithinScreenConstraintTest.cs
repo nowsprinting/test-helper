@@ -347,7 +347,7 @@ namespace TestHelper.Constraints
             var actual = CreateElement("Element", new Vector2(Screen.width - Width + Overshoot, 10f),
                 new Vector2(Width, 50f));
 
-            Assert.That(actual, Is.Not.WithinScreen()); // Note: Use it in method style when with operators
+            Assert.That(actual, Is.Not.WithinScreen);
         }
 
         [Test]
@@ -362,7 +362,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(element, Is.Not.WithinScreen()); // Note: Use it in method style when with operators
+                Assert.That(element, Is.Not.WithinScreen);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not {ExpectedWithinScreenLine}{Environment.NewLine}" +
                 $"  But was:  <\"Element\" {ConstraintMessageFormatter.Format(elementScreenRect)}>{Environment.NewLine}"));
@@ -374,7 +374,7 @@ namespace TestHelper.Constraints
         {
             Assert.That(() =>
             {
-                Assert.That(null, Is.Not.WithinScreen()); // Note: Use it in method style when with operators
+                Assert.That(null, Is.Not.WithinScreen);
             }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
         }
     }

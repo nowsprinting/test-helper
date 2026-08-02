@@ -79,7 +79,7 @@ namespace TestHelper.Constraints
                 CreateElement(canvas.transform, "TestCard (2)", new Vector2(120f, 0f), new Vector2(50f, 50f)),
             };
 
-            Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+            Assert.That(actual, Is.Not.Overlapping);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace TestHelper.Constraints
             var element1 = CreateElement(canvas.transform, "TestCard (1)", new Vector2(60f, 0f), new Vector2(50f, 50f));
             var actual = new[] { AsActual(element0, kind), AsActual(element1, kind) };
 
-            Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+            Assert.That(actual, Is.Not.Overlapping);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+                Assert.That(actual, Is.Not.Overlapping);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not any pair of RectTransforms overlapping{Environment.NewLine}" +
                 $"  But was:  <\"TestCard (3)\" {ConstraintMessageFormatter.Format(new Rect(120f, 40f, 100f, 100f))} overlaps \"TestCard (4)\" {ConstraintMessageFormatter.Format(new Rect(200f, 40f, 100f, 100f))}>{Environment.NewLine}"));
@@ -131,7 +131,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+                Assert.That(actual, Is.Not.Overlapping);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not any pair of RectTransforms overlapping{Environment.NewLine}" +
                 $"  But was:  <\"TestCard (0)\" {ConstraintMessageFormatter.Format(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {ConstraintMessageFormatter.Format(new Rect(20f, 20f, 100f, 100f))} (and 2 more overlapping pairs)>{Environment.NewLine}"));
@@ -186,7 +186,7 @@ namespace TestHelper.Constraints
                     new Vector2(100f, 100f)),
             };
 
-            Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+            Assert.That(actual, Is.Not.Overlapping);
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+                Assert.That(actual, Is.Not.Overlapping);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not any pair of RectTransforms overlapping{Environment.NewLine}" +
                 $"  But was:  <\"TestCard (0)\" {ConstraintMessageFormatter.Format(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {ConstraintMessageFormatter.Format(new Rect(100f - OverlapExtent, 0f, 100f, 100f))}>{Environment.NewLine}"));
@@ -223,7 +223,7 @@ namespace TestHelper.Constraints
                     new Vector2(100f, 100f)),
             };
 
-            Assert.That(actual, Is.Not.Overlapping().Within(2f));
+            Assert.That(actual, Is.Not.Overlapping.Within(2f));
         }
 
         [Test]
@@ -238,7 +238,7 @@ namespace TestHelper.Constraints
                 CreateElement(canvas.transform, "TestCard (1)", new Vector2(50f, 100f), new Vector2(100f, 50f)),
             };
 
-            Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+            Assert.That(actual, Is.Not.Overlapping);
         }
 
         [TestCase(0)]
@@ -249,7 +249,7 @@ namespace TestHelper.Constraints
             var canvas = CreateCanvas();
             var actual = CreateElements(canvas.transform, memberCount);
 
-            Assert.That(actual, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+            Assert.That(actual, Is.Not.Overlapping);
         }
 
         [Test]
@@ -265,7 +265,7 @@ namespace TestHelper.Constraints
             var actual = new[] { element0, element1 };
             var ignoredGroup = new[] { element0, element1 };
 
-            Assert.That(actual, Is.Not.Overlapping().Ignoring(ignoredGroup));
+            Assert.That(actual, Is.Not.Overlapping.Ignoring(ignoredGroup));
         }
 
         [Test]
@@ -283,7 +283,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(actual, Is.Not.Overlapping().Ignoring(ignoredGroup));
+                Assert.That(actual, Is.Not.Overlapping.Ignoring(ignoredGroup));
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not any pair of RectTransforms overlapping{Environment.NewLine}" +
                 $"  But was:  <\"TestCard (0)\" {ConstraintMessageFormatter.Format(new Rect(0f, 0f, 100f, 100f))} overlaps \"TestCard (1)\" {ConstraintMessageFormatter.Format(new Rect(20f, 20f, 100f, 100f))}>{Environment.NewLine}"));
@@ -307,7 +307,7 @@ namespace TestHelper.Constraints
             var groupA = new[] { element0, element1 };
             var groupB = new[] { element2, element3 };
 
-            Assert.That(actual, Is.Not.Overlapping().Ignoring(groupA).Ignoring(groupB));
+            Assert.That(actual, Is.Not.Overlapping.Ignoring(groupA).Ignoring(groupB));
         }
 
         [Test]
@@ -327,7 +327,7 @@ namespace TestHelper.Constraints
             var actual = new[] { element0, element1, element2, element3 };
             var ignoredGroup = new[] { element0, element1 };
 
-            Assert.That(actual, Is.Not.Overlapping().Ignoring(ignoredGroup).Within(2f));
+            Assert.That(actual, Is.Not.Overlapping.Ignoring(ignoredGroup).Within(2f));
         }
 
         [Test]
@@ -439,7 +439,7 @@ namespace TestHelper.Constraints
         {
             Assert.That(() =>
             {
-                Assert.That(null, Is.Not.Overlapping()); // Note: Use it in method style when with operators
+                Assert.That(null, Is.Not.Overlapping);
             }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
         }
     }

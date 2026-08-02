@@ -13,7 +13,7 @@ namespace TestHelper.Constraints
     /// Supports uGUI <see cref="UnityEngine.UI.Text"/> and TextMeshPro <see cref="TMPro.TMP_Text"/> (uGUI is
     /// tried first; whichever is found on the target's own GameObject is used).
     /// </summary>
-    public class TextOverflowingConstraint : Constraint
+    public class TextOverflowingConstraint : TestHelperConstraint
     {
         private const float DefaultTolerance = 0.5f;
         private float _tolerance = DefaultTolerance;
