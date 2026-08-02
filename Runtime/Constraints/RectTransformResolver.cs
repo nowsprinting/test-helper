@@ -27,7 +27,7 @@ namespace TestHelper.Constraints
         /// Resolves <paramref name="actual"/> to a <see cref="RectTransform"/> for a constraint's
         /// <c>ApplyTo</c>. A resolution failure cannot be reported as an ordinary non-match: the constraint
         /// has nothing to evaluate, so silently returning "not matched" would make a negated constraint
-        /// (e.g. <c>Is.Not.WithinScreen()</c>) vacuously pass on a null or unusable <paramref name="actual"/>.
+        /// (e.g. <c>Is.Not.WithinScreen</c>) vacuously pass on a null or unusable <paramref name="actual"/>.
         /// </summary>
         /// <param name="actual">Value to resolve.</param>
         /// <param name="paramName">Name reported on failure; does not need to be a real parameter of the

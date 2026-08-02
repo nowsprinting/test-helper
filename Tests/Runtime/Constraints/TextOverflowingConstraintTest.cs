@@ -143,7 +143,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace TestHelper.Constraints
             await UniTask.NextFrame();
             var actual = AsActual(uguiText.GetComponent<RectTransform>(), kind);
 
-            Assert.That(actual, Is.Not.TextOverflowing());
+            Assert.That(actual, Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("Expected: not text overflowing its RectTransform")
                 .And.Message.Contains("\"Label\"")
@@ -219,7 +219,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(rectTransform, Is.Not.TextOverflowing());
+            Assert.That(rectTransform, Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -239,7 +239,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(rectTransform, Is.Not.TextOverflowing().Within(2f));
+            Assert.That(rectTransform, Is.Not.TextOverflowing.Within(2f));
         }
 
         [Test]
@@ -254,7 +254,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -289,7 +289,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -327,7 +327,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("exceeds rect"));
@@ -347,7 +347,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("exceeds rect"));
@@ -368,7 +368,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("are rendered"));
@@ -388,7 +388,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("are rendered"));
@@ -408,7 +408,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("exceeds rect")
@@ -427,7 +427,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("has not been laid out; call Canvas.ForceUpdateCanvases() before asserting")
@@ -445,7 +445,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -460,7 +460,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
 #if ENABLE_TMP
@@ -475,7 +475,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -492,7 +492,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("exceeds rect")
@@ -512,7 +512,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -527,7 +527,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -545,7 +545,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
                 .And.Message.Contains("are not rendered (overflowMode: Truncate)"));
@@ -562,7 +562,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -577,7 +577,7 @@ namespace TestHelper.Constraints
             // test: TMP_Text.preferredWidth/preferredHeight compute the layout on demand rather than
             // depending on a prior OnPopulateMesh pass, so there is no "not laid out" state to detect here.
 
-            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
         [Test]
@@ -600,7 +600,7 @@ namespace TestHelper.Constraints
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 
-            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+            Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 #endif
 
@@ -632,7 +632,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(gameObject.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
+                Assert.That(gameObject.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<ArgumentException>()
                 .With.Property("ParamName").EqualTo("actual")
                 .And.Message.Contains("has no Text or TMP_Text component"));
@@ -652,7 +652,7 @@ namespace TestHelper.Constraints
         {
             Assert.That(() =>
             {
-                Assert.That(null, Is.Not.TextOverflowing());
+                Assert.That(null, Is.Not.TextOverflowing);
             }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
         }
 

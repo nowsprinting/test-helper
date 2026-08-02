@@ -70,7 +70,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(actual, Is.Not.Destroyed()); // Note: Use it in method style when with operators
+                Assert.That(actual, Is.Not.Destroyed);
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not destroyed UnityEngine.Object{Environment.NewLine}  But was:  <null>{Environment.NewLine}"));
         }
@@ -80,7 +80,7 @@ namespace TestHelper.Constraints
         {
             var actual = new GameObject("Foo");
 
-            Assert.That(actual, Is.Not.Destroyed()); // Note: Use it in method style when with operators
+            Assert.That(actual, Is.Not.Destroyed);
         }
     }
 }

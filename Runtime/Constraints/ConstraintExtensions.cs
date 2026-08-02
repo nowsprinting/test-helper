@@ -6,11 +6,17 @@ using UnityEngine;
 
 namespace TestHelper.Constraints
 {
+    /// <summary>
+    /// Method-style entry points for this package's custom constraints, for chains that don't start at
+    /// <see cref="Is.Not"/> or <see cref="Is.All"/> (e.g. <c>Has.None.Destroyed()</c>) or that land on NUnit's
+    /// own <see cref="ResolvableConstraintExpression"/> (e.g. <c>Is.Not.Null.And.Destroyed()</c>). When a
+    /// chain does start at <see cref="Is.Not"/>/<see cref="Is.All"/>, prefer the property style exposed by
+    /// <see cref="TestHelperConstraintExpression"/> instead, e.g. <c>Is.Not.Destroyed</c>.
+    /// </summary>
     public static class ConstraintExtensions
     {
         /// <summary>
         /// Create constraint to destroyed <see cref="UnityEngine.Object"/>.
-        /// When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
         /// </summary>
         /// <param name="expression"></param>
         /// <returns>constraint to destroyed <see cref="UnityEngine.Object"/></returns>
@@ -23,7 +29,6 @@ namespace TestHelper.Constraints
 
         /// <summary>
         /// Create constraint to <see cref="RectTransform"/> within the screen.
-        /// When used with operators, use it in method style. e.g., `Is.Not.WithinScreen()`
         /// </summary>
         /// <param name="expression"></param>
         /// <returns>constraint to <see cref="RectTransform"/> within the screen</returns>
@@ -36,7 +41,6 @@ namespace TestHelper.Constraints
 
         /// <summary>
         /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
-        /// When used with operators, use it in method style. e.g., `Is.Not.FullyWithin(container)`
         /// </summary>
         /// <param name="expression"></param>
         /// <param name="container">Container to check containment against.</param>
@@ -50,7 +54,6 @@ namespace TestHelper.Constraints
 
         /// <summary>
         /// Create constraint to a collection of <see cref="RectTransform"/> where any pair overlaps.
-        /// When used with operators, use it in method style. e.g., `Is.Not.Overlapping()`
         /// </summary>
         /// <param name="expression"></param>
         /// <returns>constraint to a collection of <see cref="RectTransform"/> where any pair overlaps</returns>
@@ -63,7 +66,6 @@ namespace TestHelper.Constraints
 
         /// <summary>
         /// Create constraint to text overflowing its own <see cref="RectTransform"/>.
-        /// When used with operators, use it in method style. e.g., `Is.Not.TextOverflowing()`
         /// </summary>
         /// <param name="expression"></param>
         /// <returns>constraint to text overflowing its own <see cref="RectTransform"/></returns>

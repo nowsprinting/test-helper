@@ -11,7 +11,7 @@ namespace TestHelper.Constraints
     /// An NUnit test constraint class to a <see cref="RectTransform"/> fully within another
     /// <see cref="RectTransform"/>'s screen rect.
     /// </summary>
-    public class FullyWithinConstraint : Constraint
+    public class FullyWithinConstraint : TestHelperConstraint
     {
         private const float DefaultTolerance = 0.5f;
         private readonly RectTransform _container;
@@ -84,6 +84,8 @@ namespace TestHelper.Constraints
         {
             if (_container == null)
             {
+                // ReSharper disable once NotResolvedInText -- reports the constructor's own parameter name;
+                // ApplyTo has no local/parameter called "container" for nameof() to bind to.
                 throw new ArgumentNullException("container");
             }
 

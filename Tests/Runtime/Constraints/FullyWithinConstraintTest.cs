@@ -323,7 +323,7 @@ namespace TestHelper.Constraints
             var actual = CreateElement("Element", container, new Vector2(ContainerSize.x - 50f + Overshoot, 20f),
                 new Vector2(50f, 60f));
 
-            Assert.That(actual, Is.Not.FullyWithin(container)); // Note: Use it in method style when with operators
+            Assert.That(actual, Is.Not.FullyWithin(container));
         }
 
         [Test]
@@ -338,7 +338,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(element, Is.Not.FullyWithin(container)); // Note: Use it in method style when with operators
+                Assert.That(element, Is.Not.FullyWithin(container));
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not RectTransform fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
                 $"  But was:  <\"Element\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));
@@ -353,7 +353,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(null, Is.Not.FullyWithin(container)); // Note: Use it in method style when with operators
+                Assert.That(null, Is.Not.FullyWithin(container));
             }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
         }
 
@@ -366,7 +366,7 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                Assert.That(element, Is.Not.FullyWithin(null)); // Note: Use it in method style when with operators
+                Assert.That(element, Is.Not.FullyWithin(null));
             }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("container"));
         }
 
@@ -383,7 +383,6 @@ namespace TestHelper.Constraints
             Assert.That(() =>
             {
                 Assert.That(element, Is.Not.FullyWithin(container).Horizontally().Within(2f));
-                // Note: Use it in method style when with operators
             }, Throws.TypeOf<AssertionException>().With.Message.EqualTo(
                 $"  Expected: not RectTransform horizontally fully within \"Viewport\" {ConstraintMessageFormatter.Format(ContainerScreenRect)}{Environment.NewLine}" +
                 $"  But was:  <\"Element\" {ConstraintMessageFormatter.Format(ElementScreenRect(localPosition, size))}>{Environment.NewLine}"));

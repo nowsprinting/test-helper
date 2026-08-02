@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023-2025 Koji Hasegawa.
+﻿// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using NUnit.Framework.Constraints;
@@ -21,12 +21,13 @@ namespace TestHelper.Constraints
     ///     GameObject.DestroyImmediate(actual);
     ///
     ///     Assert.That(actual, Is.Destroyed);
-    ///     // Note: When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
+    ///     // Note: Works with operators too, e.g., `Is.Not.Destroyed`. Method style (`Is.Not.Destroyed()`)
+    ///     // also remains available.
     ///   }
     /// }
     /// </code>
     /// </example>
-    public class DestroyedConstraint : Constraint
+    public class DestroyedConstraint : TestHelperConstraint
     {
         public DestroyedConstraint(params object[] args) : base(args)
         {
