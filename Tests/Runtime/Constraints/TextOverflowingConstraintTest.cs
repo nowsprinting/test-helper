@@ -24,6 +24,12 @@ namespace TestHelper.Constraints
             Component,
         }
 
+#if UNITY_2022_2_OR_NEWER
+        private const string BuiltinFontName = "LegacyRuntime.ttf";
+#else
+        private const string BuiltinFontName = "Arial.ttf"; // Arial.ttf was replaced by LegacyRuntime.ttf in Unity 2022.2
+#endif
+
         private static Canvas CreateCanvas()
         {
             var canvasGameObject = new GameObject("Canvas", typeof(Canvas));
@@ -46,7 +52,7 @@ namespace TestHelper.Constraints
             rectTransform.sizeDelta = size;
 
             var uguiText = gameObject.GetComponent<Text>();
-            uguiText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            uguiText.font = Resources.GetBuiltinResource<Font>(BuiltinFontName);
             uguiText.text = text;
             uguiText.fontSize = 20;
             uguiText.horizontalOverflow = horizontalOverflow;
@@ -58,6 +64,28 @@ namespace TestHelper.Constraints
         }
 
 #if ENABLE_TMP
+        private static TMP_FontAsset s_fallbackTmpFontAsset;
+
+        private static TMP_FontAsset GetTmpFontAsset()
+        {
+            if (TMP_Settings.defaultFontAsset != null)
+            {
+                return TMP_Settings.defaultFontAsset;
+            }
+
+            // TMP_Settings.defaultFontAsset requires the "TMP Essential Resources" to be imported, which
+            // freshly-generated CI projects never do — every TMP test would go Inconclusive there. Fall
+            // back to a runtime-created dynamic font asset instead. Cached in a static because each
+            // CreateFontAsset call builds a new dynamic atlas.
+            if (s_fallbackTmpFontAsset == null)
+            {
+                s_fallbackTmpFontAsset =
+                    TMP_FontAsset.CreateFontAsset(Resources.GetBuiltinResource<Font>(BuiltinFontName));
+            }
+
+            return s_fallbackTmpFontAsset;
+        }
+
         private static TMP_Text CreateTmpText(Transform parent, string name, string text, Vector2 size,
             bool enableWordWrapping = true, bool enableAutoSizing = false,
             TextOverflowModes overflowMode = TextOverflowModes.Overflow)
@@ -72,7 +100,7 @@ namespace TestHelper.Constraints
             rectTransform.sizeDelta = size;
 
             var tmpText = gameObject.GetComponent<TextMeshProUGUI>();
-            tmpText.font = TMP_Settings.defaultFontAsset;
+            tmpText.font = GetTmpFontAsset();
             tmpText.text = text;
             tmpText.fontSize = 20;
             // textWrappingMode/TextWrappingModes isn't available in the TMP version bundled with
