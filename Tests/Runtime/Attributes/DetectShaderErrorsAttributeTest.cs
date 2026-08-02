@@ -26,34 +26,45 @@ namespace TestHelper.Attributes
             }
         }
 
-        [Test]
+        [UnityTest]
         [DetectShaderErrors]
         [Category("Acceptance")]
-        public void Attach_ShaderFallbackWarningLogged_LogsInvalidShaderException()
+        public IEnumerator Attach_ShaderFallbackWarningLogged_LogsInvalidShaderException()
         {
+            // LogAssert.Expect must be registered before the action that produces the log:
+            // UTF flags an Error/Exception-type log as "unhandled" the moment it arrives if no
+            // matching expectation is queued yet, regardless of expectations registered later.
+            LogAssert.Expect(LogType.Exception, ShaderNameInExceptionLog);
+
             Debug.LogWarning(FallbackWarningMessage);
 
-            LogAssert.Expect(LogType.Exception, ShaderNameInExceptionLog);
+            // [UnityTest], not [Test]: the exception this scenario produces is raised from inside
+            // Application.logMessageReceived's own dispatch, which Unity does not deliver to any
+            // listener (including UTF's own log tracking) until dispatch unwinds — so it can only
+            // become visible one frame later. A fully synchronous [Test] body never advances a
+            // frame, so there would be no opportunity for that to happen within the test's own
+            // execution window.
+            yield return null;
         }
 
         [Test]
         [DetectShaderErrors]
         public async Task AttachToAsyncTest_ShaderFallbackWarningLogged_LogsInvalidShaderException()
         {
+            LogAssert.Expect(LogType.Exception, ShaderNameInExceptionLog);
+
             Debug.LogWarning(FallbackWarningMessage);
             await Task.Yield();
-
-            LogAssert.Expect(LogType.Exception, ShaderNameInExceptionLog);
         }
 
         [UnityTest]
         [DetectShaderErrors]
         public IEnumerator AttachToUnityTest_ShaderFallbackWarningLogged_LogsInvalidShaderException()
         {
+            LogAssert.Expect(LogType.Exception, ShaderNameInExceptionLog);
+
             Debug.LogWarning(FallbackWarningMessage);
             yield return null;
-
-            LogAssert.Expect(LogType.Exception, ShaderNameInExceptionLog);
         }
 
         [Test]
@@ -100,10 +111,21 @@ namespace TestHelper.Attributes
             go.GetComponent<MeshRenderer>().sharedMaterial =
                 new Material(Shader.Find("Hidden/InternalErrorShader")) { name = "BrokenMaterial" };
 
-            var exception = Assert.Throws<InvalidShaderException>(() => RunToCompletion(attribute.AfterTest(null)));
+            try
+            {
+                var exception = Assert.Throws<InvalidShaderException>(() => RunToCompletion(attribute.AfterTest(null)));
 
-            Assert.That(exception.Message, Does.Contain(go.name));
-            Assert.That(exception.Message, Does.Contain("BrokenMaterial"));
+                Assert.That(exception.Message, Does.Contain(go.name));
+                Assert.That(exception.Message, Does.Contain("BrokenMaterial"));
+            }
+            finally
+            {
+                // [CreateScene] cannot unload this test's scene at its own AfterTest: with no prior
+                // active scene to switch back to, its "don't unload the active scene" guard skips the
+                // unload, leaving this fixture in the loaded scene where later tests' scans would find
+                // it. Destroy it directly so it cannot leak into subsequent tests.
+                UnityEngine.Object.DestroyImmediate(go);
+            }
         }
 
         [UnityTest]
@@ -118,10 +140,10 @@ namespace TestHelper.Attributes
             go.GetComponent<MeshRenderer>().sharedMaterial =
                 new Material(Shader.Find("Hidden/InternalErrorShader")) { name = "BrokenMaterial" };
 
+            LogAssert.Expect(LogType.Exception, new Regex(".*BrokenMaterial.*"));
+
             yield return null; // let the periodic hierarchy scan tick catch this before the test ends
             yield return null;
-
-            LogAssert.Expect(LogType.Exception, new Regex(".*BrokenMaterial.*"));
         }
 
         [UnityTest]
@@ -140,10 +162,10 @@ namespace TestHelper.Attributes
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
             go.GetComponent<MeshRenderer>().sharedMaterial = new Material(shader) { name = "UnsupportedMaterial" };
 
-            yield return null;
-            yield return null;
-
             LogAssert.Expect(LogType.Exception, new Regex(".*" + shader.name.Replace("/", @"\/") + ".*"));
+
+            yield return null;
+            yield return null;
         }
 
         [UnityTest]

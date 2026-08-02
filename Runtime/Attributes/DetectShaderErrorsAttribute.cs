@@ -32,12 +32,15 @@ namespace TestHelper.Attributes
         /// <inheritdoc/>
         public IEnumerator BeforeTest(ITest test)
         {
+            _session = ShaderErrorDetectionSession.CreateDefault(_scanIntervalFrames);
+            _session.Start();
             yield break;
         }
 
         /// <inheritdoc/>
         public IEnumerator AfterTest(ITest test)
         {
+            _session.Stop();
             yield break;
         }
     }

@@ -14,6 +14,9 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
     /// </summary>
     internal sealed class MaterialScanRunner : MonoBehaviour
     {
+        private Action _onScanTick;
+        private int _framesToWait;
+
         /// <summary>
         /// Creates a hidden, <c>DontDestroyOnLoad</c> <see cref="MaterialScanRunner"/> and starts its scan loop.
         /// </summary>
@@ -22,7 +25,16 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// <param name="intervalFrames">Frames between ticks. 0 means every frame.</param>
         internal static MaterialScanRunner Create(Action onScanTick, int intervalFrames)
         {
-            return null;
+            var go = new GameObject(nameof(MaterialScanRunner)) { hideFlags = HideFlags.HideAndDontSave };
+            DontDestroyOnLoad(go);
+
+            var runner = go.AddComponent<MaterialScanRunner>();
+            runner._onScanTick = onScanTick;
+            // 0 still requires waiting at least one frame boundary before the first tick,
+            // so "every frame" is the smallest possible wait (1), not an immediate tick.
+            runner._framesToWait = Mathf.Max(1, intervalFrames);
+            runner.StartCoroutine(runner.ScanLoop());
+            return runner;
         }
 
         /// <summary>
@@ -30,11 +42,21 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// </summary>
         internal void StopAndDestroy()
         {
+            StopAllCoroutines();
+            Destroy(gameObject);
         }
 
         private IEnumerator ScanLoop()
         {
-            yield break;
+            while (true)
+            {
+                for (var i = 0; i < _framesToWait; i++)
+                {
+                    yield return null;
+                }
+
+                _onScanTick?.Invoke();
+            }
         }
     }
 }

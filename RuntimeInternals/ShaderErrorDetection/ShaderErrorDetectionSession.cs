@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 {
@@ -12,12 +13,25 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
     /// </summary>
     internal sealed class ShaderErrorDetectionSession
     {
+        private readonly int _scanIntervalFrames;
+        private readonly IShaderErrorReporter _reporter;
+        private readonly FallbackWarningLogMonitor _monitor;
+        private readonly IReadOnlyList<IMaterialScanner> _scanners;
+
+        private MaterialScanRunner _runner;
+
         internal ShaderErrorDetectionSession(
             int scanIntervalFrames,
             IShaderErrorReporter reporter,
             FallbackWarningLogMonitor monitor,
             IReadOnlyList<IMaterialScanner> scanners)
         {
+            // Negative values are treated as "every frame" here, in one place, so callers
+            // (the attribute, MaterialScanRunner) never need their own clamping logic.
+            _scanIntervalFrames = Mathf.Max(0, scanIntervalFrames);
+            _reporter = reporter;
+            _monitor = monitor;
+            _scanners = scanners;
         }
 
         /// <summary>
@@ -28,10 +42,19 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// <param name="scanIntervalFrames">Frames between hierarchy scan ticks. Values &lt;= 0 mean every frame.</param>
         internal static ShaderErrorDetectionSession CreateDefault(int scanIntervalFrames)
         {
-            return null;
+            var reporter = new ThrowingShaderErrorReporter();
+            var monitor = new FallbackWarningLogMonitor(new ApplicationLogMessageSource(), reporter);
+            var cache = new CheckedMaterialCache();
+            var scanners = new List<IMaterialScanner>
+            {
+                new RendererMaterialScanner(cache),
+                new GraphicMaterialScanner(cache),
+                new SkyboxMaterialScanner(cache),
+            };
+            return new ShaderErrorDetectionSession(scanIntervalFrames, reporter, monitor, scanners);
         }
 
-        internal bool IsRunning => false;
+        internal bool IsRunning { get; private set; }
 
         /// <summary>
         /// Starts the session: starts the log monitor, and (only when <c>Application.isPlaying</c>)
@@ -40,6 +63,20 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// </summary>
         internal void Start()
         {
+            if (IsRunning)
+            {
+                return;
+            }
+
+            IsRunning = true;
+            _monitor.Start();
+
+            // Coroutines do not tick in Edit Mode test runs; the log monitor is the only detection
+            // method available there.
+            if (Application.isPlaying)
+            {
+                _runner = MaterialScanRunner.Create(ScanOnce, _scanIntervalFrames);
+            }
         }
 
         /// <summary>
@@ -49,6 +86,22 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// </summary>
         internal void Stop()
         {
+            if (!IsRunning)
+            {
+                return;
+            }
+
+            // Tear down before the final scan (which may throw) so a thrown exception never leaves
+            // the monitor subscribed or the runner alive to cascade into later tests.
+            IsRunning = false;
+            _monitor.Stop();
+            if (_runner != null)
+            {
+                _runner.StopAndDestroy();
+                _runner = null;
+            }
+
+            ScanOnce();
         }
 
         /// <summary>
@@ -56,6 +109,13 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// </summary>
         internal void ScanOnce()
         {
+            foreach (var scanner in _scanners)
+            {
+                foreach (var message in scanner.Scan())
+                {
+                    _reporter.Report(message);
+                }
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// <inheritdoc/>
         public void Report(string message)
         {
+            throw new InvalidShaderException(message);
         }
     }
 }

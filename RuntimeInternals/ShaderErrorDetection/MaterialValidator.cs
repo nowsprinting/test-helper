@@ -10,12 +10,28 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
     /// </summary>
     internal static class MaterialValidator
     {
+        private const string InternalErrorShaderName = "Hidden/InternalErrorShader";
+
+        // A ParticleSystemRenderer's trail material occupies sharedMaterials[1]; that slot is
+        // legitimately null when the Trails module is disabled, so it must not be reported.
+        private const int ParticleSystemTrailMaterialSlotIndex = 1;
+
         /// <summary>
         /// Returns true if the shader is null, named "Hidden/InternalErrorShader", or unsupported.
         /// </summary>
         internal static bool IsErrorShader(Shader shader)
         {
-            return false;
+            if (shader == null)
+            {
+                return true;
+            }
+
+            if (shader.name == InternalErrorShaderName)
+            {
+                return true;
+            }
+
+            return !shader.isSupported;
         }
 
         /// <summary>
@@ -23,8 +39,15 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// </summary>
         internal static bool TryGetError(Material material, out string reason)
         {
-            reason = null;
-            return false;
+            if (!IsErrorShader(material.shader))
+            {
+                reason = null;
+                return false;
+            }
+
+            var shaderName = material.shader != null ? material.shader.name : "(missing)";
+            reason = $"Material '{material.name}' has error shader '{shaderName}'";
+            return true;
         }
 
         /// <summary>
@@ -33,7 +56,23 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// </summary>
         internal static bool IsIgnorableNullSlot(Renderer renderer, int slotIndex)
         {
-            return false;
+            if (slotIndex != ParticleSystemTrailMaterialSlotIndex)
+            {
+                return false;
+            }
+
+            if (!(renderer is ParticleSystemRenderer particleSystemRenderer))
+            {
+                return false;
+            }
+
+            var particleSystem = particleSystemRenderer.GetComponent<ParticleSystem>();
+            if (particleSystem == null)
+            {
+                return false;
+            }
+
+            return !particleSystem.trails.enabled;
         }
     }
 }

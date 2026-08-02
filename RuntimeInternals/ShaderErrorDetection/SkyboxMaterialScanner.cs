@@ -1,7 +1,9 @@
 // Copyright (c) 2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 {
@@ -10,14 +12,28 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
     /// </summary>
     internal sealed class SkyboxMaterialScanner : IMaterialScanner
     {
+        private readonly CheckedMaterialCache _cache;
+
         internal SkyboxMaterialScanner(CheckedMaterialCache cache)
         {
+            _cache = cache;
         }
 
         /// <inheritdoc/>
         public IEnumerable<string> Scan()
         {
-            return System.Array.Empty<string>();
+            var material = RenderSettings.skybox;
+            if (material == null || !_cache.TryMarkChecked(material))
+            {
+                return Array.Empty<string>();
+            }
+
+            if (MaterialValidator.TryGetError(material, out var reason))
+            {
+                return new[] { $"Skybox : {reason}" };
+            }
+
+            return Array.Empty<string>();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// (GameObject path, material, and/or shader name).
         /// </summary>
         /// <param name="message">Human-readable description of the detected shader error.</param>
-        internal InvalidShaderException(string message)
+        internal InvalidShaderException(string message) : base(message)
         {
         }
     }
