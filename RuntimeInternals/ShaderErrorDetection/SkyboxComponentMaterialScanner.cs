@@ -1,7 +1,9 @@
 // Copyright (c) 2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 {
@@ -23,7 +25,29 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// <inheritdoc/>
         public IEnumerable<string> Scan()
         {
-            return null;
+            List<string> findings = null;
+            foreach (var skybox in ActiveObjectFinder.FindActive<Skybox>())
+            {
+                // FindActive excludes inactive GameObjects but not disabled Behaviours.
+                if (!skybox.enabled)
+                {
+                    continue;
+                }
+
+                var material = skybox.material;
+                if (material == null)
+                {
+                    continue;
+                }
+
+                if (_cache.TryMarkCheckedError(material, out var reason))
+                {
+                    (findings ?? (findings = new List<string>())).Add(
+                        $"GameObject '{GameObjectPathFormatter.GetPath(skybox.gameObject)}' : {reason}");
+                }
+            }
+
+            return findings ?? (IEnumerable<string>)Array.Empty<string>();
         }
     }
 }

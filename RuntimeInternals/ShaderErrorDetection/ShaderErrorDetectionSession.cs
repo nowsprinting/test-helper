@@ -36,8 +36,8 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 
         /// <summary>
         /// Creates a session wired with production defaults: <see cref="ThrowingShaderErrorReporter"/>,
-        /// <see cref="ApplicationLogMessageSource"/>, and Renderer/Graphic/Skybox scanners sharing
-        /// one <see cref="CheckedMaterialCache"/>.
+        /// <see cref="ApplicationLogMessageSource"/>, and Renderer/Graphic/Skybox/Skybox-component
+        /// scanners sharing one <see cref="CheckedMaterialCache"/>.
         /// </summary>
         /// <param name="scanIntervalFrames">Frames between material scan ticks. Values &lt;= 0 mean every frame.</param>
         internal static ShaderErrorDetectionSession CreateDefault(int scanIntervalFrames)
@@ -50,6 +50,10 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
                 new RendererMaterialScanner(cache),
                 new GraphicMaterialScanner(cache),
                 new SkyboxMaterialScanner(cache),
+                // Last on purpose: the scanners share one cache, so a material referenced by both
+                // RenderSettings.skybox and a Skybox component is reported once, by whichever scanner
+                // runs first — appending keeps the existing "Skybox : ..." message winning that tie.
+                new SkyboxComponentMaterialScanner(cache),
             };
             return new ShaderErrorDetectionSession(scanIntervalFrames, reporter, monitor, scanners);
         }
