@@ -13,7 +13,7 @@ namespace TestHelper.Attributes
     /// <summary>
     /// Detect shader errors (fallback warnings, error shaders, missing materials) while this test is running.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Assembly)]
     public sealed class DetectShaderErrorsAttribute : NUnitAttribute, IOuterUnityTestAction
     {
         private readonly int _scanIntervalFrames;
@@ -23,7 +23,7 @@ namespace TestHelper.Attributes
         /// <summary>
         /// Detect shader errors while this test is running.
         /// </summary>
-        /// <param name="scanIntervalFrames">Hierarchy scan interval in frames. 0 or less means every frame (default).</param>
+        /// <param name="scanIntervalFrames">Material scan interval in frames. 0 or less means every frame (default).</param>
         public DetectShaderErrorsAttribute(int scanIntervalFrames = 0)
         {
             _scanIntervalFrames = scanIntervalFrames;

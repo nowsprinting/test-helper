@@ -8,7 +8,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 {
     /// <summary>
     /// Orchestrates one shader-error detection session: owns the log monitor, the periodic
-    /// hierarchy scan driver, the scanners, and the reporter. One instance corresponds to one
+    /// material scan driver, the scanners, and the reporter. One instance corresponds to one
     /// test's detection lifetime (created fresh in <c>BeforeTest</c>).
     /// </summary>
     internal sealed class ShaderErrorDetectionSession
@@ -39,7 +39,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// <see cref="ApplicationLogMessageSource"/>, and Renderer/Graphic/Skybox scanners sharing
         /// one <see cref="CheckedMaterialCache"/>.
         /// </summary>
-        /// <param name="scanIntervalFrames">Frames between hierarchy scan ticks. Values &lt;= 0 mean every frame.</param>
+        /// <param name="scanIntervalFrames">Frames between material scan ticks. Values &lt;= 0 mean every frame.</param>
         internal static ShaderErrorDetectionSession CreateDefault(int scanIntervalFrames)
         {
             var reporter = new ThrowingShaderErrorReporter();

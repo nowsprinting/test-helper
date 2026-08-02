@@ -131,7 +131,7 @@ namespace TestHelper.Attributes
 
             LogAssert.Expect(LogType.Exception, new Regex(".*BrokenMaterial.*"));
 
-            yield return null; // let the periodic hierarchy scan tick catch this before the test ends
+            yield return null; // let the periodic material scan tick catch this before the test ends
             yield return null;
         }
 
