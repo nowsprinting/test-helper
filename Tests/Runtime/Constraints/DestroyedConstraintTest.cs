@@ -48,7 +48,7 @@ namespace TestHelper.Constraints
                 case ObjectKind.ScriptableObject:
                     return ScriptableObject.CreateInstance<ScriptableObject>();
                 default:
-                    return new GameObject("Foo");
+                    throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unsupported ObjectKind");
             }
         }
 
