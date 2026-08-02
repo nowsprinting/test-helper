@@ -8,7 +8,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
     /// <summary>
     /// Thrown when a shader error is detected during a test (e.g., fallback warning, error shader, or missing material).
     /// </summary>
-    internal class InvalidShaderException : ApplicationException
+    internal class InvalidShaderException : Exception
     {
         /// <summary>
         /// Initializes a new instance without a message. Only present for the standard exception
