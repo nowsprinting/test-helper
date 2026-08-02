@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
@@ -21,7 +22,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// <inheritdoc/>
         public IEnumerable<string> Scan()
         {
-            var findings = new List<string>();
+            List<string> findings = null;
             foreach (var graphic in ActiveObjectFinder.FindActive<Graphic>())
             {
                 var material = graphic.materialForRendering;
@@ -30,18 +31,14 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
                     continue;
                 }
 
-                if (!_cache.TryMarkChecked(material))
+                if (_cache.TryMarkCheckedError(material, out var reason))
                 {
-                    continue;
-                }
-
-                if (MaterialValidator.TryGetError(material, out var reason))
-                {
-                    findings.Add($"GameObject '{GameObjectPathFormatter.GetPath(graphic.gameObject)}' : {reason}");
+                    (findings ?? (findings = new List<string>())).Add(
+                        $"GameObject '{GameObjectPathFormatter.GetPath(graphic.gameObject)}' : {reason}");
                 }
             }
 
-            return findings;
+            return findings ?? (IEnumerable<string>)Array.Empty<string>();
         }
     }
 }

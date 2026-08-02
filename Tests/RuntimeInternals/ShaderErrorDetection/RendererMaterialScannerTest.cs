@@ -13,7 +13,9 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
     public class RendererMaterialScannerTest
     {
         private static Material SupportedMaterial => new Material(Shader.Find("Sprites/Default"));
-        private static Material ErrorShaderMaterial => new Material(Shader.Find("Hidden/InternalErrorShader")) { name = "BrokenMaterial" };
+
+        private static Material ErrorShaderMaterial => new Material(Shader.Find("Hidden/InternalErrorShader"))
+            { name = "BrokenMaterial" };
 
         [Test]
         [CreateScene]
@@ -133,8 +135,10 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         public void SameErrorMaterialOnMultipleRenderedRenderers_ReturnsFindingOnce()
         {
             var sharedErrorMaterial = ErrorShaderMaterial;
-            GameObject.CreatePrimitive(PrimitiveType.Cube).GetComponent<MeshRenderer>().sharedMaterial = sharedErrorMaterial;
-            GameObject.CreatePrimitive(PrimitiveType.Sphere).GetComponent<MeshRenderer>().sharedMaterial = sharedErrorMaterial;
+            GameObject.CreatePrimitive(PrimitiveType.Cube).GetComponent<MeshRenderer>().sharedMaterial =
+                sharedErrorMaterial;
+            GameObject.CreatePrimitive(PrimitiveType.Sphere).GetComponent<MeshRenderer>().sharedMaterial =
+                sharedErrorMaterial;
 
             var findings = new RendererMaterialScanner(new CheckedMaterialCache()).Scan().ToArray();
 
@@ -146,7 +150,8 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         [Category("Acceptance")]
         public void ScannedTwiceWithSameErrorMaterial_ReturnsNoFindingOnSecondScan()
         {
-            GameObject.CreatePrimitive(PrimitiveType.Cube).GetComponent<MeshRenderer>().sharedMaterial = ErrorShaderMaterial;
+            GameObject.CreatePrimitive(PrimitiveType.Cube).GetComponent<MeshRenderer>().sharedMaterial =
+                ErrorShaderMaterial;
             var scanner = new RendererMaterialScanner(new CheckedMaterialCache());
             scanner.Scan().ToArray(); // first scan; consumes the fixture's findings into the shared cache
 

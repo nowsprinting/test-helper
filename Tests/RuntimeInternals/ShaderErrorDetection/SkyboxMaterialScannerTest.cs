@@ -31,7 +31,8 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         [Category("Acceptance")]
         public void RenderedSkyboxWithErrorShaderMaterial_ReturnsFinding()
         {
-            RenderSettings.skybox = new Material(Shader.Find("Hidden/InternalErrorShader")) { name = "BrokenSkyboxMaterial" };
+            RenderSettings.skybox = new Material(Shader.Find("Hidden/InternalErrorShader"))
+                { name = "BrokenSkyboxMaterial" };
 
             var findings = new SkyboxMaterialScanner(new CheckedMaterialCache()).Scan().ToArray();
 

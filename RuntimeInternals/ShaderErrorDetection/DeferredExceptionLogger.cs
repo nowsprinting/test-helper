@@ -25,10 +25,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// </summary>
         internal static DeferredExceptionLogger Create()
         {
-            var go = new GameObject(nameof(DeferredExceptionLogger)) { hideFlags = HideFlags.HideAndDontSave };
-            DontDestroyOnLoad(go);
-
-            var logger = go.AddComponent<DeferredExceptionLogger>();
+            var logger = HiddenGameObjectFactory.CreateHidden<DeferredExceptionLogger>(nameof(DeferredExceptionLogger));
             logger.StartCoroutine(logger.DrainLoop());
             return logger;
         }
@@ -50,6 +47,8 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
             Destroy(gameObject);
         }
 
+        // ReSharper disable once IteratorNeverReturns -- runs for this instance's lifetime; stopped
+        // externally by StopAndDestroy (StopAllCoroutines), not by the iterator returning.
         private IEnumerator DrainLoop()
         {
             while (true)

@@ -113,7 +113,7 @@ namespace TestHelper.Attributes
                 // active scene to switch back to, its "don't unload the active scene" guard skips the
                 // unload, leaving this fixture in the loaded scene where later tests' scans would find
                 // it. Destroy it directly so it cannot leak into subsequent tests.
-                UnityEngine.Object.DestroyImmediate(go);
+                Object.DestroyImmediate(go);
             }
         }
 

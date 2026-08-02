@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +22,10 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// <inheritdoc/>
         public IEnumerable<string> Scan()
         {
-            var findings = new List<string>();
+            List<string> findings = null;
+
+            void AddFinding(string message) => (findings ?? (findings = new List<string>())).Add(message);
+
             foreach (var renderer in ActiveObjectFinder.FindActive<Renderer>())
             {
                 var materials = renderer.sharedMaterials;
@@ -32,26 +36,21 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
                     {
                         if (!MaterialValidator.IsIgnorableNullSlot(renderer, slotIndex))
                         {
-                            findings.Add(
+                            AddFinding(
                                 $"GameObject '{GameObjectPathFormatter.GetPath(renderer.gameObject)}' : material slot {slotIndex} is null");
                         }
 
                         continue;
                     }
 
-                    if (!_cache.TryMarkChecked(material))
+                    if (_cache.TryMarkCheckedError(material, out var reason))
                     {
-                        continue;
-                    }
-
-                    if (MaterialValidator.TryGetError(material, out var reason))
-                    {
-                        findings.Add($"GameObject '{GameObjectPathFormatter.GetPath(renderer.gameObject)}' : {reason}");
+                        AddFinding($"GameObject '{GameObjectPathFormatter.GetPath(renderer.gameObject)}' : {reason}");
                     }
                 }
             }
 
-            return findings;
+            return findings ?? (IEnumerable<string>)Array.Empty<string>();
         }
     }
 }

@@ -25,10 +25,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// <param name="intervalFrames">Frames between ticks. 0 means every frame.</param>
         internal static MaterialScanRunner Create(Action onScanTick, int intervalFrames)
         {
-            var go = new GameObject(nameof(MaterialScanRunner)) { hideFlags = HideFlags.HideAndDontSave };
-            DontDestroyOnLoad(go);
-
-            var runner = go.AddComponent<MaterialScanRunner>();
+            var runner = HiddenGameObjectFactory.CreateHidden<MaterialScanRunner>(nameof(MaterialScanRunner));
             runner._onScanTick = onScanTick;
             // 0 still requires waiting at least one frame boundary before the first tick,
             // so "every frame" is the smallest possible wait (1), not an immediate tick.
@@ -46,6 +43,8 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
             Destroy(gameObject);
         }
 
+        // ReSharper disable once IteratorNeverReturns -- runs for this instance's lifetime; stopped
+        // externally by StopAndDestroy (StopAllCoroutines), not by the iterator returning.
         private IEnumerator ScanLoop()
         {
             while (true)

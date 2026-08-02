@@ -34,6 +34,20 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         }
 
         /// <summary>
+        /// Marks the material as checked and validates it, unless it was already marked.
+        /// </summary>
+        internal bool TryMarkCheckedError(Material material, out string reason)
+        {
+            if (!TryMarkChecked(material))
+            {
+                reason = null;
+                return false;
+            }
+
+            return MaterialValidator.TryGetError(material, out reason);
+        }
+
+        /// <summary>
         /// Clears all marked materials.
         /// </summary>
         internal void Clear()

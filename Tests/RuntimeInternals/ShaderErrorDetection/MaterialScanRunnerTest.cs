@@ -5,7 +5,6 @@ using System.Collections;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace TestHelper.RuntimeInternals.ShaderErrorDetection
@@ -108,7 +107,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
             yield return null;
             var tickCountBeforeSceneLoad = tickCount;
 
-            yield return SceneManagerHelper.LoadSceneAsync(TestScene, LoadSceneMode.Single);
+            yield return SceneManagerHelper.LoadSceneAsync(TestScene);
             yield return null;
             yield return null;
 

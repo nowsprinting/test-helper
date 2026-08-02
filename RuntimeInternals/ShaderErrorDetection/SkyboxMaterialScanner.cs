@@ -23,12 +23,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         public IEnumerable<string> Scan()
         {
             var material = RenderSettings.skybox;
-            if (material == null || !_cache.TryMarkChecked(material))
-            {
-                return Array.Empty<string>();
-            }
-
-            if (MaterialValidator.TryGetError(material, out var reason))
+            if (material != null && _cache.TryMarkCheckedError(material, out var reason))
             {
                 return new[] { $"Skybox : {reason}" };
             }

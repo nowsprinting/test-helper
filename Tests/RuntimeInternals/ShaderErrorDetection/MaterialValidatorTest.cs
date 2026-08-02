@@ -80,8 +80,10 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         [CreateScene]
         public void IsIgnorableNullSlot_TrailSlotOfParticleSystemRendererWithTrailsDisabled_ReturnsTrue()
         {
-            var particleSystem = new GameObject(nameof(IsIgnorableNullSlot_TrailSlotOfParticleSystemRendererWithTrailsDisabled_ReturnsTrue))
-                .AddComponent<ParticleSystem>();
+            var particleSystem =
+                new GameObject(
+                        nameof(IsIgnorableNullSlot_TrailSlotOfParticleSystemRendererWithTrailsDisabled_ReturnsTrue))
+                    .AddComponent<ParticleSystem>();
             var trails = particleSystem.trails;
             trails.enabled = false;
             var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
@@ -93,8 +95,10 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         [CreateScene]
         public void IsIgnorableNullSlot_TrailSlotOfParticleSystemRendererWithTrailsEnabled_ReturnsFalse()
         {
-            var particleSystem = new GameObject(nameof(IsIgnorableNullSlot_TrailSlotOfParticleSystemRendererWithTrailsEnabled_ReturnsFalse))
-                .AddComponent<ParticleSystem>();
+            var particleSystem =
+                new GameObject(
+                        nameof(IsIgnorableNullSlot_TrailSlotOfParticleSystemRendererWithTrailsEnabled_ReturnsFalse))
+                    .AddComponent<ParticleSystem>();
             var trails = particleSystem.trails;
             trails.enabled = true;
             var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
@@ -106,8 +110,9 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         [CreateScene]
         public void IsIgnorableNullSlot_NonTrailSlotOfParticleSystemRenderer_ReturnsFalse()
         {
-            var particleSystem = new GameObject(nameof(IsIgnorableNullSlot_NonTrailSlotOfParticleSystemRenderer_ReturnsFalse))
-                .AddComponent<ParticleSystem>();
+            var particleSystem =
+                new GameObject(nameof(IsIgnorableNullSlot_NonTrailSlotOfParticleSystemRenderer_ReturnsFalse))
+                    .AddComponent<ParticleSystem>();
             var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
 
             Assert.That(MaterialValidator.IsIgnorableNullSlot(renderer, 0), Is.False);

@@ -79,7 +79,8 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         {
             var reporter = new ThrowingShaderErrorReporter();
             var monitor = new FallbackWarningLogMonitor(new FakeLogMessageSource(), reporter);
-            var spyScanner = new SpyMaterialScanner { NextFindings = { "GameObject 'Cube' : Material 'Broken' has an error shader" } };
+            var spyScanner = new SpyMaterialScanner
+                { NextFindings = { "GameObject 'Cube' : Material 'Broken' has an error shader" } };
             var session = CreateSession(reporter, monitor, spyScanner);
             session.Start();
 
@@ -94,7 +95,8 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         {
             var reporter = new ThrowingShaderErrorReporter();
             var monitor = new FallbackWarningLogMonitor(new FakeLogMessageSource(), reporter);
-            var spyScanner = new SpyMaterialScanner { NextFindings = { "GameObject 'Cube' : Material 'Broken' has an error shader" } };
+            var spyScanner = new SpyMaterialScanner
+                { NextFindings = { "GameObject 'Cube' : Material 'Broken' has an error shader" } };
             var session = CreateSession(reporter, monitor, spyScanner);
             session.Start();
 
@@ -167,7 +169,8 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         {
             var reporter = new ThrowingShaderErrorReporter();
             var monitor = new FallbackWarningLogMonitor(new FakeLogMessageSource(), reporter);
-            var spyScanner = new SpyMaterialScanner { NextFindings = { "GameObject 'Cube' : Material 'Broken' has an error shader" } };
+            var spyScanner = new SpyMaterialScanner
+                { NextFindings = { "GameObject 'Cube' : Material 'Broken' has an error shader" } };
             var session = CreateSession(reporter, monitor, spyScanner);
 
             var exception = Assert.Throws<InvalidShaderException>(() => session.ScanOnce());

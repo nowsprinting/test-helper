@@ -2,7 +2,6 @@
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TestHelper.RuntimeInternals.ShaderErrorDetection.TestDoubles
 {
