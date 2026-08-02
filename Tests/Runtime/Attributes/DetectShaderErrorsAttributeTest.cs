@@ -161,6 +161,23 @@ namespace TestHelper.Attributes
         [CreateScene]
         [DetectShaderErrors]
         [Category("Integration")]
+        [Category("Acceptance")]
+        public IEnumerator SceneContainsSkyboxComponentWithErrorShaderMaterial_LogsInvalidShaderException()
+        {
+            LogAssert.Expect(LogType.Exception, new Regex(".*BrokenSkyboxComponentMaterial.*"));
+
+            var skybox = new GameObject("SkyboxComponentWithErrorShaderMaterialInScene").AddComponent<Skybox>();
+            skybox.material = new Material(Shader.Find("Hidden/InternalErrorShader"))
+                { name = "BrokenSkyboxComponentMaterial" };
+
+            yield return null; // let the periodic material scan tick catch this before the test ends
+            yield return null;
+        }
+
+        [UnityTest]
+        [CreateScene]
+        [DetectShaderErrors]
+        [Category("Integration")]
         public IEnumerator SceneContainsNoShaderProblem_DoesNotLogInvalidShaderException()
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);

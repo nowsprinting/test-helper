@@ -159,5 +159,22 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 
             Assert.That(secondScanFindings, Is.Empty);
         }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void ScannedTwiceWithShaderSwappedToErrorShader_ReturnsFindingOnSecondScan()
+        {
+            var material = new Material(Shader.Find("Sprites/Default")) { name = "SwappedToErrorShaderMaterial" };
+            GameObject.CreatePrimitive(PrimitiveType.Cube).GetComponent<MeshRenderer>().sharedMaterial = material;
+            var scanner = new RendererMaterialScanner(new CheckedMaterialCache());
+            Assume.That(scanner.Scan(), Is.Empty); // precondition: the still-healthy material passes the first scan
+
+            material.shader = Shader.Find("Hidden/InternalErrorShader");
+            var secondScanFindings = scanner.Scan().ToArray();
+
+            Assert.That(secondScanFindings, Has.Length.EqualTo(1));
+            Assert.That(secondScanFindings[0], Does.Contain("SwappedToErrorShaderMaterial"));
+        }
     }
 }
