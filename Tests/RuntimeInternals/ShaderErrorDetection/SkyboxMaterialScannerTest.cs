@@ -42,6 +42,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 
         [Test]
         [CreateScene]
+        [LinuxHeadlessGpuUnsupported]
         public void RenderedSkyboxWithSupportedShaderMaterial_ReturnsNoFinding()
         {
             var shader = Shader.Find("Skybox/Procedural") ?? Shader.Find("Sprites/Default");

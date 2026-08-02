@@ -33,6 +33,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 
         [Test]
         [CreateScene]
+        [LinuxHeadlessGpuUnsupported]
         public void RenderedGraphicWithSupportedShaderMaterial_ReturnsNoFinding()
         {
             var canvas = new GameObject("Canvas", typeof(Canvas)).GetComponent<Canvas>();

@@ -178,6 +178,10 @@ namespace TestHelper.Attributes
         [CreateScene]
         [DetectShaderErrors]
         [Category("Integration")]
+        // Not supported on LinuxPlayer: CI runs headless (GraphicsDeviceType.Null, no real GPU),
+        // where Shader.isSupported is false for every shader, so this "no problem" scene's own
+        // material is (falsely) reported as a shader error.
+        [UnityPlatform(exclude = new[] { RuntimePlatform.LinuxPlayer })]
         public IEnumerator SceneContainsNoShaderProblem_DoesNotLogInvalidShaderException()
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);

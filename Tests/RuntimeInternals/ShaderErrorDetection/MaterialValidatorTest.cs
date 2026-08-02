@@ -65,6 +65,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         }
 
         [Test]
+        [LinuxHeadlessGpuUnsupported]
         public void TryGetError_MaterialWithSupportedShader_ReturnsFalse()
         {
             var shader = Shader.Find("Sprites/Default");

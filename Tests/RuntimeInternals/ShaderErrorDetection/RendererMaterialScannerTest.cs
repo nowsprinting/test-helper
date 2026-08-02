@@ -72,6 +72,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 
         [Test]
         [CreateScene]
+        [LinuxHeadlessGpuUnsupported]
         public void RenderedRendererWithSupportedShaderMaterial_ReturnsNoFinding()
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -98,6 +99,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        [LinuxHeadlessGpuUnsupported]
         public void RenderedParticleSystemRendererWithTrailsDisabled_ReturnsNoFinding()
         {
             var go = new GameObject("ParticleWithDisabledTrailsAndNullTrailSlot");
@@ -114,6 +116,10 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 
         [Test]
         [CreateScene]
+        // On LinuxPlayer, the fixture's "supported" material also gets falsely flagged (see
+        // LinuxHeadlessGpuUnsupportedAttribute), so the finding count no longer matches the
+        // expected single trail-slot finding.
+        [LinuxHeadlessGpuUnsupported]
         public void RenderedParticleSystemRendererWithTrailsEnabledAndNullTrailSlot_ReturnsFinding()
         {
             var go = new GameObject("ParticleWithEnabledTrailsAndNullTrailSlot");

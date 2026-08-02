@@ -30,6 +30,7 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
 
         [Test]
         [CreateScene]
+        [LinuxHeadlessGpuUnsupported]
         public void EnabledSkyboxComponentWithSupportedShaderMaterial_ReturnsNoFinding()
         {
             var skybox = new GameObject("SkyboxComponentWithSupportedShaderMaterial").AddComponent<Skybox>();
