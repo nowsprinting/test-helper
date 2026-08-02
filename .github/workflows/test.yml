@@ -64,10 +64,12 @@ jobs:
           il2cpp-code-generation: 1   # Optimize for code size and build time
           managed-stripping-level: 3  # High
 
-      - name: Create link.xml to preserve FileInfo.Length under IL2CPP high stripping
-        # Has.Length asserts resolve FileInfo.Length via reflection at runtime; High stripping
-        # removes the getter and NUnit throws "Property Length was not found". Preserve it here
-        # instead of rewriting the idiomatic Has.Length assertions in the test code.
+      - name: Create link.xml to preserve reflection-only APIs under IL2CPP high stripping
+        # Has.Length and Throws.TypeOf<ArgumentException>().With.Property("ParamName") resolve
+        # FileInfo.Length / ArgumentException.ParamName via reflection at runtime; High stripping
+        # removes the getters and NUnit throws "Property <Name> was not found". Preserve them here
+        # instead of rewriting the idiomatic assertions in the test code. ArgumentNullException
+        # inherits ParamName from ArgumentException, so one entry covers both.
         run: |
           mkdir -p "$CREATED_PROJECT_PATH/Assets"
           cat > "$CREATED_PROJECT_PATH/Assets/link.xml" <<'EOF'
@@ -75,6 +77,9 @@ jobs:
             <assembly fullname="mscorlib">
               <type fullname="System.IO.FileInfo">
                 <method name="get_Length" />
+              </type>
+              <type fullname="System.ArgumentException">
+                <method name="get_ParamName" />
               </type>
             </assembly>
           </linker>

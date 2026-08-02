@@ -1077,6 +1077,9 @@ UNITY_VERSION=2019.4.40f1 make -k test
 > - [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
 > - [Instant Replay for Unity](https://github.com/CyberAgentGameEntertainment/InstantReplay) package v1.0.0 or newer
 
+> [!TIP]\
+> When running tests on a player with IL2CPP and managed stripping enabled, reflection-based assertions (e.g. `Has.Length`, `Throws.TypeOf<ArgumentException>().With.Property("ParamName")`) can fail with "Property X was not found" once the member is stripped. Create an `Assets/link.xml` in your project to preserve the affected members — see the link.xml generation step in [test.yml](.github/workflows/test.yml) for the entries this repository needs.
+
 
 ### Release workflow
 
