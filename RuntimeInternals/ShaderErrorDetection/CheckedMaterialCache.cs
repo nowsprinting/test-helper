@@ -14,14 +14,10 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
     /// </summary>
     internal sealed class CheckedMaterialCache
     {
-        // GetInstanceID() is obsolete from Unity 6.4 (6000.4) onward in favor of EntityId; this is the
-        // only place object identity is needed, so the version branch is kept local to this class.
 #if UNITY_6000_4_OR_NEWER
-        private readonly HashSet<(EntityId MaterialId, EntityId ShaderId)> _checkedKeys =
-            new HashSet<(EntityId, EntityId)>();
+        private readonly HashSet<(EntityId, EntityId)> _checkedKeys = new HashSet<(EntityId, EntityId)>();
 #else
-        private readonly HashSet<(int MaterialId, int ShaderId)> _checkedKeys =
-            new HashSet<(int, int)>();
+        private readonly HashSet<(int, int)> _checkedKeys = new HashSet<(int, int)>();
 #endif
 
         /// <summary>
@@ -30,18 +26,25 @@ namespace TestHelper.RuntimeInternals.ShaderErrorDetection
         /// </summary>
         internal bool TryMarkChecked(Material material)
         {
-            // A null shader is itself the error state MaterialValidator flags, so it must not throw
-            // here; it maps to the "never a real object" sentinel ID instead. The Unity fake-null
-            // operator also sends a destroyed shader to the sentinel, consistent with
-            // MaterialValidator.IsErrorShader treating it as an error via the same operator.
-            var shader = material.shader;
-#if UNITY_6000_4_OR_NEWER
-            var key = (material.GetEntityId(), shader != null ? shader.GetEntityId() : default(EntityId));
-#else
-            var key = (material.GetInstanceID(), shader != null ? shader.GetInstanceID() : 0);
-#endif
-            return _checkedKeys.Add(key);
+            // A null shader is itself the error state MaterialValidator flags, so the key computation
+            // must not throw on it; GetId maps null (and Unity fake-null) to a sentinel ID instead.
+            return _checkedKeys.Add((GetId(material), GetId(material.shader)));
         }
+
+        // GetInstanceID() is obsolete from Unity 6.4 (6000.4) onward in favor of EntityId; this is the
+        // only place object identity is needed, so the version branch is kept local to this class.
+        // The sentinel for null (0 / default(EntityId)) is never assigned to a real Unity object.
+#if UNITY_6000_4_OR_NEWER
+        private static EntityId GetId(Object obj)
+        {
+            return obj != null ? obj.GetEntityId() : default(EntityId);
+        }
+#else
+        private static int GetId(Object obj)
+        {
+            return obj != null ? obj.GetInstanceID() : 0;
+        }
+#endif
 
         /// <summary>
         /// Marks the material as checked and validates it, unless it was already marked.
