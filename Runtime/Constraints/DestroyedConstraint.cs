@@ -1,8 +1,8 @@
 ﻿// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using NUnit.Framework.Constraints;
-using UnityEngine;
 
 namespace TestHelper.Constraints
 {
@@ -34,14 +34,25 @@ namespace TestHelper.Constraints
             base.Description = "destroyed UnityEngine.Object";
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="System.ArgumentNullException"><paramref name="actual"/> is null.</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="actual"/> is not a
+        /// <see cref="UnityEngine.Object"/>.</exception>
         public override ConstraintResult ApplyTo(object actual)
         {
-            if (actual is Object actualObject)
+            if (actual == null)
             {
-                return new ConstraintResult(this, actual, !(bool)actualObject);
+                throw new ArgumentNullException(nameof(actual));
             }
 
-            return new ConstraintResult(this, actual, false);
+            if (!(actual is UnityEngine.Object actualObject))
+            {
+                throw new ArgumentException(
+                    $"{ConstraintMessageFormatter.DescribeActual(actual)} is not a UnityEngine.Object",
+                    nameof(actual));
+            }
+
+            return new ConstraintResult(this, actual, !(bool)actualObject);
         }
     }
 }
