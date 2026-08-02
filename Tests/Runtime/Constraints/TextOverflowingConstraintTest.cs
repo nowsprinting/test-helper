@@ -59,7 +59,7 @@ namespace TestHelper.Constraints
 
 #if ENABLE_TMP
         private static TMP_Text CreateTmpText(Transform parent, string name, string text, Vector2 size,
-            TextWrappingModes wrappingMode = TextWrappingModes.Normal, bool enableAutoSizing = false,
+            bool enableWordWrapping = true, bool enableAutoSizing = false,
             TextOverflowModes overflowMode = TextOverflowModes.Overflow)
         {
             var gameObject = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
@@ -75,7 +75,13 @@ namespace TestHelper.Constraints
             tmpText.font = TMP_Settings.defaultFontAsset;
             tmpText.text = text;
             tmpText.fontSize = 20;
-            tmpText.textWrappingMode = wrappingMode;
+            // textWrappingMode/TextWrappingModes isn't available in the TMP version bundled with
+            // older Unity LTS releases tested in CI (e.g. 2022.3); enableWordWrapping predates it
+            // and still works (just deprecated) on newer TMP too, so it compiles across the whole
+            // CI Unity version matrix.
+#pragma warning disable CS0618
+            tmpText.enableWordWrapping = enableWordWrapping;
+#pragma warning restore CS0618
             tmpText.enableAutoSizing = enableAutoSizing;
             tmpText.overflowMode = overflowMode;
             return tmpText;
@@ -487,7 +493,7 @@ namespace TestHelper.Constraints
         {
             var canvas = CreateCanvas();
             var tmpText = CreateTmpText(canvas.transform, "Label", "A very very very long single line of text",
-                new Vector2(5f, 100f), TextWrappingModes.NoWrap);
+                new Vector2(5f, 100f), enableWordWrapping: false);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
             await Awaitable.NextFrameAsync();
@@ -503,7 +509,7 @@ namespace TestHelper.Constraints
             var canvas = CreateCanvas();
             var tmpText = CreateTmpText(canvas.transform, "Label",
                 "This text will not fully fit and gets truncated", new Vector2(150f, 20f),
-                TextWrappingModes.Normal, false, TextOverflowModes.Truncate);
+                overflowMode: TextOverflowModes.Truncate);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
             await Awaitable.NextFrameAsync();
@@ -560,7 +566,7 @@ namespace TestHelper.Constraints
             Assume.That(uguiText.font, Is.Not.Null);
             var tmpText = CreateTmpText(canvas.transform, "OtherLabel",
                 "A very very very long single line of overflowing text content that exceeds the rect",
-                new Vector2(5f, 5f), TextWrappingModes.NoWrap);
+                new Vector2(5f, 5f), enableWordWrapping: false);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
             await Awaitable.NextFrameAsync();
