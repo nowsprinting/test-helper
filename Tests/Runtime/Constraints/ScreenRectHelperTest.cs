@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
@@ -93,7 +94,7 @@ namespace TestHelper.Constraints
         {
             var canvas = CreateOverlayCanvas();
             var element = CreateElement(canvas.transform, new Vector2(10f, 20f), new Vector2(100f, 50f));
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             var actual = ScreenRectHelper.GetScreenRect(element);
 
@@ -108,7 +109,7 @@ namespace TestHelper.Constraints
             var camera = CreatePerspectiveCamera();
             var canvas = CreateScreenSpaceCameraCanvas(camera);
             var element = CreateElement(canvas.transform, new Vector2(10f, 20f), new Vector2(100f, 50f));
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             var actual = ScreenRectHelper.GetScreenRect(element);
 
@@ -123,7 +124,7 @@ namespace TestHelper.Constraints
             var camera = CreateOrthographicCamera();
             var canvas = CreateWorldSpaceCanvas(camera);
             var element = CreateElement(canvas.transform, new Vector2(10f, 20f), new Vector2(100f, 50f));
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             var actual = ScreenRectHelper.GetScreenRect(element);
 
@@ -176,7 +177,7 @@ namespace TestHelper.Constraints
             nestedRectTransform.offsetMax = Vector2.zero;
             var element = CreateElement(nestedCanvasGameObject.transform, new Vector2(10f, 20f),
                 new Vector2(100f, 50f));
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             var actual = ScreenRectHelper.GetScreenRect(element);
 

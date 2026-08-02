@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using TestHelper.Attributes;
 #if ENABLE_TMP
@@ -140,7 +141,7 @@ namespace TestHelper.Constraints
             var uguiText = CreateUguiText(canvas.transform, "Label", "Hi", new Vector2(300f, 100f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -154,7 +155,7 @@ namespace TestHelper.Constraints
             var uguiText = CreateUguiText(canvas.transform, "Label", "Hi", new Vector2(300f, 100f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
             var actual = AsActual(uguiText.GetComponent<RectTransform>(), kind);
 
             Assert.That(actual, Is.Not.TextOverflowing());
@@ -169,7 +170,7 @@ namespace TestHelper.Constraints
             var uguiText = CreateUguiText(canvas.transform, "Label", "Hi", new Vector2(300f, 100f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -190,7 +191,7 @@ namespace TestHelper.Constraints
                 new Vector2(5f, 5f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -211,12 +212,12 @@ namespace TestHelper.Constraints
             var uguiText = CreateUguiText(canvas.transform, "Label", "Measure", new Vector2(1000f, 200f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
             var preferredWidth = uguiText.preferredWidth;
             var rectTransform = uguiText.GetComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(preferredWidth - excess, 200f);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(rectTransform, Is.Not.TextOverflowing());
         }
@@ -231,12 +232,12 @@ namespace TestHelper.Constraints
             var uguiText = CreateUguiText(canvas.transform, "Label", "Measure", new Vector2(1000f, 200f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
             var preferredWidth = uguiText.preferredWidth;
             var rectTransform = uguiText.GetComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(preferredWidth - Excess, 200f);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(rectTransform, Is.Not.TextOverflowing().Within(2f));
         }
@@ -251,7 +252,7 @@ namespace TestHelper.Constraints
                 new Vector2(20f, 20f), resizeTextForBestFit: true);
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -266,7 +267,7 @@ namespace TestHelper.Constraints
                 new Vector2(20f, 20f), resizeTextForBestFit: true);
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -286,7 +287,7 @@ namespace TestHelper.Constraints
                 new Vector2(100f, 300f), HorizontalWrapMode.Wrap);
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -301,7 +302,7 @@ namespace TestHelper.Constraints
                 new Vector2(100f, 300f), HorizontalWrapMode.Wrap);
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -322,7 +323,7 @@ namespace TestHelper.Constraints
                 new Vector2(100f, 10f), HorizontalWrapMode.Wrap);
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -342,7 +343,7 @@ namespace TestHelper.Constraints
                 new Vector2(5f, 200f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -363,7 +364,7 @@ namespace TestHelper.Constraints
                 new Vector2(150f, 20f), HorizontalWrapMode.Wrap, VerticalWrapMode.Truncate);
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -383,7 +384,7 @@ namespace TestHelper.Constraints
                 new Vector2(130f, 55f), HorizontalWrapMode.Wrap, VerticalWrapMode.Truncate);
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -403,7 +404,7 @@ namespace TestHelper.Constraints
                 new Vector2(300f, 5f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -442,7 +443,7 @@ namespace TestHelper.Constraints
             var uguiText = CreateUguiText(canvas.transform, "Label", string.Empty, new Vector2(5f, 5f));
             Assume.That(uguiText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -457,7 +458,7 @@ namespace TestHelper.Constraints
             Assume.That(uguiText.font, Is.Not.Null);
             uguiText.GetComponent<RectTransform>().localScale = new Vector3(3f, 3f, 1f);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -472,7 +473,7 @@ namespace TestHelper.Constraints
             var tmpText = CreateTmpText(canvas.transform, "Label", "Hi", new Vector2(300f, 100f));
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -487,7 +488,7 @@ namespace TestHelper.Constraints
                 "This is a long sentence that will wrap over lines", new Vector2(100f, 10f));
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -509,7 +510,7 @@ namespace TestHelper.Constraints
                 enableAutoSizing: true);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -524,7 +525,7 @@ namespace TestHelper.Constraints
                 new Vector2(5f, 100f), enableWordWrapping: false);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -540,7 +541,7 @@ namespace TestHelper.Constraints
                 overflowMode: TextOverflowModes.Truncate);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(() =>
             {
@@ -559,7 +560,7 @@ namespace TestHelper.Constraints
             var tmpText = CreateTmpText(canvas.transform, "Label", string.Empty, new Vector2(5f, 5f));
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
@@ -597,7 +598,7 @@ namespace TestHelper.Constraints
                 new Vector2(5f, 5f), enableWordWrapping: false);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
-            await Awaitable.NextFrameAsync();
+            await UniTask.NextFrame();
 
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing());
         }
