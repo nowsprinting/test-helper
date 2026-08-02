@@ -162,6 +162,31 @@ namespace TestHelper.Attributes
         [DetectShaderErrors]
         [Category("Integration")]
         [Category("Acceptance")]
+        public IEnumerator FallbackDeclaredUnsupportedShaderMaterialIsRendered_LogsInvalidShaderException()
+        {
+            var shader = Resources.Load<Shader>("UnsupportedShaderWithFallback");
+            Assume.That(shader, Is.Not.Null);
+            Assume.That(shader.isSupported, Is.True,
+                "The Fallback declaration is expected to make this shader report isSupported == true, " +
+                "putting it out of the material scan's reach; log monitoring is the only detection path.");
+
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.GetComponent<MeshRenderer>().sharedMaterial = new Material(shader);
+
+            LogAssert.Expect(LogType.Exception, new Regex(".*" + shader.name.Replace("/", @"\/") + ".*"));
+            // Known failure on at least Unity 6000.4.12f1 / Metal / Editor: the shader fallback happens
+            // silently there — the "fallback to ..." warning log is never emitted (empirically verified),
+            // so log monitoring cannot detect this case and the expected exception log never appears.
+
+            yield return null;
+            yield return null;
+        }
+
+        [UnityTest]
+        [CreateScene]
+        [DetectShaderErrors]
+        [Category("Integration")]
+        [Category("Acceptance")]
         public IEnumerator SceneContainsSkyboxComponentWithErrorShaderMaterial_LogsInvalidShaderException()
         {
             LogAssert.Expect(LogType.Exception, new Regex(".*BrokenSkyboxComponentMaterial.*"));
