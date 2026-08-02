@@ -264,6 +264,12 @@ resharper_csharp_keep_existing_initializer_arrangement = true
 # Some values of the enum are not processed inside 'switch' statement and are handled via default section
 resharper_switch_statement_handles_some_known_enum_values_with_default_highlighting = warning
 
+# Type and member is never used (for coding agents)
+resharper_unused_type_local_highlighting = warning
+resharper_unused_type_global_highlighting = warning
+resharper_unused_member_global_highlighting = warning
+resharper_unused_member_local_highlighting = warning
+
 # BannedApiAnalyzers
 dotnet_diagnostic.RS0030.severity = error
 
@@ -282,6 +288,11 @@ resharper_access_to_static_member_via_derived_type_highlighting = none
 
 # NUnit2045: Use Assert.Multiple
 dotnet_diagnostic.NUnit2045.severity = none
+
+# VSTHRD200: Use "Async" suffix for async methods
+# Test methods follow the Subject_Scenario naming convention and are invoked by the test runner via
+# reflection, not awaited by caller code, so the "Async" suffix convention does not apply to them.
+dotnet_diagnostic.VSTHRD200.severity = none
 
 [src/{Compilers,ExpressionEvaluator,Scripting}/**Test**/*.{cs,vb}]
 

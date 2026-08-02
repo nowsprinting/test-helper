@@ -491,6 +491,136 @@ public class MyTestClass
 > [!NOTE]\
 > When used with operators, use it in method style. e.g., `Is.Not.Destroyed()`
 
+#### WithinScreen
+
+`WithinScreenConstraint` tests that a `RectTransform` (or a `GameObject`/`Component` with one) is fully within the screen.
+
+Usage:
+
+```csharp
+using Is = TestHelper.Constraints.Is;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public void MyTestMethod()
+    {
+        var confirmDialog = GameObject.Find("ConfirmDialog");
+
+        Assert.That(confirmDialog, Is.WithinScreen);
+    }
+}
+```
+
+Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.WithinScreen.Within(2f)`.
+
+> [!IMPORTANT]\
+> This constraint is intended for scenes and prefabs authored by coding agents.
+> Do not use it where the layout intentionally overflows the screen.
+
+> [!NOTE]\
+> When used with operators, use it in method style. e.g., `Is.Not.WithinScreen()`
+
+#### FullyWithin
+
+`FullyWithinConstraint` tests that a `RectTransform` (or a `GameObject`/`Component` with one) is fully within another `RectTransform`'s screen rect.
+
+Usage:
+
+```csharp
+using Is = TestHelper.Constraints.Is;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public void MyTestMethod()
+    {
+        var viewport = GameObject.Find("Viewport").GetComponent<RectTransform>();
+        var card = GameObject.Find("Card (0)");
+
+        Assert.That(card, Is.FullyWithin(viewport));
+    }
+}
+```
+
+Chain `.Horizontally()` or `.Vertically()` to narrow the check to a single axis (calling both is equivalent to specifying neither — both axes are checked by default), and `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.FullyWithin(viewport).Horizontally().Within(2f)`.
+
+> [!IMPORTANT]\
+> This constraint is intended for scenes and prefabs authored by coding agents.
+> Do not use it where the layout intentionally overflows its container.
+
+#### Overlapping
+
+`OverlappingConstraint` tests that any pair in a collection of `RectTransform`s overlaps.
+
+Usage:
+
+```csharp
+using Is = TestHelper.Constraints.Is;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public void MyTestMethod()
+    {
+        var cards = GameObject.Find("CardGrid").GetComponentsInChildren<Image>();
+
+        Assert.That(cards, Is.Not.Overlapping());
+    }
+}
+```
+
+Chain `.Ignoring(group)` to exclude pairs where both members belong to `group` (a member is still checked against elements outside the group; call it more than once to register multiple groups), and `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g.:
+
+```csharp
+// SkipButton must not overlap any card, but cards overlapping each other is a different test's concern.
+Assert.That(cards.Prepend(skipButton), Is.Not.Overlapping().Ignoring(cards));
+```
+
+> [!IMPORTANT]\
+> This constraint is intended for scenes and prefabs authored by coding agents.
+> Do not use it where the layout intentionally allows elements to overlap.
+
+> [!NOTE]\
+> When used with operators, use it in method style. e.g., `Is.Not.Overlapping()`
+
+#### TextOverflowing (optional)
+
+`TextOverflowingConstraint` tests that a uGUI `Text` or TextMeshPro `TMP_Text` component overflows its own `RectTransform` — its preferred size exceeds the rect, or characters are truncated.
+
+Usage:
+
+```csharp
+using Is = TestHelper.Constraints.Is;
+
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    public void MyTestMethod()
+    {
+        var flavorText = GameObject.Find("Flavor Text");
+
+        Assert.That(flavorText, Is.Not.TextOverflowing());
+    }
+}
+```
+
+Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.Not.TextOverflowing().Within(1f)`.
+
+> [!IMPORTANT]\
+> `TextOverflowingConstraint` is an optional functionality. It supports uGUI `Text` and TextMeshPro `TMP_Text`, both optional dependencies of this package ([com.unity.ugui](https://docs.unity3d.com/Packages/com.unity.ugui@latest), [com.unity.textmeshpro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@latest) — or `com.unity.ugui` 2.0.0+ alone, which bundles TextMeshPro).
+
+> [!IMPORTANT]\
+> This constraint is intended for scenes and prefabs authored by coding agents.
+> Do not use it where the layout intentionally lets text overflow its container.
+
+> [!NOTE]\
+> When used with operators, use it in method style. e.g., `Is.Not.TextOverflowing()`
+
 
 
 ### Comparers
@@ -946,6 +1076,9 @@ UNITY_VERSION=2019.4.40f1 make -k test
 > - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or newer.
 > - [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
 > - [Instant Replay for Unity](https://github.com/CyberAgentGameEntertainment/InstantReplay) package v1.0.0 or newer
+
+> [!TIP]\
+> When running tests on a player with IL2CPP and managed stripping enabled, reflection-based assertions (e.g. `Has.Length`, `Throws.TypeOf<ArgumentException>().With.Property("ParamName")`) can fail with "Property X was not found" once the member is stripped. Create an `Assets/link.xml` in your project to preserve the affected members — see the link.xml generation step in [test.yml](.github/workflows/test.yml) for the entries this repository needs.
 
 
 ### Release workflow
