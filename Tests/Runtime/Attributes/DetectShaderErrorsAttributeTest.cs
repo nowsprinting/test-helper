@@ -26,27 +26,6 @@ namespace TestHelper.Attributes
             }
         }
 
-        [UnityTest]
-        [DetectShaderErrors]
-        [Category("Acceptance")]
-        public IEnumerator Attach_ShaderFallbackWarningLogged_LogsInvalidShaderException()
-        {
-            // LogAssert.Expect must be registered before the action that produces the log:
-            // UTF flags an Error/Exception-type log as "unhandled" the moment it arrives if no
-            // matching expectation is queued yet, regardless of expectations registered later.
-            LogAssert.Expect(LogType.Exception, ShaderNameInExceptionLog);
-
-            Debug.LogWarning(FallbackWarningMessage);
-
-            // [UnityTest], not [Test]: the exception this scenario produces is raised from inside
-            // Application.logMessageReceived's own dispatch, which Unity does not deliver to any
-            // listener (including UTF's own log tracking) until dispatch unwinds — so it can only
-            // become visible one frame later. A fully synchronous [Test] body never advances a
-            // frame, so there would be no opportunity for that to happen within the test's own
-            // execution window.
-            yield return null;
-        }
-
         [Test]
         [DetectShaderErrors]
         public async Task AttachToAsyncTest_ShaderFallbackWarningLogged_LogsInvalidShaderException()
@@ -59,11 +38,21 @@ namespace TestHelper.Attributes
 
         [UnityTest]
         [DetectShaderErrors]
+        [Category("Acceptance")]
         public IEnumerator AttachToUnityTest_ShaderFallbackWarningLogged_LogsInvalidShaderException()
         {
+            // LogAssert.Expect must be registered before the action that produces the log:
+            // UTF flags an Error/Exception-type log as "unhandled" the moment it arrives if no
+            // matching expectation is queued yet, regardless of expectations registered later.
             LogAssert.Expect(LogType.Exception, ShaderNameInExceptionLog);
 
             Debug.LogWarning(FallbackWarningMessage);
+
+            // A fully synchronous [Test] body never advances a frame, so there is no plain-[Test]
+            // positive-path test here: the exception this scenario produces is raised from inside
+            // Application.logMessageReceived's own dispatch, which Unity does not deliver to any
+            // listener (including UTF's own log tracking) until dispatch unwinds — so it can only
+            // become visible one frame later.
             yield return null;
         }
 
