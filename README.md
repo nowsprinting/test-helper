@@ -134,6 +134,9 @@ public class MyTestClass
 > This attribute cannot detect shader runtime errors that produce no log output at all, e.g., NaN or invalid pixel output, or other GPU-side computation anomalies. Detecting those requires visual verification (e.g., screenshot comparison), which is outside the scope of this attribute.
 
 > [!WARNING]\
+> The material scan only covers active `Renderer`s, active uGUI `Graphic`s, and `RenderSettings.skybox`. Materials used by other draw paths are not scanned, e.g., the `Graphics.DrawMesh` family, `CommandBuffer` draws, VFX Graph, `Graphics.Blit` and post-processing effects, Terrain, Projector/Decal Projector, `CanvasRenderer.SetMaterial` without a `Graphic`, and GL/IMGUI/UI Toolkit rendering. For these draw paths, only a shader fallback warning is detected (by log monitoring).
+
+> [!WARNING]\
 > A shader fallback warning is detected by monitoring logs, and Unity does not deliver a log raised from its own log dispatch until the next frame. In a fully synchronous `Test` method (no `yield`/`await`), this can cause the failure to be attributed to a later test instead of the one that actually triggered the fallback warning. Use async `Test` (or `UnityTest`) when a fallback warning needs to reliably fail the test that caused it.
 
 > [!WARNING]\
