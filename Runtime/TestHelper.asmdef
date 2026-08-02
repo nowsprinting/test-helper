@@ -40,11 +40,6 @@
             "define": "ENABLE_FLIP_BINDING"
         },
         {
-            "name": "com.unity.ugui",
-            "expression": "",
-            "define": "ENABLE_UGUI"
-        },
-        {
             "name": "com.unity.textmeshpro",
             "expression": "",
             "define": "ENABLE_TMP"

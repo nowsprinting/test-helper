@@ -64,13 +64,7 @@ namespace TestHelper.Constraints
 
         private static TextOverflowDetection Detect(RectTransform rectTransform)
         {
-            TextOverflowDetection detection = null;
-#if ENABLE_UGUI
-            if (detection == null)
-            {
-                UguiTextOverflowProbe.TryDetect(rectTransform, out detection);
-            }
-#endif
+            UguiTextOverflowProbe.TryDetect(rectTransform, out var detection);
 #if ENABLE_TMP
             if (detection == null)
             {

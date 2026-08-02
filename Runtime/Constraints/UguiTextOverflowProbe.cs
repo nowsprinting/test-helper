@@ -1,7 +1,6 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
-#if ENABLE_UGUI
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -74,4 +73,3 @@ namespace TestHelper.Constraints
         }
     }
 }
-#endif
