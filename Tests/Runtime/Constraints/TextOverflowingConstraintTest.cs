@@ -261,6 +261,32 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
+        public async Task IsNotTextOverflowing_UguiBestFitEnabledAndTruncateDropsCharacters_Failure()
+        {
+            var canvas = CreateCanvas();
+            var uguiText = CreateUguiText(canvas.transform, "Label", "Very long overflowing label text",
+                new Vector2(5f, 5f), HorizontalWrapMode.Wrap, VerticalWrapMode.Truncate,
+                resizeTextForBestFit: true);
+            Assume.That(uguiText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+            // Best fit cannot shrink below resizeTextMinSize, so a rect smaller than the minimum-size
+            // glyphs drops characters under Truncate. Guard the fixture: if a font's metrics keep every
+            // character visible, report Inconclusive instead of a false result.
+            Assume.That(uguiText.cachedTextGenerator.characterCountVisible,
+                Is.LessThan(uguiText.text.Length));
+
+            Assert.That(() =>
+            {
+                Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
+            }, Throws.TypeOf<AssertionException>()
+                .With.Message.Contains("\"Label\"")
+                .And.Message.Contains("are rendered"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
         public async Task IsTextOverflowing_UguiBestFitEnabled_Failure()
         {
             var canvas = CreateCanvas();
@@ -512,6 +538,34 @@ namespace TestHelper.Constraints
             await UniTask.NextFrame();
 
             Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public async Task IsNotTextOverflowing_TmpAutoSizingEnabledAndTruncateDropsCharacters_Failure()
+        {
+            var canvas = CreateCanvas();
+            var tmpText = CreateTmpText(canvas.transform, "Label",
+                "This text will not fully fit and gets truncated", new Vector2(150f, 20f),
+                enableAutoSizing: true, overflowMode: TextOverflowModes.Truncate);
+            // Auto sizing cannot shrink below fontSizeMin; pin the bounds so the fixture drops
+            // characters regardless of the serialized TMP defaults.
+            tmpText.fontSizeMin = 10f;
+            tmpText.fontSizeMax = 40f;
+            Assume.That(tmpText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+            // Guard the fixture: if a font's metrics let the text fit at the minimum size after all,
+            // report Inconclusive instead of a false result.
+            Assume.That(tmpText.firstOverflowCharacterIndex, Is.GreaterThanOrEqualTo(0));
+
+            Assert.That(() =>
+            {
+                Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
+            }, Throws.TypeOf<AssertionException>()
+                .With.Message.Contains("\"Label\"")
+                .And.Message.Contains("are not rendered (overflowMode: Truncate)"));
         }
 
         [Test]
