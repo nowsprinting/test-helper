@@ -40,6 +40,11 @@ namespace TestHelper.Constraints
                 && text.firstOverflowCharacterIndex >= 0;
             if (detection.CharactersTruncated)
             {
+                // The total is text.Length even though it includes rich-text markup while the index is in
+                // parsed-character space: TMP offers no post-truncation source for the parsed total —
+                // textInfo.characterCount and GetParsedText() both reflect only the characters that
+                // survived truncation (measured: parsed total 47 → characterCount 17, truncated at
+                // index 15), which would be even more misleading as a total.
                 detection.TruncationDetail =
                     $"characters from index {text.firstOverflowCharacterIndex} of {text.text.Length} are not rendered (overflowMode: {text.overflowMode})";
             }
