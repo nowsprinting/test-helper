@@ -244,12 +244,19 @@ namespace TestHelper.Constraints
         [TestCase(0)]
         [TestCase(1)]
         [CreateScene]
-        public void IsNotOverlapping_FewerThanTwoMembers_Success(int memberCount)
+        [Category("Acceptance")]
+        public void IsNotOverlapping_FewerThanTwoMembers_ThrowsArgumentException(int memberCount)
         {
             var canvas = CreateCanvas();
             var actual = CreateElements(canvas.transform, memberCount);
 
-            Assert.That(actual, Is.Not.Overlapping);
+            Assert.That(() =>
+            {
+                Assert.That(actual, Is.Not.Overlapping);
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains($"collection has {memberCount} element")
+                .And.Message.Contains("at least 2"));
         }
 
         [Test]
@@ -375,6 +382,24 @@ namespace TestHelper.Constraints
             }, Throws.TypeOf<ArgumentException>()
                 .With.Property("ParamName").EqualTo("actual")
                 .And.Message.Contains("is a single RectTransform, not a collection"));
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsOverlapping_FewerThanTwoMembers_ThrowsArgumentException(int memberCount)
+        {
+            var canvas = CreateCanvas();
+            var actual = CreateElements(canvas.transform, memberCount);
+
+            Assert.That(() =>
+            {
+                Assert.That(actual, Is.Overlapping);
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains($"collection has {memberCount} element")
+                .And.Message.Contains("at least 2"));
         }
 
         [Test]
