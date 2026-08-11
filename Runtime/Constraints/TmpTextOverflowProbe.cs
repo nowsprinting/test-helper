@@ -49,7 +49,7 @@ namespace TestHelper.Constraints
                 return true;
             }
 
-            detection.PreferredSize = new Vector2(text.preferredWidth, text.preferredHeight);
+            detection.MeasuredSize = new Vector2(text.preferredWidth, text.preferredHeight);
             detection.RectSize = rectTransform.rect.size;
             detection.HeightChecked = true;
 
