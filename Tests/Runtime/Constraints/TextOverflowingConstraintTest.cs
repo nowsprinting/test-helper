@@ -480,8 +480,7 @@ namespace TestHelper.Constraints
 
         [Test]
         [CreateScene]
-        [Category("Acceptance")]
-        public async Task IsNotTextOverflowing_TmpPreferredHeightExceedsRectHeight_Failure()
+        public async Task IsNotTextOverflowing_TmpRenderedHeightExceedsRectHeight_Failure()
         {
             var canvas = CreateCanvas();
             var tmpText = CreateTmpText(canvas.transform, "Label",
@@ -501,8 +500,7 @@ namespace TestHelper.Constraints
 
         [Test]
         [CreateScene]
-        [Category("Acceptance")]
-        public async Task IsNotTextOverflowing_TmpAutoSizingEnabledAndPreferredHeightExceedsRectHeight_Success()
+        public async Task IsNotTextOverflowing_TmpAutoSizingEnabledAndTextExceedsRect_Success()
         {
             var canvas = CreateCanvas();
             var tmpText = CreateTmpText(canvas.transform, "Label",
@@ -518,27 +516,11 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public async Task IsNotTextOverflowing_TmpPreferredWidthExceedsRectWidth_Success()
+        public async Task IsNotTextOverflowing_TmpRenderedWidthExceedsRectWidth_Failure()
         {
             var canvas = CreateCanvas();
             var tmpText = CreateTmpText(canvas.transform, "Label", "A very very very long single line of text",
                 new Vector2(5f, 100f), enableWordWrapping: false);
-            Assume.That(tmpText.font, Is.Not.Null);
-            Canvas.ForceUpdateCanvases();
-            await UniTask.NextFrame();
-
-            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
-        }
-
-        [Test]
-        [CreateScene]
-        [Category("Acceptance")]
-        public async Task IsNotTextOverflowing_TmpCharactersNotRendered_Failure()
-        {
-            var canvas = CreateCanvas();
-            var tmpText = CreateTmpText(canvas.transform, "Label",
-                "This text will not fully fit and gets truncated", new Vector2(150f, 20f),
-                overflowMode: TextOverflowModes.Truncate);
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
@@ -548,16 +530,19 @@ namespace TestHelper.Constraints
                 Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
             }, Throws.TypeOf<AssertionException>()
                 .With.Message.Contains("\"Label\"")
-                .And.Message.Contains("are not rendered (overflowMode: Truncate)"));
+                .And.Message.Contains("exceeds rect"));
         }
 
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public async Task IsNotTextOverflowing_TmpEmptyText_Success()
+        public async Task IsNotTextOverflowing_TmpWrappedTextWithinRect_Success()
         {
             var canvas = CreateCanvas();
-            var tmpText = CreateTmpText(canvas.transform, "Label", string.Empty, new Vector2(5f, 5f));
+            // Every word is narrower than the 150px line box, so wrapping keeps the rendered width
+            // within the rect; the rect is tall enough for all wrapped lines.
+            var tmpText = CreateTmpText(canvas.transform, "Label",
+                "This is a long sentence that will wrap over lines", new Vector2(150f, 300f));
             Assume.That(tmpText.font, Is.Not.Null);
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
@@ -568,16 +553,85 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void IsNotTextOverflowing_TmpTextNotLaidOut_Success()
+        public async Task IsNotTextOverflowing_TmpRenderedWidthWithinRectButExceedsMargin_Failure()
+        {
+            var canvas = CreateCanvas();
+            var tmpText = CreateTmpText(canvas.transform, "Label", "Measure me", new Vector2(1000f, 100f),
+                enableWordWrapping: false);
+            Assume.That(tmpText.font, Is.Not.Null);
+            tmpText.margin = new Vector4(10f, 0f, 10f, 0f); // x=left, z=right
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+            // Shrink the rect so the rendered width still fits the rect but exceeds the rect minus the
+            // horizontal margins (renderedWidth <= rect width, renderedWidth > rect width - 20).
+            var renderedWidth = tmpText.renderedWidth;
+            tmpText.rectTransform.sizeDelta = new Vector2(renderedWidth + 10f, 100f);
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+
+            Assert.That(() =>
+            {
+                Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
+            }, Throws.TypeOf<AssertionException>()
+                .With.Message.Contains("\"Label\"")
+                .And.Message.Contains("exceeds rect"));
+        }
+
+        [TestCase(TextOverflowModes.Truncate)]
+        [TestCase(TextOverflowModes.Ellipsis)]
+        [CreateScene]
+        [Category("Acceptance")]
+        public async Task IsNotTextOverflowing_TmpTruncatingOverflowMode_Failure(TextOverflowModes overflowMode)
+        {
+            var canvas = CreateCanvas();
+            var tmpText = CreateTmpText(canvas.transform, "Label",
+                "This text will not fully fit and gets truncated", new Vector2(150f, 20f),
+                overflowMode: overflowMode);
+            Assume.That(tmpText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+
+            Assert.That(() =>
+            {
+                Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
+            }, Throws.TypeOf<AssertionException>()
+                .With.Message.Contains("\"Label\"")
+                .And.Message.Contains("characters from index")
+                .And.Message.Contains($"are not rendered (overflowMode: {overflowMode})"));
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotTextOverflowing_TmpEmptyTextNotLaidOut_Success()
+        {
+            var canvas = CreateCanvas();
+            var tmpText = CreateTmpText(canvas.transform, "Label", string.Empty, new Vector2(5f, 5f));
+            Assume.That(tmpText.font, Is.Not.Null);
+            // Note: intentionally skip Canvas.ForceUpdateCanvases()/frame wait — empty text has nothing to
+            // overflow, so it must pass without being reported as "not laid out".
+
+            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
+        }
+
+        [Test]
+        [CreateScene]
+        [Category("Acceptance")]
+        public void IsNotTextOverflowing_TmpTextNotLaidOut_Failure()
         {
             var canvas = CreateCanvas();
             var tmpText = CreateTmpText(canvas.transform, "Label", "Some text", new Vector2(200f, 50f));
             Assume.That(tmpText.font, Is.Not.Null);
-            // Note: intentionally skip Canvas.ForceUpdateCanvases()/frame wait, unlike the uGUI equivalent
-            // test: TMP_Text.preferredWidth/preferredHeight compute the layout on demand rather than
-            // depending on a prior OnPopulateMesh pass, so there is no "not laid out" state to detect here.
+            // Note: intentionally skip Canvas.ForceUpdateCanvases()/frame wait so the text mesh is never
+            // generated: rendered sizes are only valid after a layout pass, so an un-laid-out element must
+            // be reported instead of silently passing.
 
-            Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
+            Assert.That(() =>
+            {
+                Assert.That(tmpText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
+            }, Throws.TypeOf<AssertionException>()
+                .With.Message.Contains("\"Label\"")
+                .And.Message.Contains("has not been laid out; call Canvas.ForceUpdateCanvases() before asserting"));
         }
 
         [Test]

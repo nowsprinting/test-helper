@@ -244,12 +244,19 @@ namespace TestHelper.Constraints
         [TestCase(0)]
         [TestCase(1)]
         [CreateScene]
-        public void IsNotOverlapping_FewerThanTwoMembers_Success(int memberCount)
+        [Category("Acceptance")]
+        public void IsNotOverlapping_FewerThanTwoMembers_ThrowsArgumentException(int memberCount)
         {
             var canvas = CreateCanvas();
             var actual = CreateElements(canvas.transform, memberCount);
 
-            Assert.That(actual, Is.Not.Overlapping);
+            Assert.That(() =>
+            {
+                Assert.That(actual, Is.Not.Overlapping);
+            }, Throws.TypeOf<ArgumentException>()
+                .With.Property("ParamName").EqualTo("actual")
+                .And.Message.Contains(
+                    $"collection has {memberCount} element(s); Overlapping requires at least 2 to compare"));
         }
 
         [Test]
