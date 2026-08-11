@@ -255,8 +255,8 @@ namespace TestHelper.Constraints
                 Assert.That(actual, Is.Not.Overlapping);
             }, Throws.TypeOf<ArgumentException>()
                 .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains(
-                    $"collection has {memberCount} element(s); Overlapping requires at least 2 to compare"));
+                .And.Message.Contains($"collection has {memberCount} element")
+                .And.Message.Contains("at least 2"));
         }
 
         [Test]

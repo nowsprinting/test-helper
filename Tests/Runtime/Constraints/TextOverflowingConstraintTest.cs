@@ -28,7 +28,8 @@ namespace TestHelper.Constraints
 #if UNITY_2022_2_OR_NEWER
         private const string BuiltinFontName = "LegacyRuntime.ttf";
 #else
-        private const string BuiltinFontName = "Arial.ttf"; // Arial.ttf was replaced by LegacyRuntime.ttf in Unity 2022.2
+        private const string BuiltinFontName = "Arial.ttf";
+        // Arial.ttf was replaced by LegacyRuntime.ttf in Unity 2022.2
 #endif
 
         private static Canvas CreateCanvas()
@@ -559,13 +560,10 @@ namespace TestHelper.Constraints
             var tmpText = CreateTmpText(canvas.transform, "Label", "Measure me", new Vector2(1000f, 100f),
                 enableWordWrapping: false);
             Assume.That(tmpText.font, Is.Not.Null);
-            tmpText.margin = new Vector4(10f, 0f, 10f, 0f); // x=left, z=right
-            Canvas.ForceUpdateCanvases();
-            await UniTask.NextFrame();
-            // Shrink the rect so the rendered width still fits the rect but exceeds the rect minus the
-            // horizontal margins (renderedWidth <= rect width, renderedWidth > rect width - 20).
-            var renderedWidth = tmpText.renderedWidth;
-            tmpText.rectTransform.sizeDelta = new Vector2(renderedWidth + 10f, 100f);
+            // Any rendered text is wider than the 20px left between the margins yet narrower than the
+            // 1000px rect, so the rendered width fits the rect but exceeds the rect minus the margins —
+            // no font-dependent measure-then-resize choreography needed.
+            tmpText.margin = new Vector4(490f, 0f, 490f, 0f); // x=left, z=right
             Canvas.ForceUpdateCanvases();
             await UniTask.NextFrame();
 

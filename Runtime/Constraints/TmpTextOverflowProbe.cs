@@ -65,10 +65,12 @@ namespace TestHelper.Constraints
                 return true;
             }
 
-            // renderedWidth/renderedHeight reflect the actual post-wrap layout (unlike preferredWidth, which
-            // is always measured without wrapping), so both axes can be checked without reading the wrapping
-            // mode — which cannot be read across the supported Unity range without an obsolete API.
-            detection.MeasuredSize = new Vector2(text.renderedWidth, text.renderedHeight);
+            // GetRenderedValues() reflects the actual post-wrap layout (unlike preferredWidth, which is
+            // always measured without wrapping), so both axes can be checked without reading the wrapping
+            // mode — which cannot be read across the supported Unity range without an obsolete API. Called
+            // once instead of reading the renderedWidth/renderedHeight properties, each of which walks the
+            // whole textInfo.characterInfo separately.
+            detection.MeasuredSize = text.GetRenderedValues();
 
             // TMP_Text.margin shrinks the effective text area inside the rect; comparing against the raw
             // rect size would under-report overflow by the margin amount. Negative adjusted size (margins
