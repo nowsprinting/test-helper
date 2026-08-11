@@ -100,7 +100,7 @@ namespace TestHelper.Constraints
             if (detection.SizeExceeded)
             {
                 clauses.Add(
-                    $"preferred size {ConstraintMessageFormatter.Format(detection.MeasuredSize)} exceeds rect {ConstraintMessageFormatter.Format(detection.RectSize)} by {ConstraintMessageFormatter.Format(detection.Excess)}");
+                    $"measured size {ConstraintMessageFormatter.Format(detection.MeasuredSize)} exceeds rect {ConstraintMessageFormatter.Format(detection.RectSize)} by {ConstraintMessageFormatter.Format(detection.Excess)}");
             }
 
             if (detection.CharactersTruncated)
@@ -122,7 +122,7 @@ namespace TestHelper.Constraints
             if (detection.WidthChecked || detection.HeightChecked)
             {
                 notes.Add(
-                    $"preferred size {ConstraintMessageFormatter.Format(detection.MeasuredSize)} within rect {ConstraintMessageFormatter.Format(detection.RectSize)}");
+                    $"measured size {ConstraintMessageFormatter.Format(detection.MeasuredSize)} within rect {ConstraintMessageFormatter.Format(detection.RectSize)}");
             }
 
             if (!string.IsNullOrEmpty(detection.SkipReason))

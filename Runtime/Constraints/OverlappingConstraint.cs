@@ -60,8 +60,9 @@ namespace TestHelper.Constraints
         /// <exception cref="ArgumentNullException"><paramref name="actual"/>, or an element within it (or
         /// within an <see cref="Ignoring"/> group), is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="actual"/> is not a single resolvable element
-        /// or a collection of RectTransforms, or an element within it (or within an <see cref="Ignoring"/>
-        /// group) cannot be resolved to a <see cref="RectTransform"/>.</exception>
+        /// or a collection of RectTransforms, contains fewer than 2 elements, or an element within it (or
+        /// within an <see cref="Ignoring"/> group) cannot be resolved to a
+        /// <see cref="RectTransform"/>.</exception>
         public override ConstraintResult ApplyTo(object actual)
         {
             if (actual == null)
@@ -89,6 +90,16 @@ namespace TestHelper.Constraints
             }
 
             var elements = ResolveAll((IEnumerable)actual, "element");
+
+            // A 0/1-element collection has no pair to compare, so Is.Not.Overlapping would vacuously
+            // succeed — silently validating nothing when a dynamic query (e.g. GetComponentsInChildren)
+            // comes up empty. Rejected like the single-RectTransform case above instead.
+            if (elements.Count < 2)
+            {
+                throw new ArgumentException(
+                    $"collection has {elements.Count} element(s); Overlapping requires at least 2 to compare",
+                    nameof(actual));
+            }
 
             var ignoredSets = new List<HashSet<RectTransform>>();
             foreach (var rawGroup in _ignoredGroups)

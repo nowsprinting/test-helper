@@ -513,6 +513,12 @@ public class MyTestClass
 Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.WithinScreen.Within(2f)`.
 
 > [!IMPORTANT]\
+> This constraint compares only axis-aligned bounding boxes computed from the four world corners — geometry only (rotated elements are over-approximated).\
+> `RectMask2D` clipping, `Canvas.enabled`, `CanvasGroup.alpha`, and `activeInHierarchy` are not considered.\
+> To verify an element stays inside a mask, use `Is.FullyWithin(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
+> To verify actual visibility/reachability, use `TestHelper.UI.GameObjectFinder` in the [test-helper.ui](https://github.com/nowsprinting/test-helper.ui) package with `reachable: true`.
+
+> [!NOTE]\
 > This constraint is intended for scenes and prefabs authored by coding agents.
 > Do not use it where the layout intentionally overflows the screen.
 
@@ -542,6 +548,12 @@ public class MyTestClass
 Chain `.Horizontally()` or `.Vertically()` to narrow the check to a single axis (calling both is equivalent to specifying neither — both axes are checked by default), and `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.FullyWithin(viewport).Horizontally().Within(2f)`.
 
 > [!IMPORTANT]\
+> This constraint compares only axis-aligned bounding boxes computed from the four world corners — geometry only (rotated elements are over-approximated).\
+> `RectMask2D` clipping, `Canvas.enabled`, `CanvasGroup.alpha`, and `activeInHierarchy` are not considered.\
+> To verify an element stays inside a mask, use `Is.FullyWithin(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
+> To verify actual visibility/reachability, use `TestHelper.UI.GameObjectFinder` in the [test-helper.ui](https://github.com/nowsprinting/test-helper.ui) package with `reachable: true`.
+
+> [!NOTE]\
 > This constraint is intended for scenes and prefabs authored by coding agents.
 > Do not use it where the layout intentionally overflows its container.
 
@@ -575,12 +587,18 @@ Assert.That(cards.Prepend(skipButton), Is.Not.Overlapping.Ignoring(cards));
 ```
 
 > [!IMPORTANT]\
+> This constraint compares only axis-aligned bounding boxes computed from the four world corners — geometry only (rotated elements are over-approximated).\
+> `RectMask2D` clipping, `Canvas.enabled`, `CanvasGroup.alpha`, and `activeInHierarchy` are not considered.\
+> To verify an element stays inside a mask, use `Is.FullyWithin(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
+> To verify actual visibility/reachability, use `TestHelper.UI.GameObjectFinder` in the [test-helper.ui](https://github.com/nowsprinting/test-helper.ui) package with `reachable: true`.
+
+> [!NOTE]\
 > This constraint is intended for scenes and prefabs authored by coding agents.
 > Do not use it where the layout intentionally allows elements to overlap.
 
 #### TextOverflowing (optional)
 
-`TextOverflowingConstraint` tests that a uGUI `Text` or TextMeshPro `TMP_Text` component overflows its own `RectTransform` — its preferred size exceeds the rect, or characters are truncated.
+`TextOverflowingConstraint` tests that a uGUI `Text` or TextMeshPro `TMP_Text` component overflows its own `RectTransform` — its measured text size exceeds the rect, or characters are truncated.
 
 Usage:
 
@@ -603,6 +621,12 @@ public class MyTestClass
 Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.Not.TextOverflowing.Within(1f)`.
 
 > [!IMPORTANT]\
+> This constraint compares only axis-aligned bounding boxes computed from the four world corners — geometry only (rotated elements are over-approximated).\
+> `RectMask2D` clipping, `Canvas.enabled`, `CanvasGroup.alpha`, and `activeInHierarchy` are not considered.\
+> To verify an element stays inside a mask, use `Is.FullyWithin(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
+> To verify actual visibility/reachability, use `TestHelper.UI.GameObjectFinder` in the [test-helper.ui](https://github.com/nowsprinting/test-helper.ui) package with `reachable: true`.
+
+> [!NOTE]\
 > This constraint is intended for scenes and prefabs authored by coding agents.
 > Do not use it where the layout intentionally lets text overflow its container.
 
