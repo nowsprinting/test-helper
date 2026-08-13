@@ -41,11 +41,11 @@ namespace TestHelper.Constraints
         }
 
         /// <summary>
-        /// Create constraint to <see cref="RectTransform"/> within <paramref name="container"/>.
+        /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
         /// </summary>
         /// <param name="expression"></param>
         /// <param name="container">Container to check containment against.</param>
-        /// <returns>constraint to <see cref="RectTransform"/> within <paramref name="container"/></returns>
+        /// <returns>constraint to <see cref="RectTransform"/> fully within <paramref name="container"/></returns>
         public static WithinContainerConstraint WithinContainer(this ConstraintExpression expression,
             RectTransform container)
         {

@@ -34,7 +34,7 @@ namespace TestHelper.Constraints
         public static WithinScreenConstraint WithinScreen => new WithinScreenConstraint();
 
         /// <summary>
-        /// Create constraint to <see cref="RectTransform"/> within <paramref name="container"/>.
+        /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
         /// </summary>
         /// <param name="container">Container to check containment against.</param>
         public static WithinContainerConstraint WithinContainer(RectTransform container) =>
