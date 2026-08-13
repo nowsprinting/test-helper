@@ -290,9 +290,10 @@ namespace TestHelper.Constraints
 
             Assert.That(() =>
             {
-                // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
+                // Not a swapped actual/expected: this value IS the actual value under test, deliberately an
                 // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
-                Assert.That("not a RectTransform", Is.WithinContainer(container));
+                object unsupportedActual = "not a RectTransform";
+                Assert.That(unsupportedActual, Is.WithinContainer(container));
             }, Throws.TypeOf<ArgumentException>()
                 .With.Property("ParamName").EqualTo("actual")
                 .And.Message.Contains("is not a RectTransform, GameObject, or Component"));

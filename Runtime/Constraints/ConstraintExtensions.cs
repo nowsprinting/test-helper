@@ -55,19 +55,12 @@ namespace TestHelper.Constraints
         }
 
         /// <summary>
-        /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
+        /// Obsolete. Use <see cref="WithinContainer(ConstraintExpression, RectTransform)"/> instead.
         /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="container">Container to check containment against.</param>
-        /// <returns>constraint to <see cref="RectTransform"/> fully within <paramref name="container"/></returns>
         [Obsolete("Use WithinContainer instead.")]
         public static WithinContainerConstraint FullyWithin(this ConstraintExpression expression,
-            RectTransform container)
-        {
-            var constraint = new WithinContainerConstraint(container);
-            expression.Append(constraint);
-            return constraint;
-        }
+            RectTransform container) =>
+            expression.WithinContainer(container);
 
         /// <summary>
         /// Create constraint to a collection of <see cref="RectTransform"/> where any pair overlaps.
