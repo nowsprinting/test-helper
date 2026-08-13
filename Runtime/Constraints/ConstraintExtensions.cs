@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using NUnit.Framework.Constraints;
 using UnityEngine;
 
@@ -40,14 +41,30 @@ namespace TestHelper.Constraints
         }
 
         /// <summary>
+        /// Create constraint to <see cref="RectTransform"/> within <paramref name="container"/>.
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="container">Container to check containment against.</param>
+        /// <returns>constraint to <see cref="RectTransform"/> within <paramref name="container"/></returns>
+        public static WithinContainerConstraint WithinContainer(this ConstraintExpression expression,
+            RectTransform container)
+        {
+            var constraint = new WithinContainerConstraint(container);
+            expression.Append(constraint);
+            return constraint;
+        }
+
+        /// <summary>
         /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
         /// </summary>
         /// <param name="expression"></param>
         /// <param name="container">Container to check containment against.</param>
         /// <returns>constraint to <see cref="RectTransform"/> fully within <paramref name="container"/></returns>
-        public static FullyWithinConstraint FullyWithin(this ConstraintExpression expression, RectTransform container)
+        [Obsolete("Use WithinContainer instead.")]
+        public static WithinContainerConstraint FullyWithin(this ConstraintExpression expression,
+            RectTransform container)
         {
-            var constraint = new FullyWithinConstraint(container);
+            var constraint = new WithinContainerConstraint(container);
             expression.Append(constraint);
             return constraint;
         }

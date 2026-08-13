@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using UnityEngine;
 
 namespace TestHelper.Constraints
@@ -33,11 +34,19 @@ namespace TestHelper.Constraints
         public static WithinScreenConstraint WithinScreen => new WithinScreenConstraint();
 
         /// <summary>
+        /// Create constraint to <see cref="RectTransform"/> within <paramref name="container"/>.
+        /// </summary>
+        /// <param name="container">Container to check containment against.</param>
+        public static WithinContainerConstraint WithinContainer(RectTransform container) =>
+            new WithinContainerConstraint(container);
+
+        /// <summary>
         /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
         /// </summary>
         /// <param name="container">Container to check containment against.</param>
-        public static FullyWithinConstraint FullyWithin(RectTransform container) =>
-            new FullyWithinConstraint(container);
+        [Obsolete("Use WithinContainer instead.")]
+        public static WithinContainerConstraint FullyWithin(RectTransform container) =>
+            new WithinContainerConstraint(container);
 
         /// <summary>
         /// Create constraint to a collection of <see cref="RectTransform"/> where any pair overlaps.
