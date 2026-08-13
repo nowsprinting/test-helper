@@ -64,13 +64,13 @@ namespace TestHelper.Constraints
         [Test]
         [CreateScene]
         [Category("Acceptance")]
-        public void FullyWithin_MethodStyleWithOperator_Available()
+        public void WithinContainer_MethodStyleWithOperator_Available()
         {
             var canvas = CreateCanvas();
             var container = CreateElement(canvas.transform, "Viewport", Vector2.zero, new Vector2(200f, 150f));
             var actual = CreateElement(canvas.transform, "Element", new Vector2(300f, 300f), new Vector2(50f, 50f));
 
-            Assert.That(actual, Is.Not.FullyWithin(container));
+            Assert.That(actual, Is.Not.WithinContainer(container));
         }
 
         [Test]
