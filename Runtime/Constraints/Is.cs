@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using UnityEngine;
 
 namespace TestHelper.Constraints
@@ -36,8 +37,15 @@ namespace TestHelper.Constraints
         /// Create constraint to <see cref="RectTransform"/> fully within <paramref name="container"/>.
         /// </summary>
         /// <param name="container">Container to check containment against.</param>
-        public static FullyWithinConstraint FullyWithin(RectTransform container) =>
-            new FullyWithinConstraint(container);
+        public static WithinContainerConstraint WithinContainer(RectTransform container) =>
+            new WithinContainerConstraint(container);
+
+        /// <summary>
+        /// Obsolete. Use <see cref="WithinContainer"/> instead.
+        /// </summary>
+        [Obsolete("Use WithinContainer instead.")]
+        public static WithinContainerConstraint FullyWithin(RectTransform container) =>
+            WithinContainer(container);
 
         /// <summary>
         /// Create constraint to a collection of <see cref="RectTransform"/> where any pair overlaps.

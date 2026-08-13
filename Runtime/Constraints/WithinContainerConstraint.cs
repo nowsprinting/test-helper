@@ -11,14 +11,14 @@ namespace TestHelper.Constraints
     /// An NUnit test constraint class to a <see cref="RectTransform"/> fully within another
     /// <see cref="RectTransform"/>'s screen rect.
     /// </summary>
-    public class FullyWithinConstraint : TestHelperConstraint
+    public class WithinContainerConstraint : TestHelperConstraint
     {
         private const float DefaultTolerance = 0.5f;
         private readonly RectTransform _container;
         private RectAxes _axes;
         private float _tolerance = DefaultTolerance;
 
-        public FullyWithinConstraint(RectTransform container) : base(container)
+        public WithinContainerConstraint(RectTransform container) : base(container)
         {
             _container = container;
         }
@@ -27,7 +27,7 @@ namespace TestHelper.Constraints
         /// Narrow the check to the horizontal axis.
         /// </summary>
         /// <returns>this</returns>
-        public FullyWithinConstraint Horizontally()
+        public WithinContainerConstraint Horizontally()
         {
             _axes |= RectAxes.Horizontal;
             return this;
@@ -37,7 +37,7 @@ namespace TestHelper.Constraints
         /// Narrow the check to the vertical axis.
         /// </summary>
         /// <returns>this</returns>
-        public FullyWithinConstraint Vertically()
+        public WithinContainerConstraint Vertically()
         {
             _axes |= RectAxes.Vertical;
             return this;
@@ -48,7 +48,7 @@ namespace TestHelper.Constraints
         /// </summary>
         /// <param name="tolerance">Tolerance in pixels.</param>
         /// <returns>this</returns>
-        public FullyWithinConstraint Within(float tolerance)
+        public WithinContainerConstraint Within(float tolerance)
         {
             _tolerance = Mathf.Max(0f, tolerance);
             return this;

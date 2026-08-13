@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using NUnit.Framework.Constraints;
 using UnityEngine;
 
@@ -45,12 +46,21 @@ namespace TestHelper.Constraints
         /// <param name="expression"></param>
         /// <param name="container">Container to check containment against.</param>
         /// <returns>constraint to <see cref="RectTransform"/> fully within <paramref name="container"/></returns>
-        public static FullyWithinConstraint FullyWithin(this ConstraintExpression expression, RectTransform container)
+        public static WithinContainerConstraint WithinContainer(this ConstraintExpression expression,
+            RectTransform container)
         {
-            var constraint = new FullyWithinConstraint(container);
+            var constraint = new WithinContainerConstraint(container);
             expression.Append(constraint);
             return constraint;
         }
+
+        /// <summary>
+        /// Obsolete. Use <see cref="WithinContainer(ConstraintExpression, RectTransform)"/> instead.
+        /// </summary>
+        [Obsolete("Use WithinContainer instead.")]
+        public static WithinContainerConstraint FullyWithin(this ConstraintExpression expression,
+            RectTransform container) =>
+            expression.WithinContainer(container);
 
         /// <summary>
         /// Create constraint to a collection of <see cref="RectTransform"/> where any pair overlaps.

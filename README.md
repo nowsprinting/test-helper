@@ -515,16 +515,16 @@ Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., 
 > [!IMPORTANT]\
 > This constraint compares only axis-aligned bounding boxes computed from the four world corners — geometry only (rotated elements are over-approximated).\
 > `RectMask2D` clipping, `Canvas.enabled`, `CanvasGroup.alpha`, and `activeInHierarchy` are not considered.\
-> To verify an element stays inside a mask, use `Is.FullyWithin(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
+> To verify an element stays inside a mask, use `Is.WithinContainer(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
 > To verify actual visibility/reachability, use `TestHelper.UI.GameObjectFinder` in the [test-helper.ui](https://github.com/nowsprinting/test-helper.ui) package with `reachable: true`.
 
 > [!NOTE]\
 > This constraint is intended for scenes and prefabs authored by coding agents.
 > Do not use it where the layout intentionally overflows the screen.
 
-#### FullyWithin
+#### WithinContainer
 
-`FullyWithinConstraint` tests that a `RectTransform` (or a `GameObject`/`Component` with one) is fully within another `RectTransform`'s screen rect.
+`WithinContainerConstraint` tests that a `RectTransform` (or a `GameObject`/`Component` with one) is fully within another `RectTransform`'s screen rect.
 
 Usage:
 
@@ -540,17 +540,17 @@ public class MyTestClass
         var viewport = GameObject.Find("Viewport").GetComponent<RectTransform>();
         var card = GameObject.Find("Card (0)");
 
-        Assert.That(card, Is.FullyWithin(viewport));
+        Assert.That(card, Is.WithinContainer(viewport));
     }
 }
 ```
 
-Chain `.Horizontally()` or `.Vertically()` to narrow the check to a single axis (calling both is equivalent to specifying neither — both axes are checked by default), and `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.FullyWithin(viewport).Horizontally().Within(2f)`.
+Chain `.Horizontally()` or `.Vertically()` to narrow the check to a single axis (calling both is equivalent to specifying neither — both axes are checked by default), and `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., `Is.WithinContainer(viewport).Horizontally().Within(2f)`.
 
 > [!IMPORTANT]\
 > This constraint compares only axis-aligned bounding boxes computed from the four world corners — geometry only (rotated elements are over-approximated).\
 > `RectMask2D` clipping, `Canvas.enabled`, `CanvasGroup.alpha`, and `activeInHierarchy` are not considered.\
-> To verify an element stays inside a mask, use `Is.FullyWithin(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
+> To verify an element stays inside a mask, use `Is.WithinContainer(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
 > To verify actual visibility/reachability, use `TestHelper.UI.GameObjectFinder` in the [test-helper.ui](https://github.com/nowsprinting/test-helper.ui) package with `reachable: true`.
 
 > [!NOTE]\
@@ -589,7 +589,7 @@ Assert.That(cards.Prepend(skipButton), Is.Not.Overlapping.Ignoring(cards));
 > [!IMPORTANT]\
 > This constraint compares only axis-aligned bounding boxes computed from the four world corners — geometry only (rotated elements are over-approximated).\
 > `RectMask2D` clipping, `Canvas.enabled`, `CanvasGroup.alpha`, and `activeInHierarchy` are not considered.\
-> To verify an element stays inside a mask, use `Is.FullyWithin(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
+> To verify an element stays inside a mask, use `Is.WithinContainer(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
 > To verify actual visibility/reachability, use `TestHelper.UI.GameObjectFinder` in the [test-helper.ui](https://github.com/nowsprinting/test-helper.ui) package with `reachable: true`.
 
 > [!NOTE]\
@@ -623,7 +623,7 @@ Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., 
 > [!IMPORTANT]\
 > This constraint compares only axis-aligned bounding boxes computed from the four world corners — geometry only (rotated elements are over-approximated).\
 > `RectMask2D` clipping, `Canvas.enabled`, `CanvasGroup.alpha`, and `activeInHierarchy` are not considered.\
-> To verify an element stays inside a mask, use `Is.FullyWithin(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
+> To verify an element stays inside a mask, use `Is.WithinContainer(container)` with the mask's `RectTransform` as container, plus `Assume.That(container.GetComponent<RectMask2D>(), Is.Not.Null);`.\
 > To verify actual visibility/reachability, use `TestHelper.UI.GameObjectFinder` in the [test-helper.ui](https://github.com/nowsprinting/test-helper.ui) package with `reachable: true`.
 
 > [!NOTE]\

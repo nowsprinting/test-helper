@@ -103,9 +103,9 @@ namespace TestHelper.Constraints
             }
         }
 
-        // Note: FullyWithin is intentionally NOT exposed here. It takes a RectTransform argument, so it is
-        // always written in method style regardless (e.g., `Is.Not.FullyWithin(container)`); the existing
-        // ConstraintExtensions.FullyWithin(this ConstraintExpression, RectTransform) already binds to this
+        // Note: WithinContainer is intentionally NOT exposed here. It takes a RectTransform argument, so it is
+        // always written in method style regardless (e.g., `Is.Not.WithinContainer(container)`); the existing
+        // ConstraintExtensions.WithinContainer(this ConstraintExpression, RectTransform) already binds to this
         // type without any redeclaration.
     }
 }
