@@ -270,9 +270,6 @@ resharper_unused_type_global_highlighting = warning
 resharper_unused_member_global_highlighting = warning
 resharper_unused_member_local_highlighting = warning
 
-# BannedApiAnalyzers
-dotnet_diagnostic.RS0030.severity = error
-
 # Suppress C#8.0+ syntax sugar (for under Unity 2020.2 compatibility)
 # See: https://www.jetbrains.com/help/resharper/Reference__Code_Inspections_CSHARP.html
 resharper_convert_to_using_declaration_highlighting = none
@@ -285,14 +282,6 @@ resharper_use_negated_pattern_in_is_expression_highlighting = none
 
 # Access to a static member of a type via a derived type (e.g., NUnit.Framework.Is)
 resharper_access_to_static_member_via_derived_type_highlighting = none
-
-# NUnit2045: Use Assert.Multiple
-dotnet_diagnostic.NUnit2045.severity = none
-
-# VSTHRD200: Use "Async" suffix for async methods
-# Test methods follow the Subject_Scenario naming convention and are invoked by the test runner via
-# reflection, not awaited by caller code, so the "Async" suffix convention does not apply to them.
-dotnet_diagnostic.VSTHRD200.severity = none
 
 [src/{Compilers,ExpressionEvaluator,Scripting}/**Test**/*.{cs,vb}]
 
