@@ -116,13 +116,8 @@ namespace TestHelper.Statistics
         /// <param name="sampleSpace">Input sample space</param>
         public void Calculate(ISampleSpace<T> sampleSpace)
         {
-            var size = 0UL;
-            foreach (var sample in sampleSpace.Samples)
-            {
-                size++;
-            }
-
-            Calculate(sampleSpace.Samples, size, sampleSpace.Min, sampleSpace.Max);
+            Calculate(sampleSpace.Samples, SampleCounter.Count(sampleSpace.Samples), sampleSpace.Min,
+                sampleSpace.Max);
         }
 
         private Bin<T> FindBin(T value)

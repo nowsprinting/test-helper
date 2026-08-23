@@ -43,10 +43,7 @@ namespace TestHelper.Statistics
         {
             if (size == 0)
             {
-                foreach (var sample in samples)
-                {
-                    size++;
-                }
+                size = SampleCounter.Count(samples);
             }
 
             var minValue = Convert.ToDouble(min);

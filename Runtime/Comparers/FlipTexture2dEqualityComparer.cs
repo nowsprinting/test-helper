@@ -114,8 +114,8 @@ namespace TestHelper.Comparers
         {
             // Not GetPixelData<T>/GetRawTextureData<T>: they hand back the raw buffer in the texture's own
             // TextureFormat, so the caller would have to decode every format the compared textures might use.
-            // GetPixels decodes any readable format to Color. Its allocation is acceptable because this runs
-            // once per assertion, not in the player loop.
+            // GetPixels decodes any readable format to Color. Its allocation is accepted here: this is test
+            // assertion code that runs once per comparison, not gameplay code the ban is aimed at.
 #pragma warning disable RS0030 // Do not use banned APIs
             var pixels = texture.GetPixels();
 #pragma warning restore RS0030
