@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 #if UNITY_EDITOR
@@ -78,7 +78,7 @@ namespace TestHelper.RuntimeInternals.Wrappers.UnityEditor
 
         public void AddCustomSize(GameViewSizeWrapper size)
         {
-            s_addCustomSize.Invoke(_instance, new object[] { size.GetInnerInstance() });
+            s_addCustomSize.Invoke(_instance, new[] { size.GetInnerInstance() });
         }
 
         public void RemoveCustomSize(int index)

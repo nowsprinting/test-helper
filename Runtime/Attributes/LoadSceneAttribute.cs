@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -43,7 +43,7 @@ namespace TestHelper.Attributes
         /// This process runs after <c>OneTimeSetUp</c> and before <c>SetUp</c>.
         /// If you want to load during <c>SetUp</c> and testing, use <see cref="BuildSceneAttribute"/> and <see cref="SceneManagerHelper.LoadSceneAsync"/> instead.
         /// <p/>
-        /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
+        /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <c>TestHelper.Editor.TemporaryBuildScenesUsingInTest</c>.
         /// </remarks>
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         public LoadSceneAttribute(string path = null, [CallerFilePath] string callerFilePath = null)

@@ -1,11 +1,10 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using NUnit.Framework;
 using TestHelper.RuntimeInternals;
 using UnityEngine;
@@ -44,7 +43,10 @@ namespace TestHelper.Statistics
         {
             if (size == 0)
             {
-                size = (ulong)samples.Count();
+                foreach (var sample in samples)
+                {
+                    size++;
+                }
             }
 
             var minValue = Convert.ToDouble(min);
@@ -87,7 +89,8 @@ namespace TestHelper.Statistics
         /// <param name="sampleSpace">Input sample space</param>
         public void Plot(ISampleSpace<T> sampleSpace)
         {
-            Plot(sampleSpace.Samples, (ulong)sampleSpace.Samples.Count(), sampleSpace.Min, sampleSpace.Max);
+            // Passing 0 lets the overload count the samples itself, so this method does not need to enumerate them.
+            Plot(sampleSpace.Samples, 0, sampleSpace.Min, sampleSpace.Max);
         }
 
         /// <summary>

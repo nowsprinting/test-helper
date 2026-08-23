@@ -29,7 +29,7 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public TextOverflowingConstraint Within(float tolerance)
         {
-            _tolerance = Mathf.Max(0f, tolerance);
+            _tolerance = Math.Max(0f, tolerance);
             return this;
         }
 
@@ -82,10 +82,10 @@ namespace TestHelper.Constraints
             }
 
             var excessX = detection.WidthChecked
-                ? Mathf.Max(0f, detection.MeasuredSize.x - detection.RectSize.x)
+                ? Math.Max(0f, detection.MeasuredSize.x - detection.RectSize.x)
                 : 0f;
             var excessY = detection.HeightChecked
-                ? Mathf.Max(0f, detection.MeasuredSize.y - detection.RectSize.y)
+                ? Math.Max(0f, detection.MeasuredSize.y - detection.RectSize.y)
                 : 0f;
             var exceedsX = detection.WidthChecked && excessX > _tolerance;
             var exceedsY = detection.HeightChecked && excessY > _tolerance;

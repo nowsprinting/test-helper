@@ -28,7 +28,7 @@ namespace TestHelper.RuntimeInternals
         internal class Entry
         {
             public string physicalRoot; // Real path on the development machine, '/'-separators, no trailing slash
-            public string assetRoot; // "Assets" or "Packages/<name>", no trailing slash
+            public string assetRoot;    // "Assets" or "Packages/<name>", no trailing slash
         }
 
         /// <summary>

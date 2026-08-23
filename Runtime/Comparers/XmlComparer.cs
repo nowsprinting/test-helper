@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace TestHelper.Comparers
     /// Internal using <see cref="XDocumentComparer"/>  for comparing <see cref="XDocument"/>.
     /// </remarks>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// [TestFixture]
     ///     public class MyTestClass
     ///     {
@@ -39,7 +39,7 @@ namespace TestHelper.Comparers
     ///             Assert.That(x, Is.EqualTo(y).Using(new XmlComparer()));
     ///         }
     ///     }
-    /// </code>
+    /// ]]></code>
     /// </example>
     public class XmlComparer : IComparer<string>
     {

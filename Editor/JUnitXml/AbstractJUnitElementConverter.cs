@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -52,8 +52,8 @@ namespace TestHelper.Editor.JUnitXml
         protected double Time => _duration; // seconds
         protected string Timestamp => _starttime;
         protected string Status => _result;
-        protected bool IsTestCaseSkipped => _result == "Skipped"; // test-case has not skipped attribute
-        protected bool IsTestCaseFailed => _result == "Failed"; // test-case has not failures attribute
+        protected bool IsTestCaseSkipped => _result == "Skipped";           // test-case has not skipped attribute
+        protected bool IsTestCaseFailed => _result == "Failed";             // test-case has not failures attribute
         protected bool IsTestCaseInconclusive => _result == "Inconclusive"; // test-case has not inconclusive attribute
         protected List<( string, string)> Properties => _properties;
         protected string Reason => _reason;
@@ -76,7 +76,7 @@ namespace TestHelper.Editor.JUnitXml
         private readonly int _skipped;
         private readonly int _asserts;
         private readonly string _starttime;
-        private readonly double _duration; // seconds
+        private readonly double _duration;                                                   // seconds
         private readonly List<( string, string)> _properties = new List<(string, string)>(); // name, value
         private string _reason;
         private (string, string) _failure; // message, stack-trace

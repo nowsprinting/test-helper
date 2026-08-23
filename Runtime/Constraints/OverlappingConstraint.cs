@@ -49,7 +49,7 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public OverlappingConstraint Within(float tolerance)
         {
-            _tolerance = Mathf.Max(0f, tolerance);
+            _tolerance = Math.Max(0f, tolerance);
             return this;
         }
 

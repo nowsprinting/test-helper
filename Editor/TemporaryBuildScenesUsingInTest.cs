@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using TestHelper.Attributes;
 using TestHelper.Editor;
 using TestHelper.RuntimeInternals;
@@ -23,9 +22,11 @@ namespace TestHelper.Editor
     {
         internal static IEnumerable<string> GetScenesUsingInTest()
         {
-            var attributes = AttributeFinder.FindOnAssemblies<BuildSceneAttribute>()
-                .Concat(AttributeFinder.FindOnTypes<BuildSceneAttribute>())
-                .Concat(AttributeFinder.FindOnMethods<BuildSceneAttribute>());
+            var attributes = new List<BuildSceneAttribute>();
+            attributes.AddRange(AttributeFinder.FindOnAssemblies<BuildSceneAttribute>());
+            attributes.AddRange(AttributeFinder.FindOnTypes<BuildSceneAttribute>());
+            attributes.AddRange(AttributeFinder.FindOnMethods<BuildSceneAttribute>());
+
             foreach (var attribute in attributes)
             {
                 string scenePath;

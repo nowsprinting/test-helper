@@ -48,7 +48,13 @@ namespace TestHelper.Editor
         private static IEnumerable<T> FindOnProviders<T>(IEnumerable<ICustomAttributeProvider> providers)
             where T : Attribute
         {
-            return providers.SelectMany(provider => provider.GetCustomAttributes(typeof(T), false)).Cast<T>();
+            foreach (var provider in providers)
+            {
+                foreach (var attribute in provider.GetCustomAttributes(typeof(T), false))
+                {
+                    yield return (T)attribute;
+                }
+            }
         }
     }
 }
