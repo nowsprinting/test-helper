@@ -38,7 +38,10 @@ namespace TestHelper.Constraints
 
         private static string FormatIntegral(float value)
         {
-            return Mathf.RoundToInt(value).ToString(CultureInfo.InvariantCulture);
+            // Not System.MathF.Round: it needs .NET Standard 2.1 (Unity 2021.2 or newer), and this package
+            // supports Unity 2019.4. System.Math.Round is what Mathf.RoundToInt calls internally, so the
+            // to-even rounding is unchanged. Qualified because `Object` in this file is UnityEngine.Object.
+            return ((int)System.Math.Round(value)).ToString(CultureInfo.InvariantCulture);
         }
 
         internal static string Quote(Object obj)

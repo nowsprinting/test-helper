@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -20,7 +20,7 @@ namespace TestHelper.RuntimeInternals
         /// Reset counter for same test names.
         /// </summary>
         /// <remarks>
-        /// This method is called from the <see cref="TestHelper.Editor.TestRunnerCallbacks.RunStarted"/> method.
+        /// This method is called from the <c>TestHelper.Editor.TestRunnerCallbacks.RunStarted</c> method.
         /// Depending on the Enter Play Mode Settings, it may not be cleared in Play Mode and may be used by Edit Mode tests.
         /// </remarks>
         internal static void ResetCounter()

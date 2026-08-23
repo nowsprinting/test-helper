@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Xml.Linq;
@@ -24,7 +24,7 @@ namespace TestHelper.Editor.JUnitXml
             element.Add(new XAttribute(JUnitAttributeTests, Tests));
             element.Add(new XAttribute(JUnitAttributeID, ID));
             element.Add(new XAttribute(JUnitAttributeDisabled, Disabled));
-            element.Add(new XAttribute(JUnitAttributeErrors, Errors));  // always 0
+            element.Add(new XAttribute(JUnitAttributeErrors, Errors)); // always 0
             element.Add(new XAttribute(JUnitAttributeFailures, Failures));
             element.Add(new XAttribute(JUnitAttributeSkipped, Skipped));
             element.Add(new XAttribute(JUnitAttributeTime, Time));

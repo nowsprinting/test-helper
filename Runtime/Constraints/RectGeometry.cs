@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -63,8 +64,8 @@ namespace TestHelper.Constraints
         /// </summary>
         internal static Vector2 GetOverlapExtent(Rect a, Rect b)
         {
-            var x = Mathf.Min(a.xMax, b.xMax) - Mathf.Max(a.xMin, b.xMin);
-            var y = Mathf.Min(a.yMax, b.yMax) - Mathf.Max(a.yMin, b.yMin);
+            var x = Math.Min(a.xMax, b.xMax) - Math.Max(a.xMin, b.xMin);
+            var y = Math.Min(a.yMax, b.yMax) - Math.Max(a.yMin, b.yMin);
             return new Vector2(x, y);
         }
 

@@ -1,9 +1,8 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -16,7 +15,7 @@ namespace TestHelper.Comparers
     /// XML declarations and comments are ignored.
     /// </summary>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// [TestFixture]
     ///     public class MyTestClass
     ///     {
@@ -31,8 +30,7 @@ namespace TestHelper.Comparers
     ///             Assert.That(x, Is.EqualTo(y).Using(new XDocumentComparer()));
     ///         }
     ///    }
-    /// 
-    /// </code>
+    /// ]]></code>
     /// </example>
     public class XDocumentComparer : IComparer<XDocument>
     {
@@ -72,7 +70,7 @@ namespace TestHelper.Comparers
                 current = GetChildOrNextElement(current);
             }
 
-            if (comparisonDictionary.Any())
+            if (comparisonDictionary.Count > 0)
             {
                 return 1; // The element exists only in y.
             }
@@ -104,9 +102,9 @@ namespace TestHelper.Comparers
 
         private static XElement GetChildOrNextElement(XElement element)
         {
-            if (element.HasElements)
+            foreach (var child in element.Elements())
             {
-                return element.Elements().First();
+                return child;
             }
 
             var nextNode = element.NextNode;
@@ -208,11 +206,11 @@ namespace TestHelper.Comparers
         /// </summary>
         private static int Compare(IEnumerable<XAttribute> x, IEnumerable<XAttribute> y)
         {
-            var comparisonList = y.ToList();
+            var comparisonList = new List<XAttribute>(y);
 
             foreach (var xAttribute in x)
             {
-                var yAttribute = comparisonList.FirstOrDefault(attribute => attribute.Name == xAttribute.Name);
+                var yAttribute = comparisonList.Find(attribute => attribute.Name == xAttribute.Name);
                 if (yAttribute == null)
                 {
                     return -1;
@@ -226,7 +224,7 @@ namespace TestHelper.Comparers
                 comparisonList.Remove(yAttribute);
             }
 
-            if (comparisonList.Any())
+            if (comparisonList.Count > 0)
             {
                 return 1;
             }

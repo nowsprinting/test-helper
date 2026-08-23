@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 #if ENABLE_FLIP_BINDING
@@ -112,7 +112,13 @@ namespace TestHelper.Comparers
 
         private static float[] ConvertToRgbArray(Texture2D texture)
         {
+            // Not GetPixelData<T>/GetRawTextureData<T>: they hand back the raw buffer in the texture's own
+            // TextureFormat, so the caller would have to decode every format the compared textures might use.
+            // GetPixels decodes any readable format to Color. Its allocation is accepted here: this is test
+            // assertion code that runs once per comparison, not gameplay code the ban is aimed at.
+#pragma warning disable RS0030 // Do not use banned APIs
             var pixels = texture.GetPixels();
+#pragma warning restore RS0030
             var rgb = new float[pixels.Length * 3];
 
             for (var i = 0; i < pixels.Length; i++)

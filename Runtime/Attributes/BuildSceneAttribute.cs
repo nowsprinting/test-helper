@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -36,7 +36,7 @@ namespace TestHelper.Attributes
         /// </param>
         /// <param name="callerFilePath">Test file path set by <see cref="CallerFilePathAttribute"/></param>
         /// <remarks>
-        /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <see cref="TestHelper.Editor.TemporaryBuildScenesUsingInTest"/>.
+        /// For the process of including a Scene not in "Scenes in Build" to a build for player, see: <c>TestHelper.Editor.TemporaryBuildScenesUsingInTest</c>.
         /// </remarks>
         public BuildSceneAttribute(string path = null, [CallerFilePath] string callerFilePath = null)
         {

@@ -50,7 +50,7 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public WithinContainerConstraint Within(float tolerance)
         {
-            _tolerance = Mathf.Max(0f, tolerance);
+            _tolerance = Math.Max(0f, tolerance);
             return this;
         }
 

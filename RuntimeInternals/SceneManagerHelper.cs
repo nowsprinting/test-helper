@@ -1,10 +1,9 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -137,7 +136,7 @@ namespace TestHelper.RuntimeInternals
                 // Note: Do not use Exception (and Assert). Because freezes async tests on UTF v1.3.4, See UUM-25085.
             }
 
-            if (split.Last().IndexOfAny(new[] { '*', '?' }) >= 0)
+            if (split[split.Length - 1].IndexOfAny(new[] { '*', '?' }) >= 0)
             {
                 Debug.LogError($"Wildcards cannot be used in the scene name of path: {path}");
                 return false;
@@ -225,7 +224,8 @@ namespace TestHelper.RuntimeInternals
         /// <param name="path"></param>
         internal static string GetExistScenePathOnPlayer(string path)
         {
-            return path.Split('/').Last().Split('.').First();
+            var directories = path.Split('/');
+            return directories[directories.Length - 1].Split('.')[0];
         }
     }
 }

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
 
@@ -20,15 +19,31 @@ namespace TestHelper.Editor
 #if UNITY_2020_1_OR_NEWER
             return FindOnProviders<T>(TypeCache.GetFieldsWithAttribute<T>());
 #else
-            // TypeCache.GetFieldsWithAttribute is not available on Unity 2019; fall back to reflection over
-            // all loaded assemblies.
-            return FindOnProviders<T>(AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .SelectMany(x => x.GetFields(
-                    BindingFlags.Public | BindingFlags.NonPublic |
-                    BindingFlags.Instance | BindingFlags.Static)));
+            return FindOnProviders<T>(FindAllFields());
 #endif
         }
+
+#if !UNITY_2020_1_OR_NEWER
+        /// <summary>
+        /// TypeCache.GetFieldsWithAttribute is not available on Unity 2019; fall back to reflection over
+        /// all loaded assemblies.
+        /// </summary>
+        private static IEnumerable<ICustomAttributeProvider> FindAllFields()
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    foreach (var field in type.GetFields(
+                                 BindingFlags.Public | BindingFlags.NonPublic |
+                                 BindingFlags.Instance | BindingFlags.Static))
+                    {
+                        yield return field;
+                    }
+                }
+            }
+        }
+#endif
 
         internal static IEnumerable<T> FindOnAssemblies<T>() where T : Attribute
         {
@@ -48,7 +63,13 @@ namespace TestHelper.Editor
         private static IEnumerable<T> FindOnProviders<T>(IEnumerable<ICustomAttributeProvider> providers)
             where T : Attribute
         {
-            return providers.SelectMany(provider => provider.GetCustomAttributes(typeof(T), false)).Cast<T>();
+            foreach (var provider in providers)
+            {
+                foreach (var attribute in provider.GetCustomAttributes(typeof(T), false))
+                {
+                    yield return (T)attribute;
+                }
+            }
         }
     }
 }

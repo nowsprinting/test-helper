@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using TestHelper.Attributes;
 using TestHelper.RuntimeInternals;
 
@@ -25,14 +24,27 @@ namespace TestHelper.Editor
         /// </summary>
         internal static AssetRootMapping Build()
         {
-            var callerFilePaths = AttributeFinder.FindOnFields<LoadAssetAttribute>()
-                .Select(attribute => attribute.CallerFilePath)
-                .Concat(AttributeFinder.FindOnAssemblies<BuildSceneAttribute>()
-                    .Select(attribute => attribute.CallerFilePath))
-                .Concat(AttributeFinder.FindOnTypes<BuildSceneAttribute>()
-                    .Select(attribute => attribute.CallerFilePath))
-                .Concat(AttributeFinder.FindOnMethods<BuildSceneAttribute>()
-                    .Select(attribute => attribute.CallerFilePath));
+            var callerFilePaths = new List<string>();
+            foreach (var attribute in AttributeFinder.FindOnFields<LoadAssetAttribute>())
+            {
+                callerFilePaths.Add(attribute.CallerFilePath);
+            }
+
+            foreach (var attribute in AttributeFinder.FindOnAssemblies<BuildSceneAttribute>())
+            {
+                callerFilePaths.Add(attribute.CallerFilePath);
+            }
+
+            foreach (var attribute in AttributeFinder.FindOnTypes<BuildSceneAttribute>())
+            {
+                callerFilePaths.Add(attribute.CallerFilePath);
+            }
+
+            foreach (var attribute in AttributeFinder.FindOnMethods<BuildSceneAttribute>())
+            {
+                callerFilePaths.Add(attribute.CallerFilePath);
+            }
+
             return CreateFromCallerFilePaths(callerFilePaths);
         }
 

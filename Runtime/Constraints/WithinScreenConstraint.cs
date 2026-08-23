@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
+using System;
 using NUnit.Framework.Constraints;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ namespace TestHelper.Constraints
         /// <returns>this</returns>
         public WithinScreenConstraint Within(float tolerance)
         {
-            _tolerance = Mathf.Max(0f, tolerance);
+            _tolerance = Math.Max(0f, tolerance);
             return this;
         }
 

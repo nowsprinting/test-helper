@@ -1,9 +1,8 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace TestHelper.Statistics
@@ -117,7 +116,8 @@ namespace TestHelper.Statistics
         /// <param name="sampleSpace">Input sample space</param>
         public void Calculate(ISampleSpace<T> sampleSpace)
         {
-            Calculate(sampleSpace.Samples, (ulong)sampleSpace.Samples.Count(), sampleSpace.Min, sampleSpace.Max);
+            Calculate(sampleSpace.Samples, SampleCounter.Count(sampleSpace.Samples), sampleSpace.Min,
+                sampleSpace.Max);
         }
 
         private Bin<T> FindBin(T value)
@@ -166,10 +166,13 @@ namespace TestHelper.Statistics
                 ? (double)(frequencies[frequencies.Count / 2 - 1] + frequencies[frequencies.Count / 2]) / 2
                 : frequencies[frequencies.Count / 2];
 
-            foreach (var frequency in frequencies.Where(frequency => frequency > 0))
+            foreach (var frequency in frequencies)
             {
-                _valleyGreaterThanZero = frequency;
-                break;
+                if (frequency > 0)
+                {
+                    _valleyGreaterThanZero = frequency;
+                    break;
+                }
             }
         }
 
