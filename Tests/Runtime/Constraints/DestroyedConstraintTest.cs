@@ -97,7 +97,9 @@ namespace TestHelper.Constraints
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
                 // unsupported type, to exercise the "not a UnityEngine.Object" failure path.
+#pragma warning disable NUnit2007
                 Assert.That("not a UnityEngine.Object", Is.Destroyed);
+#pragma warning restore NUnit2007
             }, Throws.TypeOf<ArgumentException>()
                 .With.Property("ParamName").EqualTo("actual")
                 .And.Message.Contains("is not a UnityEngine.Object"));
@@ -142,7 +144,9 @@ namespace TestHelper.Constraints
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
                 // unsupported type, to exercise the "not a UnityEngine.Object" failure path.
+#pragma warning disable NUnit2007
                 Assert.That("not a UnityEngine.Object", Is.Not.Destroyed);
+#pragma warning restore NUnit2007
             }, Throws.TypeOf<ArgumentException>()
                 .With.Property("ParamName").EqualTo("actual")
                 .And.Message.Contains("is not a UnityEngine.Object"));

@@ -4,10 +4,14 @@
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+#if !UNITY_2023_1_OR_NEWER
+// Unity 2023.1 or newer provides the awaiter for AsyncOperation;
+// on older versions it comes from UniTask.
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace TestHelper.RuntimeInternals
 {
@@ -87,7 +91,7 @@ namespace TestHelper.RuntimeInternals
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotExistScene.unity")] // Not exist path
-        [TestCase("Packages/com.nowsprinting.test-helper/*/NotInScenesInBuild.unity")] // Not match path pattern
+        [TestCase("Packages/com.nowsprinting.test-helper/*/NotInScenesInBuild.unity")]       // Not match path pattern
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         // Note: Returns scene name when running on player.
         public void GetExistScenePath_NotExistPath_InEditor_OutputLogError(string path)

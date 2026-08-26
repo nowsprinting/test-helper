@@ -3,6 +3,7 @@
 
 #if ENABLE_FLIP_BINDING
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using FlipBinding.CSharp;
 using TestHelper.RuntimeInternals;
@@ -78,8 +79,8 @@ namespace TestHelper.Comparers
             if (x!.width != y!.width || x.height != y.height)
             {
                 Debug.Log("Texture sizes are different.\n" +
-                          $"  Expected: {x.width}x{x.height}\n" +
-                          $"  But was:  {y.width}x{y.height}\n");
+                          $"  Expected: {x.width.ToString()}x{x.height.ToString()}\n" +
+                          $"  But was:  {y.width.ToString()}x{y.height.ToString()}\n");
                 return -1;
             }
 
@@ -104,8 +105,8 @@ namespace TestHelper.Comparers
                 return 0;
             }
 
-            Debug.Log($"Mean FLIP error value: {result.MeanError}\n" +
-                      $"Exceeds the specified tolerance {_meanErrorTolerance:0.######}");
+            Debug.Log($"Mean FLIP error value: {result.MeanError.ToString(CultureInfo.InvariantCulture)}\n" +
+                      $"Exceeds the specified tolerance {_meanErrorTolerance.ToString("0.######", CultureInfo.InvariantCulture)}");
             SaveErrorMap(result);
             return -1;
         }

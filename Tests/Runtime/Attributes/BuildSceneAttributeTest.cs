@@ -1,14 +1,21 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
 using NUnit.Framework;
 using TestHelper.RuntimeInternals;
 using UnityEngine;
+#if !UNITY_2023_1_OR_NEWER
+// Unity 2023.1 or newer provides the awaiter for AsyncOperation;
+// on older versions it comes from UniTask.
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace TestHelper.Attributes
 {
+    /// <summary>
+    /// Tests running on the player, where the scene must be added to "Scenes in Build" first.
+    /// </summary>
     /// <seealso cref="LoadSceneAttributeTest"/>
     [TestFixture]
     [BuildScene(TestScene)]
@@ -27,7 +34,7 @@ namespace TestHelper.Attributes
             cube = GameObject.Find(ObjectName);
             Assume.That(cube, Is.Not.Null);
         }
-        
+
         private const string InferredObjectName = "CubeInInferredBuildSceneAttribute";
         private readonly string InferredScene = $"./{nameof(BuildSceneAttributeTest)}.unity";
 

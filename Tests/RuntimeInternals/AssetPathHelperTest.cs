@@ -142,7 +142,7 @@ namespace TestHelper.RuntimeInternals
         }
 
         [Test]
-        public void GetAssetPath_RelativePathContainsPackagesSubstringNotAtSegmentBoundary_OutputLogErrorAndReturnsNull()
+        public void GetAssetPath_PackagesSubstringNotAtSegmentBoundary_OutputLogErrorAndReturnsNull()
         {
             // "SceneInLocalPackages.unity" contains "Packages" as a substring (inside "LocalPackages"), not as
             // a path segment; the naive fallback must not mistake it for the Packages folder segment.

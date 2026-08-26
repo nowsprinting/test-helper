@@ -28,7 +28,7 @@ namespace TestHelper.Statistics
         {
             var actual = Experiment.Run(
                 () => DiceGenerator.Roll(2, 6), // 2D6
-                1 << 20); // 1,048,576 times
+                1 << 20);                       // 1,048,576 times
 
             Assert.That(actual.Min, Is.EqualTo(2));
             Assert.That(actual.Max, Is.EqualTo(12));
@@ -39,7 +39,7 @@ namespace TestHelper.Statistics
         {
             var sampleSpace = Experiment.Run(
                 () => Random.value, // 0.0f to 1.0f
-                1 << 20); // 1,048,576 times
+                1 << 20);           // 1,048,576 times
 
             var range = sampleSpace.Max - sampleSpace.Min;
             Assert.That(range, Is.EqualTo(1.0f).Within(0.01f));

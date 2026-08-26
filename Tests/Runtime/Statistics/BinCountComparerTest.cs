@@ -18,11 +18,11 @@ namespace TestHelper.Statistics
         }
 
         [TestCase(-1, 10, 100u)] // different min
-        [TestCase(1, 10, 100u)] // different min
-        [TestCase(0, 9, 100u)] // different max
-        [TestCase(0, 11, 100u)] // different max
-        [TestCase(0, 10, 99u)] // different count
-        [TestCase(0, 10, 101u)] // different count
+        [TestCase(1, 10, 100u)]  // different min
+        [TestCase(0, 9, 100u)]   // different max
+        [TestCase(0, 11, 100u)]  // different max
+        [TestCase(0, 10, 99u)]   // different count
+        [TestCase(0, 10, 101u)]  // different count
         public void Compare_Failure(int min, int max, uint frequency)
         {
             var expected = new Bin<int>(0, 10) { Frequency = 100 };

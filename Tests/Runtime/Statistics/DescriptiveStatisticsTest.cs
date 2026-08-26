@@ -86,11 +86,11 @@ namespace TestHelper.Statistics
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Frequency = 4 } }, // Median
-                    { 1, new Bin<int>(1) { Frequency = 6 } }, //
-                    { 2, new Bin<int>(2) { Frequency = 2 } }, // 
+                    { 0, new Bin<int>(0) { Frequency = 4 } },  // Median
+                    { 1, new Bin<int>(1) { Frequency = 6 } },  //
+                    { 2, new Bin<int>(2) { Frequency = 2 } },  // 
                     { 3, new Bin<int>(3) { Frequency = 10 } }, // Peak
-                    { 4, new Bin<int>(4) { Frequency = 0 } }, // Valley
+                    { 4, new Bin<int>(4) { Frequency = 0 } },  // Valley
                 }
             };
             sut.CalculateInternal();
@@ -108,19 +108,19 @@ namespace TestHelper.Statistics
             {
                 Bins = new SortedList<int, Bin<int>>
                 {
-                    { 0, new Bin<int>(0) { Frequency = 4 } }, //
-                    { 1, new Bin<int>(1) { Frequency = 6 } }, //
-                    { 2, new Bin<int>(2) { Frequency = 2 } }, // 
+                    { 0, new Bin<int>(0) { Frequency = 4 } },  //
+                    { 1, new Bin<int>(1) { Frequency = 6 } },  //
+                    { 2, new Bin<int>(2) { Frequency = 2 } },  // 
                     { 3, new Bin<int>(3) { Frequency = 10 } }, // Peak
-                    { 4, new Bin<int>(4) { Frequency = 0 } }, // Valley
-                    { 5, new Bin<int>(5) { Frequency = 3 } }, // 
+                    { 4, new Bin<int>(4) { Frequency = 0 } },  // Valley
+                    { 5, new Bin<int>(5) { Frequency = 3 } },  // 
                 }
             };
             sut.CalculateInternal();
 
             Assert.That(sut.PeakFrequency, Is.EqualTo(10));
             Assert.That(sut.ValleyFrequency, Is.EqualTo(0));
-            Assert.That(sut.MedianFrequency, Is.EqualTo(3.5)); // (3 + 4) / 2
+            Assert.That(sut.MedianFrequency, Is.EqualTo(3.5));             // (3 + 4) / 2
             Assert.That(sut.MeanFrequency, Is.EqualTo(4.17).Within(0.01)); // 25 / 6
         }
 
@@ -172,8 +172,8 @@ namespace TestHelper.Statistics
                 Bins = new SortedList<int, Bin<int>>
                 {
                     { 0, new Bin<int>(0) { Frequency = 1000 } }, // full block
-                    { 1, new Bin<int>(1) { Frequency = 0 } }, // space
-                    { 2, new Bin<int>(2) { Frequency = 1 } }, // lower 1:8 block
+                    { 1, new Bin<int>(1) { Frequency = 0 } },    // space
+                    { 2, new Bin<int>(2) { Frequency = 1 } },    // lower 1:8 block
                 }
             };
             sut.CalculateInternal();

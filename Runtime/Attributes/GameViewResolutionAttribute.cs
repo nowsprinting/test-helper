@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -41,11 +41,11 @@ namespace TestHelper.Attributes
                 var (w, h, name) = resolution.GetParameter();
                 if (w == width && h == height)
                 {
-                    return $"{name} ({width}x{height})";
+                    return $"{name} ({width.ToString()}x{height.ToString()})";
                 }
             }
 
-            return $"{width}x{height}";
+            return $"{width.ToString()}x{height.ToString()}";
         }
 
         /// <summary>

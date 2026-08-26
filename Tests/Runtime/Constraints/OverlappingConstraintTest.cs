@@ -410,7 +410,9 @@ namespace TestHelper.Constraints
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately a
                 // non-collection, to exercise the "not a collection of RectTransforms" failure path.
+#pragma warning disable NUnit2007
                 Assert.That("not a collection", Is.Overlapping);
+#pragma warning restore NUnit2007
             }, Throws.TypeOf<ArgumentException>()
                 .With.Property("ParamName").EqualTo("actual")
                 .And.Message.Contains("is not a collection of RectTransforms"));

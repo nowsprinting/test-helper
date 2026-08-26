@@ -97,7 +97,7 @@ namespace TestHelper.Constraints
             if (elements.Count < 2)
             {
                 throw new ArgumentException(
-                    $"collection has {elements.Count} element(s); Overlapping requires at least 2 to compare",
+                    $"collection has {elements.Count.ToString()} element(s); Overlapping requires at least 2 to compare",
                     nameof(actual));
             }
 
@@ -143,13 +143,13 @@ namespace TestHelper.Constraints
                     $" overlaps {ConstraintMessageFormatter.Quote(first.B)} {ConstraintMessageFormatter.Format(first.RectB)}";
                 if (overlappingPairs.Count > 1)
                 {
-                    pairMessage += $" (and {overlappingPairs.Count - 1} more overlapping pairs)";
+                    pairMessage += $" (and {(overlappingPairs.Count - 1).ToString()} more overlapping pairs)";
                 }
 
                 return new ReportingConstraintResult(this, new ConstraintReport(pairMessage), true);
             }
 
-            var noOverlapMessage = $"no overlapping pair among {elements.Count} RectTransforms";
+            var noOverlapMessage = $"no overlapping pair among {elements.Count.ToString()} RectTransforms";
             return new ReportingConstraintResult(this, new ConstraintReport(noOverlapMessage), false);
         }
 
@@ -168,7 +168,7 @@ namespace TestHelper.Constraints
             var index = 0;
             foreach (var item in source)
             {
-                resolved.Add(RectTransformResolver.ResolveOrThrow(item, $"{label} at index {index}"));
+                resolved.Add(RectTransformResolver.ResolveOrThrow(item, $"{label} at index {index.ToString()}"));
                 index++;
             }
 
