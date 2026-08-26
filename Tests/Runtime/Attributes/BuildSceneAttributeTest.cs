@@ -2,11 +2,14 @@
 // This software is released under the MIT License.
 
 using System.Threading.Tasks;
-// ReSharper disable once RedundantUsingDirective -- required to enable async Task test support on Unity 2022 or older
-using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using TestHelper.RuntimeInternals;
 using UnityEngine;
+#if !UNITY_2023_1_OR_NEWER
+// Unity 2023.1 or newer provides the awaiter for AsyncOperation;
+// on older versions it comes from UniTask.
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace TestHelper.Attributes
 {
