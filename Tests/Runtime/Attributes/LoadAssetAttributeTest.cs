@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -78,6 +78,7 @@ namespace TestHelper.Attributes
         [Category("Internal")]
         public void Constructor_WithCallerFilePath_RetainsCallerFilePath()
         {
+            // ReSharper disable once ExplicitCallerInfoArgument -- deliberately overriding the caller-supplied path under test
             var sut = new LoadAssetAttribute("Assets/Tests/Prefabs/Foo.prefab", "Assets/Tests/Runtime/Caller.cs");
 
             Assert.That(sut.CallerFilePath, Is.EqualTo("Assets/Tests/Runtime/Caller.cs"));

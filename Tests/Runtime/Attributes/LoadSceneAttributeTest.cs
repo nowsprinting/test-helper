@@ -66,7 +66,7 @@ namespace TestHelper.Attributes
 
             Object.Destroy(cube); // For not giving false negatives in subsequent tests.
         }
-        
+
         [Test]
         [LoadScene]
         public void UsingInferredPath_LoadedSceneNotInBuild()

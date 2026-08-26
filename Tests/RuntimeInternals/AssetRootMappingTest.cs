@@ -84,7 +84,7 @@ namespace TestHelper.RuntimeInternals
             Assert.That(actual, Is.EqualTo("Packages/com.example.fakepackage/Tests/Foo.txt"));
         }
 
-        [TestCase("/dev/packages/com.example.fake")] // path equals physicalRoot
+        [TestCase("/dev/packages/com.example.fake")]              // path equals physicalRoot
         [TestCase("/dev/packages/com.example.fakeextra/Foo.txt")] // continues physicalRoot without a separator
         public void Resolve_PathNotAtSegmentBoundary_ReturnsNull(string absolutePath)
         {
@@ -127,8 +127,10 @@ namespace TestHelper.RuntimeInternals
         [Test]
         public void Resolve_NullEntries_ReturnsNull()
         {
-            var sut = new AssetRootMapping();
-            sut.entries = null;
+            var sut = new AssetRootMapping
+            {
+                entries = null
+            };
 
             var actual = sut.Resolve("/dev/packages/com.example.fake/Tests/Foo.txt");
 

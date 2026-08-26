@@ -136,7 +136,7 @@ namespace TestHelper.RuntimeInternals
             if (s_counter.TryGetValue(name, out var count))
             {
                 s_counter[name] = ++count;
-                return $"{name.TrimEnd('_')}_{count}";
+                return $"{name.TrimEnd('_')}_{count.ToString()}";
             }
 
             s_counter[name] = 0;

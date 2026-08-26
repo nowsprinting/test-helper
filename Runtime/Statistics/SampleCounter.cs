@@ -27,7 +27,7 @@ namespace TestHelper.Statistics
             }
 
             var count = 0UL;
-            foreach (var sample in samples)
+            foreach (var _ in samples)
             {
                 count++;
             }

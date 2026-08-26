@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2025 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace TestHelper.Editor.Validators
     public class SceneValidator
     {
         private static IEnumerable<TestCaseData> Scenes => AssetDatabase
-            .FindAssets("t:SceneAsset", new string[] { "Packages/com.nowsprinting.test-helper" })
+            .FindAssets("t:SceneAsset", new[] { "Packages/com.nowsprinting.test-helper" })
             .Select(AssetDatabase.GUIDToAssetPath)
             .Select(path => new TestCaseData(path).SetName(Path.GetFileName(path)));
 

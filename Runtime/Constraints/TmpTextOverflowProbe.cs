@@ -14,8 +14,7 @@ namespace TestHelper.Constraints
     {
         internal static bool TryDetect(RectTransform rectTransform, out TextOverflowDetection detection)
         {
-            var text = rectTransform.GetComponent<TMP_Text>();
-            if (text == null)
+            if (!rectTransform.TryGetComponent<TMP_Text>(out var text))
             {
                 detection = null;
                 return false;
@@ -46,7 +45,7 @@ namespace TestHelper.Constraints
                 // survived truncation (measured: parsed total 47 → characterCount 17, truncated at
                 // index 15), which would be even more misleading as a total.
                 detection.TruncationDetail =
-                    $"characters from index {text.firstOverflowCharacterIndex} of {text.text.Length} are not rendered (overflowMode: {text.overflowMode})";
+                    $"characters from index {text.firstOverflowCharacterIndex.ToString()} of {text.text.Length.ToString()} are not rendered (overflowMode: {text.overflowMode.ToString()})";
             }
 
             // The rendered values below come from textInfo, which is only populated by mesh generation.

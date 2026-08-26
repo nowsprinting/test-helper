@@ -4,7 +4,8 @@
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks; // Required for Unity 2022 or older
+// ReSharper disable once RedundantUsingDirective -- required to enable async Task test support on Unity 2022 or older
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -87,7 +88,7 @@ namespace TestHelper.RuntimeInternals
         }
 
         [TestCase("Packages/com.nowsprinting.test-helper/Tests/Scenes/NotExistScene.unity")] // Not exist path
-        [TestCase("Packages/com.nowsprinting.test-helper/*/NotInScenesInBuild.unity")] // Not match path pattern
+        [TestCase("Packages/com.nowsprinting.test-helper/*/NotInScenesInBuild.unity")]       // Not match path pattern
         [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         // Note: Returns scene name when running on player.
         public void GetExistScenePath_NotExistPath_InEditor_OutputLogError(string path)

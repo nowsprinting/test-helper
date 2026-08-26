@@ -13,8 +13,7 @@ namespace TestHelper.Constraints
     {
         internal static bool TryDetect(RectTransform rectTransform, out TextOverflowDetection detection)
         {
-            var text = rectTransform.GetComponent<Text>();
-            if (text == null)
+            if (!rectTransform.TryGetComponent<Text>(out var text))
             {
                 detection = null;
                 return false;
@@ -46,7 +45,7 @@ namespace TestHelper.Constraints
             if (detection.CharactersTruncated)
             {
                 detection.TruncationDetail =
-                    $"only {generator.characterCountVisible} of {text.text.Length} characters are rendered";
+                    $"only {generator.characterCountVisible.ToString()} of {text.text.Length.ToString()} characters are rendered";
             }
 
             if (text.resizeTextForBestFit)
