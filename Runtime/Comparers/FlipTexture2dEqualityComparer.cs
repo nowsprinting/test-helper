@@ -106,7 +106,7 @@ namespace TestHelper.Comparers
             }
 
             Debug.Log($"Mean FLIP error value: {result.MeanError.ToString(CultureInfo.InvariantCulture)}\n" +
-                      $"Exceeds the specified tolerance {_meanErrorTolerance:0.######}");
+                      $"Exceeds the specified tolerance {_meanErrorTolerance.ToString("0.######", CultureInfo.InvariantCulture)}");
             SaveErrorMap(result);
             return -1;
         }
