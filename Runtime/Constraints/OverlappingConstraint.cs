@@ -13,7 +13,7 @@ namespace TestHelper.Constraints
     /// An NUnit test constraint class to a collection of <see cref="UnityEngine.RectTransform"/> where any
     /// pair overlaps.
     /// </summary>
-    public class OverlappingConstraint : TestHelperConstraint
+    public class OverlappingConstraint : Constraint
     {
         private const float DefaultTolerance = 0.5f;
         private readonly List<IEnumerable> _ignoredGroups = new List<IEnumerable>();
@@ -22,6 +22,21 @@ namespace TestHelper.Constraints
         public OverlappingConstraint(params object[] args) : base(args)
         {
         }
+
+        /// <summary>
+        /// Requires both this constraint and the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression And => this.AppendOperator(new AndOperator());
+
+        /// <summary>
+        /// Requires either this constraint or the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression Or => this.AppendOperator(new OrOperator());
+
+        /// <summary>
+        /// Alias of <see cref="And"/>, matching NUnit's own <see cref="Constraint.With"/>.
+        /// </summary>
+        public new TestHelperConstraintExpression With => this.AppendOperator(new AndOperator());
 
         /// <summary>
         /// Exclude pairs whose both members belong to <paramref name="ignoredGroup"/> from the check.

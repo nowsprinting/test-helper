@@ -13,7 +13,7 @@ namespace TestHelper.Constraints
     /// Supports uGUI <see cref="UnityEngine.UI.Text"/> and TextMeshPro <see cref="TMPro.TMP_Text"/> (uGUI is
     /// tried first; whichever is found on the target's own GameObject is used).
     /// </summary>
-    public class TextOverflowingConstraint : TestHelperConstraint
+    public class TextOverflowingConstraint : Constraint
     {
         private const float DefaultTolerance = 0.5f;
         private float _tolerance = DefaultTolerance;
@@ -21,6 +21,21 @@ namespace TestHelper.Constraints
         public TextOverflowingConstraint(params object[] args) : base(args)
         {
         }
+
+        /// <summary>
+        /// Requires both this constraint and the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression And => this.AppendOperator(new AndOperator());
+
+        /// <summary>
+        /// Requires either this constraint or the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression Or => this.AppendOperator(new OrOperator());
+
+        /// <summary>
+        /// Alias of <see cref="And"/>, matching NUnit's own <see cref="Constraint.With"/>.
+        /// </summary>
+        public new TestHelperConstraintExpression With => this.AppendOperator(new AndOperator());
 
         /// <summary>
         /// Set the tolerance in pixels. Negative values are clamped to 0. Default is 0.5f.

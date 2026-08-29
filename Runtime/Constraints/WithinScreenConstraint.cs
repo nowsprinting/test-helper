@@ -10,7 +10,7 @@ namespace TestHelper.Constraints
     /// <summary>
     /// An NUnit test constraint class to a <see cref="UnityEngine.RectTransform"/> within the screen.
     /// </summary>
-    public class WithinScreenConstraint : TestHelperConstraint
+    public class WithinScreenConstraint : Constraint
     {
         private const float DefaultTolerance = 0.5f;
         private float _tolerance = DefaultTolerance;
@@ -18,6 +18,21 @@ namespace TestHelper.Constraints
         public WithinScreenConstraint(params object[] args) : base(args)
         {
         }
+
+        /// <summary>
+        /// Requires both this constraint and the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression And => this.AppendOperator(new AndOperator());
+
+        /// <summary>
+        /// Requires either this constraint or the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression Or => this.AppendOperator(new OrOperator());
+
+        /// <summary>
+        /// Alias of <see cref="And"/>, matching NUnit's own <see cref="Constraint.With"/>.
+        /// </summary>
+        public new TestHelperConstraintExpression With => this.AppendOperator(new AndOperator());
 
         /// <summary>
         /// Set the tolerance in pixels. Negative values are clamped to 0. Default is 0.5f.
