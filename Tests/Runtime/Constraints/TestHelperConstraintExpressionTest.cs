@@ -1,17 +1,16 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
-using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
 
 namespace TestHelper.Constraints
 {
-    // Exercises the operator plumbing (Not, All, And, Or, With) shared by every custom constraint, using
-    // Destroyed and WithinScreen as representatives. Per-constraint property-style coverage of `Is.Not.<X>`
-    // itself lives in each constraint's own test class (e.g. DestroyedConstraintTest).
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
+    // Exercises TestHelperConstraintExpression's own plumbing (Not, All, and the "no Builder yet" branch of
+    // ConstraintExtensions.AppendOperator), using Destroyed as the left-hand side. Per-constraint coverage of
+    // each constraint's own And/Or/With wiring lives in that constraint's own test class (e.g.
+    // WithinScreenConstraintTest), alongside property-style coverage of `Is.Not.<X>` itself.
     public class TestHelperConstraintExpressionTest
     {
         private static GameObject CreateDestroyedObject()

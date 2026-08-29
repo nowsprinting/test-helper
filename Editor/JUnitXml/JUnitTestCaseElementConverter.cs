@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System.Xml.Linq;
@@ -9,7 +9,7 @@ namespace TestHelper.Editor.JUnitXml
     /// <summary>
     /// Converter class of NUnit3 "test-case" element to JUnit "testcase" element.
     /// </summary>
-    internal class JUnitTestCaseElementConverter : AbstractJUnitElementConverter
+    internal class JUnitTestCaseElementConverter : ElementConverter
     {
         /// <inheritdoc/>
         public JUnitTestCaseElementConverter(TNode node) : base(node)

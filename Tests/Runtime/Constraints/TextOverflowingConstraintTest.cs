@@ -2,7 +2,6 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
@@ -15,7 +14,6 @@ using UnityEngine.UI;
 
 namespace TestHelper.Constraints
 {
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class TextOverflowingConstraintTest
     {
         public enum ActualKind
@@ -201,6 +199,55 @@ namespace TestHelper.Constraints
                 .With.Message.Contains("Expected: not text overflowing its RectTransform")
                 .And.Message.Contains("\"Label\"")
                 .And.Message.Contains("exceeds rect"));
+        }
+
+        [Test]
+        [CreateScene]
+        public async Task IsTextOverflowingAndNull_UguiPreferredSizeExceedsRect_Failure()
+        {
+            // Left (TextOverflowing) passes and right (Null) fails, so both sides are actually evaluated:
+            // wiring And to OrOperator by mistake would make this pass instead.
+            var canvas = CreateCanvas();
+            var uguiText = CreateUguiText(canvas.transform, "Label", "Overflowing text content",
+                new Vector2(5f, 5f));
+            Assume.That(uguiText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+
+            Assert.That(() => { Assert.That(uguiText.GetComponent<RectTransform>(), Is.TextOverflowing.And.Null); },
+                Throws.TypeOf<AssertionException>());
+        }
+
+        [Test]
+        [CreateScene]
+        public async Task IsTextOverflowingWithNull_UguiPreferredSizeExceedsRect_Failure()
+        {
+            // Left (TextOverflowing) passes and right (Null) fails, so both sides are actually evaluated:
+            // wiring With to OrOperator by mistake would make this pass instead.
+            var canvas = CreateCanvas();
+            var uguiText = CreateUguiText(canvas.transform, "Label", "Overflowing text content",
+                new Vector2(5f, 5f));
+            Assume.That(uguiText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+
+            Assert.That(() => { Assert.That(uguiText.GetComponent<RectTransform>(), Is.TextOverflowing.With.Null); },
+                Throws.TypeOf<AssertionException>());
+        }
+
+        [Test]
+        [CreateScene]
+        public async Task IsTextOverflowingOrNotNull_UguiTextFitsRect_Success()
+        {
+            // Left (TextOverflowing) fails and right (Not.Null) passes, so both sides are actually evaluated:
+            // wiring Or to AndOperator by mistake would make this fail instead.
+            var canvas = CreateCanvas();
+            var uguiText = CreateUguiText(canvas.transform, "Label", "Hi", new Vector2(300f, 100f));
+            Assume.That(uguiText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+
+            Assert.That(uguiText.GetComponent<RectTransform>(), Is.TextOverflowing.Or.Not.Null);
         }
 
         [TestCase(0.0f)]

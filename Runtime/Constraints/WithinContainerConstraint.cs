@@ -11,7 +11,7 @@ namespace TestHelper.Constraints
     /// An NUnit test constraint class to a <see cref="RectTransform"/> fully within another
     /// <see cref="RectTransform"/>'s screen rect.
     /// </summary>
-    public class WithinContainerConstraint : TestHelperConstraint
+    public class WithinContainerConstraint : Constraint
     {
         private const float DefaultTolerance = 0.5f;
         private readonly RectTransform _container;
@@ -22,6 +22,21 @@ namespace TestHelper.Constraints
         {
             _container = container;
         }
+
+        /// <summary>
+        /// Requires both this constraint and the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression And => this.AppendOperator(new AndOperator());
+
+        /// <summary>
+        /// Requires either this constraint or the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression Or => this.AppendOperator(new OrOperator());
+
+        /// <summary>
+        /// Alias of <see cref="And"/>, matching NUnit's own <see cref="Constraint.With"/>.
+        /// </summary>
+        public new TestHelperConstraintExpression With => this.AppendOperator(new AndOperator());
 
         /// <summary>
         /// Narrow the check to the horizontal axis.

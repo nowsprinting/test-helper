@@ -27,12 +27,27 @@ namespace TestHelper.Constraints
     /// }
     /// </code>
     /// </example>
-    public class DestroyedConstraint : TestHelperConstraint
+    public class DestroyedConstraint : Constraint
     {
         public DestroyedConstraint(params object[] args) : base(args)
         {
             base.Description = "destroyed UnityEngine.Object";
         }
+
+        /// <summary>
+        /// Requires both this constraint and the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression And => this.AppendOperator(new AndOperator());
+
+        /// <summary>
+        /// Requires either this constraint or the one that follows to be satisfied.
+        /// </summary>
+        public new TestHelperConstraintExpression Or => this.AppendOperator(new OrOperator());
+
+        /// <summary>
+        /// Alias of <see cref="And"/>, matching NUnit's own <see cref="Constraint.With"/>.
+        /// </summary>
+        public new TestHelperConstraintExpression With => this.AppendOperator(new AndOperator());
 
         /// <inheritdoc/>
         /// <exception cref="System.ArgumentNullException"><paramref name="actual"/> is null.</exception>

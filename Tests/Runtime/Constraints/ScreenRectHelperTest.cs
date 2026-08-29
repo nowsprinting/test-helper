@@ -1,7 +1,6 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
@@ -10,7 +9,6 @@ using UnityEngine;
 
 namespace TestHelper.Constraints
 {
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class ScreenRectHelperTest
     {
         private static RectTransform CreateElement(Transform parent, Vector2 anchoredPosition, Vector2 sizeDelta)

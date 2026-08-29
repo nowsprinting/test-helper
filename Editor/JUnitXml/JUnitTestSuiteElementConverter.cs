@@ -9,7 +9,7 @@ namespace TestHelper.Editor.JUnitXml
     /// <summary>
     /// Converter class of NUnit3 "test-suite" element to JUnit "testsuite" element.
     /// </summary>
-    internal class JUnitTestSuiteElementConverter : AbstractJUnitElementConverter
+    internal class JUnitTestSuiteElementConverter : ElementConverter
     {
         /// <inheritdoc/>
         public JUnitTestSuiteElementConverter(TNode node) : base(node)

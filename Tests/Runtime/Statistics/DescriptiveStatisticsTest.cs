@@ -11,7 +11,6 @@ using UnityEngine;
 namespace TestHelper.Statistics
 {
     [TestFixture]
-    [SuppressMessage("Assertion", "NUnit2045:Use Assert.Multiple")]
     public class DescriptiveStatisticsTest
     {
         [Test]

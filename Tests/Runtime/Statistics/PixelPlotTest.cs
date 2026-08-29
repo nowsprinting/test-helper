@@ -13,7 +13,6 @@ using Random = System.Random;
 namespace TestHelper.Statistics
 {
     [TestFixture]
-    [SuppressMessage("Assertion", "NUnit2045:Use Assert.Multiple")]
     [SuppressMessage("ReSharper", "RedundantExplicitArrayCreation")]
     public class PixelPlotTest
     {
