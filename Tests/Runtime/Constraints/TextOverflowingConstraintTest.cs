@@ -220,6 +220,23 @@ namespace TestHelper.Constraints
 
         [Test]
         [CreateScene]
+        public async Task IsTextOverflowingWithNull_UguiPreferredSizeExceedsRect_Failure()
+        {
+            // Left (TextOverflowing) passes and right (Null) fails, so both sides are actually evaluated:
+            // wiring With to OrOperator by mistake would make this pass instead.
+            var canvas = CreateCanvas();
+            var uguiText = CreateUguiText(canvas.transform, "Label", "Overflowing text content",
+                new Vector2(5f, 5f));
+            Assume.That(uguiText.font, Is.Not.Null);
+            Canvas.ForceUpdateCanvases();
+            await UniTask.NextFrame();
+
+            Assert.That(() => { Assert.That(uguiText.GetComponent<RectTransform>(), Is.TextOverflowing.With.Null); },
+                Throws.TypeOf<AssertionException>());
+        }
+
+        [Test]
+        [CreateScene]
         public async Task IsTextOverflowingOrNotNull_UguiTextFitsRect_Success()
         {
             // Left (TextOverflowing) fails and right (Not.Null) passes, so both sides are actually evaluated:

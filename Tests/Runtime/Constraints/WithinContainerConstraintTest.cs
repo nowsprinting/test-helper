@@ -127,6 +127,19 @@ namespace TestHelper.Constraints
 
         [Test]
         [CreateScene]
+        public void IsWithinContainerWithNull_ElementInsideContainer_Failure()
+        {
+            // Left (WithinContainer) passes and right (Null) fails, so both sides are actually evaluated:
+            // wiring With to OrOperator by mistake would make this pass instead.
+            var container = CreateContainer();
+            var actual = CreateElement("Element", container, new Vector2(20f, 20f), new Vector2(100f, 80f));
+
+            Assert.That(() => { Assert.That(actual, Is.WithinContainer(container).With.Null); },
+                Throws.TypeOf<AssertionException>());
+        }
+
+        [Test]
+        [CreateScene]
         public void IsWithinContainerOrNotNull_ElementExceedsContainerRightEdge_Success()
         {
             // Left (WithinContainer) fails and right (Not.Null) passes, so both sides are actually evaluated:

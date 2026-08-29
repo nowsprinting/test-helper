@@ -136,6 +136,19 @@ namespace TestHelper.Constraints
 
         [Test]
         [CreateScene]
+        public void IsWithinScreenWithDestroyed_OnScreenAliveElement_Failure()
+        {
+            // Left (WithinScreen) passes and right (Destroyed) fails, so both sides are actually evaluated:
+            // wiring With to OrOperator by mistake would make this pass instead.
+            var actual = CreateElement("Element", new Vector2(Screen.width / 4f, Screen.height / 4f),
+                new Vector2(Screen.width / 4f, Screen.height / 4f));
+
+            Assert.That(() => { Assert.That(actual, Is.WithinScreen.With.Destroyed); },
+                Throws.TypeOf<AssertionException>());
+        }
+
+        [Test]
+        [CreateScene]
         public void IsWithinScreenOrNotDestroyed_OffScreenAliveElement_Success()
         {
             // Left (WithinScreen) fails and right (Not.Destroyed) passes, so both sides are actually
