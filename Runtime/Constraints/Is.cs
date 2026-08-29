@@ -2,12 +2,15 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace TestHelper.Constraints
 {
     /// <inheritdoc />
-    // ReSharper disable once ClassNeverInstantiated.Global
+    // Not renamed: this class extends NUnit's own Is and must keep its name to read as Is.Destroyed,
+    // Is.WithinScreen, etc., matching the NUnit constraint idiom (Is.EqualTo, Is.Not, ...).
+    [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords")]
     public class Is : UnityEngine.TestTools.Constraints.Is
     {
         /// <summary>
