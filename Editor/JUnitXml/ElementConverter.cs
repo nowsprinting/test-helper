@@ -13,7 +13,7 @@ namespace TestHelper.Editor.JUnitXml
     /// </summary>
     [SuppressMessage("ReSharper", "ConvertToAutoProperty")]
     [SuppressMessage("ReSharper", "ConvertToAutoPropertyWhenPossible")]
-    internal abstract class AbstractJUnitElementConverter
+    internal abstract class ElementConverter
     {
         // JUnit XML format (legacy) element/attribute names.
         protected const string JUnitElementTestsuites = "testsuites";
@@ -87,7 +87,7 @@ namespace TestHelper.Editor.JUnitXml
         /// Parse NUnit3 test result elements and store them.
         /// </summary>
         /// <param name="node">NUnit3 test result elements to be converted.</param>
-        protected AbstractJUnitElementConverter(TNode node)
+        protected ElementConverter(TNode node)
         {
             this._id = node.Attributes["id"];
             this._result = node.Attributes["result"];

@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Koji Hasegawa.
+// Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
 using System;
@@ -44,16 +44,16 @@ namespace TestHelper.Editor.JUnitXml
 
         private static XElement Convert(TNode node)
         {
-            AbstractJUnitElementConverter converter;
+            ElementConverter converter;
             switch (node.Name)
             {
-                case AbstractJUnitElementConverter.NUnitTestRun:
+                case ElementConverter.NUnitTestRun:
                     converter = new JUnitTestSuitesElementConverter(node);
                     break;
-                case AbstractJUnitElementConverter.NUnitTestSuite:
+                case ElementConverter.NUnitTestSuite:
                     converter = new JUnitTestSuiteElementConverter(node);
                     break;
-                case AbstractJUnitElementConverter.NUnitTestCase:
+                case ElementConverter.NUnitTestCase:
                     converter = new JUnitTestCaseElementConverter(node);
                     break;
                 default:
@@ -65,8 +65,8 @@ namespace TestHelper.Editor.JUnitXml
             // Recursively convert child nodes.
             node.ChildNodes.ForEach(child =>
             {
-                if (child.Name == AbstractJUnitElementConverter.NUnitTestSuite ||
-                    child.Name == AbstractJUnitElementConverter.NUnitTestCase)
+                if (child.Name == ElementConverter.NUnitTestSuite ||
+                    child.Name == ElementConverter.NUnitTestCase)
                 {
                     junitElement.Add(Convert(child));
                 }
