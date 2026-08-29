@@ -116,6 +116,33 @@ namespace TestHelper.Constraints
 
         [Test]
         [CreateScene]
+        public void IsWithinContainerAndNull_ElementInsideContainer_Failure()
+        {
+            // Left (WithinContainer) passes and right (Null) fails, so both sides are actually evaluated:
+            // wiring And to OrOperator by mistake would make this pass instead.
+            var container = CreateContainer();
+            var actual = CreateElement("Element", container, new Vector2(20f, 20f), new Vector2(100f, 80f));
+
+            Assert.That(() => { Assert.That(actual, Is.WithinContainer(container).And.Null); },
+                Throws.TypeOf<AssertionException>());
+        }
+
+        [Test]
+        [CreateScene]
+        public void IsWithinContainerOrNotNull_ElementExceedsContainerRightEdge_Success()
+        {
+            // Left (WithinContainer) fails and right (Not.Null) passes, so both sides are actually evaluated:
+            // wiring Or to AndOperator by mistake would make this fail instead.
+            const float Overshoot = 30f;
+            var container = CreateContainer();
+            var localPosition = new Vector2(ContainerSize.x - 50f + Overshoot, 20f);
+            var element = CreateElement("CardView", container, localPosition, new Vector2(50f, 60f));
+
+            Assert.That(element, Is.WithinContainer(container).Or.Not.Null);
+        }
+
+        [Test]
+        [CreateScene]
         [Category("Acceptance")]
         public void IsWithinContainer_ElementExceedsContainerRightEdge_Failure()
         {

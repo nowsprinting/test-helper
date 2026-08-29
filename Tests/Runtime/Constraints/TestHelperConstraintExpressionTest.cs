@@ -8,9 +8,10 @@ using UnityEngine;
 
 namespace TestHelper.Constraints
 {
-    // Exercises the operator plumbing (Not, All, And, Or, With) shared by every custom constraint, using
-    // Destroyed and WithinScreen as representatives. Per-constraint property-style coverage of `Is.Not.<X>`
-    // itself lives in each constraint's own test class (e.g. DestroyedConstraintTest).
+    // Exercises TestHelperConstraintExpression's own plumbing (Not, All, and the "no Builder yet" branch of
+    // ConstraintExtensions.AppendOperator), using Destroyed as the left-hand side. Per-constraint coverage of
+    // each constraint's own And/Or/With wiring lives in that constraint's own test class (e.g.
+    // WithinScreenConstraintTest), alongside property-style coverage of `Is.Not.<X>` itself.
     [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class TestHelperConstraintExpressionTest
     {

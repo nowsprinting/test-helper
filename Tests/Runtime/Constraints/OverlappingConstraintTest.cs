@@ -97,6 +97,37 @@ namespace TestHelper.Constraints
 
         [Test]
         [CreateScene]
+        public void IsOverlappingAndEmpty_TwoElementsOverlap_Failure()
+        {
+            // Left (Overlapping) passes and right (Empty) fails, so both sides are actually evaluated:
+            // wiring And to OrOperator by mistake would make this pass instead.
+            var canvas = CreateCanvas();
+            var element0 = CreateElement(canvas.transform, "TestCard (0)", new Vector2(120f, 40f),
+                new Vector2(100f, 100f));
+            var element1 = CreateElement(canvas.transform, "TestCard (1)", new Vector2(200f, 40f),
+                new Vector2(100f, 100f));
+            var actual = new[] { element0, element1 };
+
+            Assert.That(() => { Assert.That(actual, Is.Overlapping.And.Empty); },
+                Throws.TypeOf<AssertionException>());
+        }
+
+        [Test]
+        [CreateScene]
+        public void IsOverlappingOrNotEmpty_NoPairOverlaps_Success()
+        {
+            // Left (Overlapping) fails and right (Not.Empty) passes, so both sides are actually evaluated:
+            // wiring Or to AndOperator by mistake would make this fail instead.
+            var canvas = CreateCanvas();
+            var element0 = CreateElement(canvas.transform, "TestCard (0)", new Vector2(0f, 0f), new Vector2(50f, 50f));
+            var element1 = CreateElement(canvas.transform, "TestCard (1)", new Vector2(60f, 0f), new Vector2(50f, 50f));
+            var actual = new[] { element0, element1 };
+
+            Assert.That(actual, Is.Overlapping.Or.Not.Empty);
+        }
+
+        [Test]
+        [CreateScene]
         [Category("Acceptance")]
         public void IsNotOverlapping_TwoElementsOverlap_Failure()
         {
