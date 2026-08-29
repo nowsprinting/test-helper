@@ -2,14 +2,12 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
 
 namespace TestHelper.Constraints
 {
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class DestroyedConstraintTest
     {
         public enum ObjectKind

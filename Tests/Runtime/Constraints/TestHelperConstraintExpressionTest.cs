@@ -1,7 +1,6 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
-using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
@@ -12,7 +11,6 @@ namespace TestHelper.Constraints
     // ConstraintExtensions.AppendOperator), using Destroyed as the left-hand side. Per-constraint coverage of
     // each constraint's own And/Or/With wiring lives in that constraint's own test class (e.g.
     // WithinScreenConstraintTest), alongside property-style coverage of `Is.Not.<X>` itself.
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class TestHelperConstraintExpressionTest
     {
         private static GameObject CreateDestroyedObject()

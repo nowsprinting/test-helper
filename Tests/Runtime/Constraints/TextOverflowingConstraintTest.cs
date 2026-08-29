@@ -2,7 +2,6 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
@@ -15,7 +14,6 @@ using UnityEngine.UI;
 
 namespace TestHelper.Constraints
 {
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class TextOverflowingConstraintTest
     {
         public enum ActualKind

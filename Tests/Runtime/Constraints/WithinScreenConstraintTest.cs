@@ -2,7 +2,6 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
 using NUnit.Framework;
@@ -12,7 +11,6 @@ using UnityEngine.UI;
 
 namespace TestHelper.Constraints
 {
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class WithinScreenConstraintTest
     {
         public enum ActualKind

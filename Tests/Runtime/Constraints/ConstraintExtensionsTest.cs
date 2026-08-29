@@ -1,7 +1,6 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
@@ -14,7 +13,6 @@ namespace TestHelper.Constraints
     // Regression coverage for ConstraintExtensions: adding property style (Is.Not.<X>) must not break the
     // pre-existing method style (Is.Not.<X>()). Compiling and passing is the assertion here; per-constraint
     // failure-message coverage already lives in each constraint's own test class.
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class ConstraintExtensionsTest
     {
         private static Canvas CreateCanvas()

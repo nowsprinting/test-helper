@@ -2,7 +2,6 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
@@ -10,7 +9,6 @@ using UnityEngine.UI;
 
 namespace TestHelper.Constraints
 {
-    [SuppressMessage("ReSharper", "AccessToStaticMemberViaDerivedType")]
     public class OverlappingConstraintTest
     {
         public enum ActualKind
