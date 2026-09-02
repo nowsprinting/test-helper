@@ -42,7 +42,7 @@
         {
             "name": "com.unity.ugui",
             "expression": "2.0.0",
-            "define": "ENABLE_TMP"
+            "define": "ENABLE_UGUI2"
         }
     ],
     "noEngineReferences": false
