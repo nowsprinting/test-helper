@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using TestHelper.Attributes;
-#if ENABLE_TMP
+#if ENABLE_TMP || ENABLE_UGUI2
 using TMPro;
 #endif
 using UnityEngine;
@@ -63,7 +63,7 @@ namespace TestHelper.Constraints
             return uguiText;
         }
 
-#if ENABLE_TMP
+#if ENABLE_TMP || ENABLE_UGUI2
         private static TMP_FontAsset s_fallbackTmpFontAsset;
 
         private static TMP_FontAsset GetTmpFontAsset()
@@ -103,13 +103,11 @@ namespace TestHelper.Constraints
             tmpText.font = GetTmpFontAsset();
             tmpText.text = text;
             tmpText.fontSize = 20;
-            // textWrappingMode/TextWrappingModes isn't available in the TMP version bundled with
-            // older Unity LTS releases tested in CI (e.g. 2022.3); enableWordWrapping predates it
-            // and still works (just deprecated) on newer TMP too, so it compiles across the whole
-            // CI Unity version matrix.
-#pragma warning disable CS0618
+#if ENABLE_UGUI2
+            tmpText.textWrappingMode = enableWordWrapping ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
+#else
             tmpText.enableWordWrapping = enableWordWrapping;
-#pragma warning restore CS0618
+#endif
             tmpText.enableAutoSizing = enableAutoSizing;
             tmpText.overflowMode = overflowMode;
             return tmpText;
@@ -537,7 +535,7 @@ namespace TestHelper.Constraints
             Assert.That(uguiText.GetComponent<RectTransform>(), Is.Not.TextOverflowing);
         }
 
-#if ENABLE_TMP
+#if ENABLE_TMP || ENABLE_UGUI2
         [Test]
         [CreateScene]
         [Category("Acceptance")]

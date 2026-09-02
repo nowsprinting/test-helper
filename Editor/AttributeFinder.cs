@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+#if UNITY_6000_4_OR_NEWER
+using UnityEngine.Assemblies;
+#endif
 
 namespace TestHelper.Editor
 {
@@ -47,7 +50,11 @@ namespace TestHelper.Editor
 
         internal static IEnumerable<T> FindOnAssemblies<T>() where T : Attribute
         {
+#if UNITY_6000_4_OR_NEWER
+            return FindOnProviders<T>(CurrentAssemblies.GetLoadedAssemblies());
+#else
             return FindOnProviders<T>(AppDomain.CurrentDomain.GetAssemblies());
+#endif
         }
 
         internal static IEnumerable<T> FindOnTypes<T>() where T : Attribute

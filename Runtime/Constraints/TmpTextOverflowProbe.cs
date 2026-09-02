@@ -1,7 +1,7 @@
 // Copyright (c) 2023-2026 Koji Hasegawa.
 // This software is released under the MIT License.
 
-#if ENABLE_TMP
+#if ENABLE_TMP || ENABLE_UGUI2
 using TMPro;
 using UnityEngine;
 
