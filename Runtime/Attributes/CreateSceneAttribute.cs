@@ -36,7 +36,7 @@ namespace TestHelper.Attributes
         ///     <item>Can be use same code for running Edit Mode tests, Play Mode tests in Editor, and on Player.</item>
         /// </list>
         /// </summary>
-        /// <param name="camera">true: create main camera object in new scene</param>
+        /// <param name="camera">true: create main camera object (tagged <c>MainCamera</c>, so <c>Camera.main</c> returns it) in new scene</param>
         /// <param name="light">true: create directional light object in new scene</param>
         /// <param name="unloadOthers">true: unload other scenes before running the test</param>
         /// <remarks>
@@ -73,7 +73,12 @@ namespace TestHelper.Attributes
 
             if (_camera)
             {
-                var camera = new GameObject("Main Camera").AddComponent<Camera>();
+                // The tag setter is banned to keep it out of the player loop; this runs once per test
+                // in BeforeTest, and Camera.main resolves only MainCamera-tagged cameras, so the
+                // assignment is unavoidable here.
+#pragma warning disable RS0030 // Do not use banned APIs
+                var camera = new GameObject("Main Camera") { tag = "MainCamera" }.AddComponent<Camera>();
+#pragma warning restore RS0030
                 camera.transform.position = new Vector3(0, 1, -10);
                 camera.transform.LookAt(Vector3.zero);
             }
