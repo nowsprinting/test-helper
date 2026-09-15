@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
@@ -35,6 +36,17 @@ namespace TestHelper.Attributes
             var rootGameObjects = scene.GetRootGameObjects(); // Note: GameObject.Find finds objects in inactive scenes
             Assert.That(rootGameObjects, Has.Length.EqualTo(1));
             Assert.That(rootGameObjects[0].name, Is.EqualTo("Main Camera"));
+        }
+
+        [Test]
+        [Category("Acceptance")]
+        [CreateScene(camera: true)]
+        public void Attach_WithCamera_CameraMainIsCreatedCamera()
+        {
+            var mainCamera = Camera.main;
+            Assert.That(mainCamera, Is.Not.Null);
+            Assert.That(mainCamera.gameObject.name, Is.EqualTo("Main Camera"));
+            Assert.That(SceneManager.GetActiveScene().GetRootGameObjects(), Has.Member(mainCamera.gameObject));
         }
 
         [Test]

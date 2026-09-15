@@ -25,5 +25,16 @@ namespace TestHelper.Editor.Attributes
             var light = GameObject.Find("Directional Light");
             Assert.That(light, Is.Not.Null);
         }
+
+        [Test]
+        [Category("Acceptance")]
+        [CreateScene(camera: true)]
+        public void Attach_WithCamera_CameraMainIsCreatedCamera()
+        {
+            var mainCamera = Camera.main;
+            Assert.That(mainCamera, Is.Not.Null);
+            Assert.That(mainCamera.gameObject.name, Is.EqualTo("Main Camera"));
+            Assert.That(SceneManager.GetActiveScene().GetRootGameObjects(), Has.Member(mainCamera.gameObject));
+        }
     }
 }
