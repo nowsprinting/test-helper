@@ -325,10 +325,11 @@ namespace TestHelper.Constraints
         [Category("Acceptance")]
         public void IsWithinScreen_Null_ThrowsArgumentNullException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(null, Is.WithinScreen);
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
         }
 
         [Test]
@@ -339,28 +340,28 @@ namespace TestHelper.Constraints
             var element = CreateElement("CardView", Vector2.zero, Vector2.zero);
             GameObject.DestroyImmediate(element.gameObject);
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 Assert.That(element, Is.WithinScreen);
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("destroyed UnityEngine.Object"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("destroyed UnityEngine.Object"));
         }
 
         [Test]
         [Category("Acceptance")]
         public void IsWithinScreen_UnsupportedActualType_ThrowsArgumentException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
                 // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
 #pragma warning disable NUnit2007
                 Assert.That("not a RectTransform", Is.WithinScreen);
 #pragma warning restore NUnit2007
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("is not a RectTransform, GameObject, or Component"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("is not a RectTransform, GameObject, or Component"));
         }
 
         [Test]
@@ -370,12 +371,12 @@ namespace TestHelper.Constraints
         {
             var gameObject = new GameObject("PlainObject");
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 Assert.That(gameObject, Is.WithinScreen);
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("has no RectTransform component"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("has no RectTransform component"));
         }
 
         [Test]
@@ -413,10 +414,11 @@ namespace TestHelper.Constraints
         [Category("Acceptance")]
         public void IsNotWithinScreen_Null_ThrowsArgumentNullException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(null, Is.Not.WithinScreen);
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
         }
     }
 }

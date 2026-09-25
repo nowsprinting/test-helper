@@ -82,25 +82,26 @@ namespace TestHelper.Constraints
         [Test]
         public void IsDestroyed_Null_ThrowsArgumentNullException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(null, Is.Destroyed);
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
         }
 
         [Test]
         public void IsDestroyed_UnsupportedActualType_ThrowsArgumentException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
                 // unsupported type, to exercise the "not a UnityEngine.Object" failure path.
 #pragma warning disable NUnit2007
                 Assert.That("not a UnityEngine.Object", Is.Destroyed);
 #pragma warning restore NUnit2007
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("is not a UnityEngine.Object"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("is not a UnityEngine.Object"));
         }
 
         [Test]
@@ -129,25 +130,26 @@ namespace TestHelper.Constraints
         [Test]
         public void IsNotDestroyed_Null_ThrowsArgumentNullException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(null, Is.Not.Destroyed);
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
         }
 
         [Test]
         public void IsNotDestroyed_UnsupportedActualType_ThrowsArgumentException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately an
                 // unsupported type, to exercise the "not a UnityEngine.Object" failure path.
 #pragma warning disable NUnit2007
                 Assert.That("not a UnityEngine.Object", Is.Not.Destroyed);
 #pragma warning restore NUnit2007
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("is not a UnityEngine.Object"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("is not a UnityEngine.Object"));
         }
     }
 }

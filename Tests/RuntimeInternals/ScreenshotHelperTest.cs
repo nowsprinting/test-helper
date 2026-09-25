@@ -91,7 +91,7 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(path, Does.Exist.IgnoreDirectories);
 #if !UNITY_ANDROID
-            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(0));
+            Assert.That(new FileInfo(path).Length, Is.GreaterThanOrEqualTo(0));
 #endif
         }
 
@@ -227,7 +227,7 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(path, Does.Exist.IgnoreDirectories);
 #if !UNITY_ANDROID
-            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(0));
+            Assert.That(new FileInfo(path).Length, Is.GreaterThanOrEqualTo(0));
 #endif
         }
 
