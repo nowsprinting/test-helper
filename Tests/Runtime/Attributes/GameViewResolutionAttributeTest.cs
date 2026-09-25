@@ -25,7 +25,11 @@ namespace TestHelper.Attributes
 
         [UnityTest, Order(1)]
         [GameViewResolution(GameViewResolution.VGA)]
+        // Not an async Task test: this test verifies the attribute on a coroutine-style UnityTest method;
+        // the async Task variant is covered by the AttachToAsyncTest_ test.
+#pragma warning disable UTF4006
         public IEnumerator AttachToUnityTest_SetScreenSizeToVGA()
+#pragma warning restore UTF4006
         {
             yield return null; // Wait to apply change GameView resolution
 
