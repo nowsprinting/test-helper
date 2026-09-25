@@ -84,7 +84,11 @@ namespace TestHelper.Attributes
 
         [UnityTest]
         [CreateScene]
+        // Not an async Task test: this test verifies the attribute on a coroutine-style UnityTest method;
+        // the async Task variant is covered by the AttachToAsyncTest_ test.
+#pragma warning disable UTF4006
         public IEnumerator AttachToUnityTest_CreateNewScene()
+#pragma warning restore UTF4006
         {
             var scene = SceneManager.GetActiveScene();
             Assert.That(scene.name, Is.EqualTo(
@@ -95,7 +99,11 @@ namespace TestHelper.Attributes
 
         [UnityTest]
         [CreateScene]
+        // Not an async Task test: awaiting AsyncOperation requires Unity 2023.1 or later,
+        // but this package supports older versions.
+#pragma warning disable UTF4006
         public IEnumerator UnloadCreatedSceneInTest_NoErrorInAfterTest()
+#pragma warning restore UTF4006
         {
             var createdScene = SceneManager.GetActiveScene();
 

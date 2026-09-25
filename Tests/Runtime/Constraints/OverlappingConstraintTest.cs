@@ -296,13 +296,13 @@ namespace TestHelper.Constraints
             var canvas = CreateCanvas();
             var actual = CreateElements(canvas.transform, memberCount);
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 Assert.That(actual, Is.Not.Overlapping);
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains($"collection has {memberCount} element")
-                .And.Message.Contains("at least 2"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message,
+                Does.Contain($"collection has {memberCount} element").And.Contain("at least 2"));
         }
 
         [Test]
@@ -406,11 +406,11 @@ namespace TestHelper.Constraints
             var actual = new[] { element0, element1 };
             var ignoredGroup = new[] { element0, null };
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(actual, Is.Overlapping.Ignoring(ignoredGroup));
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName")
-                .EqualTo("ignored group member at index 1"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("ignored group member at index 1"));
         }
 
         [Test]
@@ -422,12 +422,12 @@ namespace TestHelper.Constraints
             var rectTransform = CreateElement(canvas.transform, "Element", Vector2.zero, new Vector2(50f, 50f));
             var actual = AsActual(rectTransform, kind);
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 Assert.That(actual, Is.Overlapping);
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("is a single RectTransform, not a collection"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("is a single RectTransform, not a collection"));
         }
 
         [TestCase(0)]
@@ -439,29 +439,29 @@ namespace TestHelper.Constraints
             var canvas = CreateCanvas();
             var actual = CreateElements(canvas.transform, memberCount);
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 Assert.That(actual, Is.Overlapping);
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains($"collection has {memberCount} element")
-                .And.Message.Contains("at least 2"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message,
+                Does.Contain($"collection has {memberCount} element").And.Contain("at least 2"));
         }
 
         [Test]
         [Category("Acceptance")]
         public void IsOverlapping_NonCollectionActual_ThrowsArgumentException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 // Not a swapped actual/expected: this constant IS the actual value under test, deliberately a
                 // non-collection, to exercise the "not a collection of RectTransforms" failure path.
 #pragma warning disable NUnit2007
                 Assert.That("not a collection", Is.Overlapping);
 #pragma warning restore NUnit2007
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("is not a collection of RectTransforms"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("is not a collection of RectTransforms"));
         }
 
         [Test]
@@ -474,12 +474,12 @@ namespace TestHelper.Constraints
             var plainObject = new GameObject("PlainObject");
             var actual = new object[] { element0, plainObject };
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 Assert.That(actual, Is.Overlapping);
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("element at index 1")
-                .And.Message.Contains("has no RectTransform component"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("element at index 1"));
+            Assert.That(exception.Message, Does.Contain("has no RectTransform component"));
         }
 
         [Test]
@@ -490,30 +490,33 @@ namespace TestHelper.Constraints
             var element0 = CreateElement(canvas.transform, "TestCard (0)", Vector2.zero, new Vector2(50f, 50f));
             var actual = new[] { element0, null };
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(actual, Is.Overlapping);
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("element at index 1"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("element at index 1"));
         }
 
         [Test]
         [Category("Acceptance")]
         public void IsOverlapping_Null_ThrowsArgumentNullException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(null, Is.Overlapping);
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
         }
 
         [Test]
         [Category("Acceptance")]
         public void IsNotOverlapping_Null_ThrowsArgumentNullException()
         {
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(null, Is.Not.Overlapping);
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
         }
     }
 }

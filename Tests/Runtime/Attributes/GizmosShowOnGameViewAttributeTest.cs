@@ -23,12 +23,12 @@ namespace TestHelper.Attributes
             }
         }
 
-        [UnitySetUp]
-        public IEnumerator UnitySetUp()
+        [SetUp]
+        public async Task SetUp()
         {
             var gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             gameObject.AddComponent<GizmoDemo>();
-            yield return null;
+            await Task.Yield();
         }
 
         [UnityTearDown]
@@ -68,7 +68,11 @@ namespace TestHelper.Attributes
         [CreateScene(camera: true, light: true)]
         [GizmosShowOnGameView]
         [Description("See the screenshot yourself! Be a witness!!")]
+        // Not an async Task test: this test verifies the attribute on a coroutine-style UnityTest method;
+        // the async Task variant is covered by the AttachToAsyncTest_ test.
+#pragma warning disable UTF4006
         public IEnumerator AttachToUnityTest_ShowGizmos()
+#pragma warning restore UTF4006
         {
             yield return null;
         }

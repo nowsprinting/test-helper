@@ -284,10 +284,11 @@ namespace TestHelper.Constraints
             var container = ContainerFor(state);
             var element = CreateElement("Element", CreateContainer(), Vector2.zero, Vector2.zero);
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(element, Is.WithinContainer(container));
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("container"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("container"));
         }
 
         [Test]
@@ -296,10 +297,11 @@ namespace TestHelper.Constraints
         {
             var container = CreateContainer();
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(null, Is.WithinContainer(container));
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
         }
 
         [Test]
@@ -311,12 +313,12 @@ namespace TestHelper.Constraints
             var element = CreateElement("Element", container, Vector2.zero, Vector2.zero);
             GameObject.DestroyImmediate(element.gameObject);
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 Assert.That(element, Is.WithinContainer(container));
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("destroyed UnityEngine.Object"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("destroyed UnityEngine.Object"));
         }
 
         [Test]
@@ -326,15 +328,15 @@ namespace TestHelper.Constraints
         {
             var container = CreateContainer();
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 // Not a swapped actual/expected: this value IS the actual value under test, deliberately an
                 // unsupported type, to exercise the "not a RectTransform, GameObject, or Component" failure path.
                 object unsupportedActual = "not a RectTransform";
                 Assert.That(unsupportedActual, Is.WithinContainer(container));
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("is not a RectTransform, GameObject, or Component"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("is not a RectTransform, GameObject, or Component"));
         }
 
         [Test]
@@ -345,12 +347,12 @@ namespace TestHelper.Constraints
             var container = CreateContainer();
             var gameObject = new GameObject("PlainObject");
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
             {
                 Assert.That(gameObject, Is.WithinContainer(container));
-            }, Throws.TypeOf<ArgumentException>()
-                .With.Property("ParamName").EqualTo("actual")
-                .And.Message.Contains("has no RectTransform component"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
+            Assert.That(exception.Message, Does.Contain("has no RectTransform component"));
         }
 
         [Test]
@@ -391,10 +393,11 @@ namespace TestHelper.Constraints
         {
             var container = CreateContainer();
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(null, Is.Not.WithinContainer(container));
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("actual"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("actual"));
         }
 
         [Test]
@@ -404,10 +407,11 @@ namespace TestHelper.Constraints
         {
             var element = CreateElement("Element", CreateContainer(), Vector2.zero, Vector2.zero);
 
-            Assert.That(() =>
+            var exception = Assert.Throws<ArgumentNullException>(() =>
             {
                 Assert.That(element, Is.Not.WithinContainer(null));
-            }, Throws.TypeOf<ArgumentNullException>().With.Property("ParamName").EqualTo("container"));
+            });
+            Assert.That(exception.ParamName, Is.EqualTo("container"));
         }
 
         [Test]

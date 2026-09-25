@@ -38,7 +38,11 @@ namespace TestHelper.Attributes
 
         [UnityTest]
         [LoadScene(TestScene)]
+        // Not an async Task test: this test verifies the attribute on a coroutine-style UnityTest method;
+        // the async Task variant is covered by the AttachToAsyncTest_ test.
+#pragma warning disable UTF4006
         public IEnumerator AttachToUnityTest_LoadedSceneNotInBuild()
+#pragma warning restore UTF4006
         {
             var cube = GameObject.Find(ObjectName);
             Assert.That(cube, Is.Not.Null);

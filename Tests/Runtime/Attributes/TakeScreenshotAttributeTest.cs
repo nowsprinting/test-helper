@@ -97,7 +97,11 @@ namespace TestHelper.Attributes
         [UnityTest, Order(0)]
         [LoadScene(TestScene)]
         [TakeScreenshot]
+        // Not an async Task test: this test verifies the attribute on a coroutine-style UnityTest method;
+        // the async Task variant is covered by the AttachToAsyncTest_ test.
+#pragma warning disable UTF4006
         public IEnumerator AttachToUnityTest_SaveScreenshotToDefaultPath()
+#pragma warning restore UTF4006
         {
             var path = Path.Combine(
                 _defaultOutputDirectory,

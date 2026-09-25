@@ -91,7 +91,7 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(path, Does.Exist.IgnoreDirectories);
 #if !UNITY_ANDROID
-            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(0));
+            Assert.That(new FileInfo(path).Length, Is.GreaterThanOrEqualTo(0));
 #endif
         }
 
@@ -227,7 +227,7 @@ namespace TestHelper.RuntimeInternals
 
             Assert.That(path, Does.Exist.IgnoreDirectories);
 #if !UNITY_ANDROID
-            Assert.That(new FileInfo(path), Has.Length.GreaterThanOrEqualTo(0));
+            Assert.That(new FileInfo(path).Length, Is.GreaterThanOrEqualTo(0));
 #endif
         }
 
@@ -268,14 +268,15 @@ namespace TestHelper.RuntimeInternals
                 }
             }
 
-            for (var i = 0; i < 5; i++)
+            var tasks = new UniTask[paths.Length];
+            for (var i = 0; i < paths.Length; i++)
             {
                 _text.text = $"{TestContext.CurrentContext.Test.Name}_{i}";
-                ScreenshotHelper.TakeScreenshotAsync().AsUniTask().Forget();
+                tasks[i] = ScreenshotHelper.TakeScreenshotAsync().AsUniTask();
                 await UniTask.NextFrame();
             }
 
-            await UniTask.Delay(200);
+            await UniTask.WhenAll(tasks);
 
             foreach (var path in paths)
             {
