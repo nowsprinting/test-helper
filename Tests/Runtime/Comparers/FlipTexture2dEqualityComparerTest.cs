@@ -137,7 +137,7 @@ namespace TestHelper.Comparers
         [Test]
         public void Compare_NotEqualTextureWithHighTolerance_Success()
         {
-            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.2f);
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.2f, peakErrorTolerance: 1f);
 
             Assert.That(_actual, Is.EqualTo(_expected).Using(comparer));
         }

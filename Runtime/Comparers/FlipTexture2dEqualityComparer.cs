@@ -17,10 +17,7 @@ namespace TestHelper.Comparers
     public class FlipTexture2dEqualityComparer : IComparer<Texture2D>
     {
         private const float DefaultMeanErrorTolerance = 1E-05f;
-
-        // FLIP upstream recommends no threshold for the peak error. Not a lower value: the peak is decided by a single
-        // pixel, and per-pixel errors differ slightly across platforms; 0.9 still catches obvious high-contrast errors.
-        private const float DefaultPeakErrorTolerance = 0.9f;
+        private const float DefaultPeakErrorTolerance = 0.5f;
         private const float DefaultPpd = 67.0206451f;
 
         // Comparison parameters
