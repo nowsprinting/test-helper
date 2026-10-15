@@ -17,10 +17,15 @@ namespace TestHelper.Comparers
     public class FlipTexture2dEqualityComparer : IComparer<Texture2D>
     {
         private const float DefaultMeanErrorTolerance = 1E-05f;
+
+        // FLIP upstream recommends no threshold for the peak error. Not a lower value: the peak is decided by a single
+        // pixel, and per-pixel errors differ slightly across platforms; 0.9 still catches obvious high-contrast errors.
+        private const float DefaultPeakErrorTolerance = 0.9f;
         private const float DefaultPpd = 67.0206451f;
 
         // Comparison parameters
         private readonly float _meanErrorTolerance;
+        private readonly float _peakErrorTolerance;
         private readonly string _errorMapOutputDirectory;
         private readonly string _errorMapOutputFilename;
         private readonly bool _namespaceToDirectory;
@@ -37,6 +42,7 @@ namespace TestHelper.Comparers
         /// Constructor.
         /// </summary>
         /// <param name="meanErrorTolerance">Mean FLIP error value in the range [0,1]. Lower values indicate more similar images.</param>
+        /// <param name="peakErrorTolerance">Peak (maximum) FLIP error value in the range [0,1]. Lower values indicate more similar images.</param>
         /// <param name="errorMapOutputDirectory">Directory to output error map.
         /// If omitted, the directory specified by command line argument <c>-testHelperScreenshotDirectory</c> is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.</param>
@@ -51,6 +57,7 @@ namespace TestHelper.Comparers
         /// <param name="numExposures">Number of exposures for HDR-FLIP. Use -1 for auto-calculation.</param>
         public FlipTexture2dEqualityComparer(
             float meanErrorTolerance = DefaultMeanErrorTolerance,
+            float peakErrorTolerance = DefaultPeakErrorTolerance,
             string errorMapOutputDirectory = null,
             string errorMapOutputFilename = null,
             bool namespaceToDirectory = false,
@@ -62,6 +69,7 @@ namespace TestHelper.Comparers
             int numExposures = -1)
         {
             _meanErrorTolerance = meanErrorTolerance;
+            _peakErrorTolerance = peakErrorTolerance;
             _errorMapOutputDirectory = errorMapOutputDirectory;
             _errorMapOutputFilename = errorMapOutputFilename;
             _namespaceToDirectory = namespaceToDirectory;
