@@ -108,13 +108,25 @@ namespace TestHelper.Comparers
                 _numExposures,
                 applyMagmaMap: true);
 
-            if (result.MeanError <= _meanErrorTolerance)
+            var meanExceeded = result.MeanError > _meanErrorTolerance;
+            var peakExceeded = result.PeakError > _peakErrorTolerance;
+            if (!meanExceeded && !peakExceeded)
             {
                 return 0;
             }
 
-            Debug.Log($"Mean FLIP error value: {result.MeanError.ToString(CultureInfo.InvariantCulture)}\n" +
-                      $"Exceeds the specified tolerance {_meanErrorTolerance.ToString("0.######", CultureInfo.InvariantCulture)}");
+            if (meanExceeded)
+            {
+                Debug.Log($"Mean FLIP error value: {result.MeanError.ToString(CultureInfo.InvariantCulture)}\n" +
+                          $"Exceeds the specified tolerance {_meanErrorTolerance.ToString("0.######", CultureInfo.InvariantCulture)}");
+            }
+
+            if (peakExceeded)
+            {
+                Debug.Log($"Peak FLIP error value: {result.PeakError.ToString(CultureInfo.InvariantCulture)}\n" +
+                          $"Exceeds the specified tolerance {_peakErrorTolerance.ToString("0.######", CultureInfo.InvariantCulture)}");
+            }
+
             SaveErrorMap(result);
             return -1;
         }

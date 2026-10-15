@@ -23,7 +23,7 @@
     "versionDefines": [
         {
             "name": "org.nuget.flipbinding.csharp",
-            "expression": "1.0.0",
+            "expression": "2.0.0",
             "define": "ENABLE_FLIP_BINDING"
         },
         {

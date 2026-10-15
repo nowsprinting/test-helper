@@ -640,6 +640,7 @@ Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., 
 #### FlipTexture2dEqualityComparer (optional)
 
 `FlipTexture2dEqualityComparer` is a NUnit test comparer class that compares two `Texture2D` using [FLIP](https://github.com/NVlabs/flip).
+Assertion fails if either the mean or the peak FLIP error exceeds its tolerance.
 
 Output error map image file if assertion fails.
 Default output path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.diff.png".
@@ -666,7 +667,7 @@ public class MyTestClass
 ```
 
 > [!IMPORTANT]\
-> `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
+> `FlipTexture2dEqualityComparer` is an optional functionality. To use it, you need to install the [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v2.0.0 or newer.
 > Also, add scripting define symbol `ENABLE_FLIP_BINDING` if not installed via OpenUPM (UnityNuGet).
 
 #### XmlComparer
@@ -1086,7 +1087,7 @@ UNITY_VERSION=2019.4.40f1 make -k test
 > [!TIP]\
 > To run all tests, you need to install the following packages in your project:
 > - [UniTask](https://github.com/Cysharp/UniTask) package v2.3.3 or newer.
-> - [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v1.0.0 or newer.
+> - [FlipBinding.CSharp](https://www.nuget.org/packages/FlipBinding.CSharp) NuGet package v2.0.0 or newer.
 > - [Instant Replay for Unity](https://github.com/CyberAgentGameEntertainment/InstantReplay) package v1.0.0 or newer
 
 
