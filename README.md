@@ -641,6 +641,7 @@ Chain `.Within(float)` to widen the tolerance in pixels (default `0.5f`), e.g., 
 
 `FlipTexture2dEqualityComparer` is a NUnit test comparer class that compares two `Texture2D` using [FLIP](https://github.com/NVlabs/flip).
 Assertion fails if either the mean or the peak FLIP error exceeds its tolerance.
+The default mean tolerance (`0.00001`) requires a near-exact match, and the default peak tolerance is `0.5`; relax them when comparing against an expected image shared across platforms.
 
 Output error map image file if assertion fails.
 Default output path is "`Application.persistentDataPath`/TestHelper/Screenshots/`TestContext.Test.Name`.diff.png".
