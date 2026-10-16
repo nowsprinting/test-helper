@@ -137,7 +137,7 @@ namespace TestHelper.Comparers
         [Test]
         public void Compare_NotEqualTextureWithHighTolerance_Success()
         {
-            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.2f);
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.2f, peakErrorTolerance: 1f);
 
             Assert.That(_actual, Is.EqualTo(_expected).Using(comparer));
         }
@@ -153,6 +153,61 @@ namespace TestHelper.Comparers
             Assert.That(actual, Is.EqualTo(_expected).Using(comparer));
 
             Object.Destroy(actual);
+        }
+
+        [Test]
+        public void Compare_PeakErrorExceedsTolerance_AssertionFails()
+        {
+            var expected = CreateBlackTexture();
+            var actual = CreateBlackTexture();
+            actual.SetPixel(32, 32, Color.white);
+            actual.Apply();
+
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.2f, peakErrorTolerance: 0.1f);
+            Assert.That(() => { Assert.That(actual, Is.EqualTo(expected).Using(comparer)); },
+                Throws.TypeOf<AssertionException>());
+
+            Object.Destroy(expected);
+            Object.Destroy(actual);
+        }
+
+        [Test]
+        public void Compare_PeakErrorExceedsTolerance_LogDetails()
+        {
+            var expected = CreateBlackTexture();
+            var actual = CreateBlackTexture();
+            actual.SetPixel(32, 32, Color.white);
+            actual.Apply();
+
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.2f, peakErrorTolerance: 0.1f);
+            Assert.That(() => { Assert.That(actual, Is.EqualTo(expected).Using(comparer)); },
+                Throws.TypeOf<AssertionException>());
+            LogAssert.Expect(LogType.Log,
+                new Regex(@"^Peak FLIP error value: \d(\.\d+)?\r?\nExceeds the specified tolerance 0.1$"));
+
+            Object.Destroy(expected);
+            Object.Destroy(actual);
+        }
+
+        [Test]
+        public void Compare_MeanAndPeakErrorExceedTolerance_LogDetailsForBoth()
+        {
+            var comparer = new FlipTexture2dEqualityComparer(peakErrorTolerance: 0.00001f);
+
+            Assert.That(() => { Assert.That(_actual, Is.EqualTo(_expected).Using(comparer)); },
+                Throws.TypeOf<AssertionException>());
+            LogAssert.Expect(LogType.Log,
+                new Regex(@"^Mean FLIP error value: 0\.\d+\r?\nExceeds the specified tolerance 0.00001$"));
+            LogAssert.Expect(LogType.Log,
+                new Regex(@"^Peak FLIP error value: \d(\.\d+)?\r?\nExceeds the specified tolerance 0.00001$"));
+        }
+
+        private static Texture2D CreateBlackTexture()
+        {
+            var texture = new Texture2D(64, 64, TextureFormat.RGB24, false);
+            texture.SetPixels32(new Color32[64 * 64]);
+            texture.Apply();
+            return texture;
         }
     }
 }

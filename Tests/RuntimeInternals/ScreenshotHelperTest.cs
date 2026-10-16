@@ -115,7 +115,7 @@ namespace TestHelper.RuntimeInternals
                 : _expectedTakeScreenshotImagesMatchOnPlayer;
             var actual = LoadImage(path);
 
-            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f);
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f, peakErrorTolerance: 0.9f);
             Assert.That(actual, Is.EqualTo(expected).Using(comparer));
         }
 #endif
@@ -304,7 +304,7 @@ namespace TestHelper.RuntimeInternals
                 : _expectedTakeScreenshotAsyncImagesMatchOnPlayer;
             var actual = LoadImage(path);
 
-            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f);
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f, peakErrorTolerance: 0.9f);
             Assert.That(actual, Is.EqualTo(expected).Using(comparer));
         }
 
@@ -326,7 +326,7 @@ namespace TestHelper.RuntimeInternals
             var expected = _expectedTakeScreenshotAsyncWithScaleImagesMatch;
             var actual = LoadImage(path);
 
-            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f);
+            var comparer = new FlipTexture2dEqualityComparer(meanErrorTolerance: 0.01f, peakErrorTolerance: 0.9f);
             Assert.That(actual, Is.EqualTo(expected).Using(comparer));
         }
 #endif
