@@ -100,6 +100,52 @@ public class MyTestClass
 > Create or not `Main Camera` and `Directional Light` can be specified with parameters (default is not create)
 
 
+#### DetectShaderErrors
+
+`DetectShaderErrorsAttribute` is an NUnit test attribute class to detect shader errors (fallback warnings, error shaders, and missing materials) while the test is running, and fail the test when one is found.
+
+This attribute detects the following, none of which produce a compile error or an error log on their own:
+
+- Shader fallback (log a warning only, e.g., "Shader 'MyShader' is not supported on this GPU (fallback to 'Diffuse')")
+- Material's shader reference is missing (becomes `Hidden/InternalErrorShader`, shown as magenta)
+- Shader exists but is not supported on the running environment (`!Shader.isSupported`, also shown as magenta)
+- Renderer's material reference is missing (null slot)
+
+This attribute can be placed on the test method, the test class (`TestFixture`), and the test assembly.
+Can be used with sync `Test`, async `Test`, and `UnityTest`.
+
+Usage:
+
+```csharp
+[TestFixture]
+public class MyTestClass
+{
+    [Test]
+    [DetectShaderErrors]
+    public async Task MyTestMethod()
+    {
+        // Fails if a shader error is detected while this test is running.
+        await Task.Yield();
+    }
+}
+```
+
+> [!WARNING]\
+> This attribute cannot detect shader runtime errors that produce no log output at all, e.g., NaN or invalid pixel output, or other GPU-side computation anomalies. Detecting those requires visual verification (e.g., screenshot comparison), which is outside the scope of this attribute.
+
+> [!WARNING]\
+> The material scan only covers active `Renderer`s, active uGUI `Graphic`s, `RenderSettings.skybox`, and enabled `Skybox` components on active GameObjects. Materials used by other draw paths are not scanned, e.g., the `Graphics.DrawMesh` family, `CommandBuffer` draws, VFX Graph, `Graphics.Blit` and post-processing effects, Terrain, Projector/Decal Projector, `CanvasRenderer.SetMaterial` without a `Graphic`, and GL/IMGUI/UI Toolkit rendering. For these draw paths, only a shader fallback warning is detected (by log monitoring).
+
+> [!WARNING]\
+> A shader fallback warning is detected by monitoring logs, and Unity does not deliver a log raised from its own log dispatch until the next frame. In a fully synchronous `Test` method (no `yield`/`await`), this can cause the failure to be attributed to a later test instead of the one that actually triggered the fallback warning. Use async `Test` (or `UnityTest`) when a fallback warning needs to reliably fail the test that caused it.
+
+> [!WARNING]\
+> In Edit Mode tests, the material scan does not run (no coroutine ticks), so only the log-monitoring detection is active.
+
+> [!TIP]\
+> The material scan interval (in frames) can be specified with the constructor argument, e.g., `[DetectShaderErrors(30)]`. Default is `0`, meaning every frame.
+
+
 #### FocusGameView
 
 `FocusGameViewAttribute` is an NUnit test attribute class to focus `GameView` or `SimulatorWindow` before running the test.
